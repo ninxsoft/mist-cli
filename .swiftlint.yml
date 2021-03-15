@@ -1,0 +1,36 @@
+excluded:
+- .build
+
+line_length:
+  warning: 200
+  error: 220
+
+opt_in_rules:
+- closure_end_indentation
+- collection_alignment
+- conditional_returns_on_newline
+- empty_collection_literal
+- empty_string
+- explicit_enum_raw_value
+- explicit_type_interface
+- file_header
+- file_name
+- file_name_no_space
+- file_types_order
+- force_unwrapping
+- implicit_return
+- indentation_width
+- literal_expression_end_indentation
+- modifier_order
+- multiline_arguments
+- operator_usage_whitespace
+- prefer_zero_over_explicit_init
+- sorted_imports
+- toggle_bool
+- trailing_closure
+- type_contents_order
+- unneeded_parentheses_in_closure_argument
+- unused_declaration
+- vertical_parameter_alignment_on_call
+- vertical_whitespace_closing_braces
+- yoda_condition
