@@ -50,7 +50,7 @@ struct Generator {
         try Shell.execute(["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path])
         PrettyPrint.print(.info, string: "Created new image '\(destinationURL.path)'")
 
-        if let identity: String = settings.identity,
+        if let identity: String = settings.imageIdentity,
             !identity.isEmpty {
             PrettyPrint.print(.info, string: "Codesigning image '\(destinationURL.path)'...")
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
@@ -105,7 +105,7 @@ struct Generator {
             ]
         }
 
-        if let identity: String = settings.identity, !identity.isEmpty {
+        if let identity: String = settings.packageIdentity, !identity.isEmpty {
             arguments += ["--sign", identity]
         }
 
@@ -124,7 +124,7 @@ struct Generator {
         try Shell.execute(arguments)
         PrettyPrint.print(.info, string: "Created ZIP archive '\(destinationURL.path)'")
 
-        if let identity: String = settings.identity,
+        if let identity: String = settings.zipIdentity,
             !identity.isEmpty {
             PrettyPrint.print(.info, string: "Codesigning ZIP archive '\(destinationURL.path)'...")
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])

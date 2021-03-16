@@ -65,13 +65,20 @@ OPTIONS:
   -o, --output <output>   Optionally specify the output directory. (default: /Users/Shared/macOS Installers)
   -a, --application       Export as macOS Installer application bundle (.app).
   -i, --image             Export as macOS Disk Image (.dmg).
+  --image-identity <image-identity>
+                          Optionally codesign the exported macOS Disk Image (.dmg).
+                          Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
   -p, --package           Export as macOS Installer Package (.pkg).
   --package-identifier <package-identifier>
                           Specify the package identifier.
                           eg. com.yourcompany.pkg.mac-os-install-{name}
+  --package-identity <package-identity>
+                          Optionally codesign the exported macOS Installer Packages (.pkg).
+                          Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
   -z, --zip               Export as ZIP Archive (.zip).
-  -s, --sign <sign>       Optionally codesign Disk Images (.dmg), macOS Installer Packages (.pkg) and ZIP archives (.zip).
-                          Specify a signing identity name, eg. "Developer ID Installer: ABC XYZ (Team ID)".
+  --zip-identity <zip-identity>
+                          Optionally codesign the exported ZIP archive (.zip).
+                          Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
   -v, --version           Display the version of mist.
   -h, --help              Show help information.
 ```
@@ -108,7 +115,7 @@ mist --download \
      --output "/path/to/custom/directory" \
      --package \
      --package-identifier "com.ninxsoft.mist.pkg.mojave-installer" \
-     --sign "Developer ID Installer: Nindi Gill (Team ID)"
+     --package-identity "Developer ID Installer: Nindi Gill (Team ID)"
 
 # Download a specific macOS High Sierra Installer version and build and generate a
 # codesigned ZIP archive:
@@ -117,7 +124,7 @@ mist --download \
      --mac-os-version "10.13.6" \
      --build "17G66" \
      --zip \
-     --sign "Developer ID Installer: Nindi Gill (Team ID)"
+     --zip-identity "Developer ID Application: Nindi Gill (Team ID)"
 
 # Download the latest available macOS Installer from the Public Seed catalogs and
 # generate all available output options, signing where possible:
@@ -126,10 +133,12 @@ mist --catalog "public" \
      --output "/path/to/custom/directory" \
      --application \
      --image \
+     --image-identity "Developer ID Application: Nindi Gill (Team ID)" \
      --package \
      --package-identifier "com.ninxsoft.mist.pkg.latest-installer" \
+     --package-identity "Developer ID Installer: Nindi Gill (Team ID)"
      --zip \
-     --sign "Developer ID Installer: Nindi Gill (Team ID)"
+     --zip-identity "Developer ID Application: Nindi Gill (Team ID)"
 ```
 
 ## Build Requirements

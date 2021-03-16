@@ -32,7 +32,7 @@ extension String {
     static let appName: String = "mist"
     static var identifier: String { "com.ninxsoft.\(appName)" }
     static let abstract: String = "macOS Installer Super Tool."
-    static let discussion: String = "Automatically generate macOS Installer Disk Images and Packages."
+    static let discussion: String = "Automatically generate macOS Installer Disk Images, Packages and ZIP archives."
     static let baseTemporaryDirectory: String = "/private/var/tmp"
     static let defaultOutputDirectory: String = "/Users/Shared/macOS Installers"
 

@@ -93,6 +93,12 @@ struct Mist: ParsableCommand {
     """)
     var image: Bool = false
 
+    @Option(name: .long, help: """
+    Optionally codesign the exported macOS Disk Image (.dmg).
+    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
+    """)
+    var imageIdentity: String?
+
     @Flag(name: .shortAndLong, help: """
     Export as macOS Installer Package (.pkg).
     """)
@@ -104,16 +110,22 @@ struct Mist: ParsableCommand {
     """)
     var packageIdentifier: String?
 
+    @Option(name: .long, help: """
+    Optionally codesign the exported macOS Installer Packages (.pkg).
+    Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
+    """)
+    var packageIdentity: String?
+
     @Flag(name: .shortAndLong, help: """
     Export as ZIP Archive (.zip).
     """)
     var zip: Bool = false
 
-    @Option(name: .shortAndLong, help: """
-    Optionally codesign macOS Disk Images (.dmg), macOS Installer Packages (.pkg) and ZIP archives (.zip).
-    Specify a signing identity name, eg. "Developer ID Installer: ABC XYZ (Team ID)".
+    @Option(name: .long, help: """
+    Optionally codesign the exported ZIP archive (.zip).
+    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
     """)
-    var sign: String?
+    var zipIdentity: String?
 
     @Flag(name: .shortAndLong, help: "Display the version of \(String.appName).")
     var version: Bool = false
@@ -124,7 +136,17 @@ struct Mist: ParsableCommand {
             if list {
                 try List.run(catalog: catalog, path: listPath, format: listFormat)
             } else if download {
-                let settings: Settings = Settings(output: output, application: application, image: image, package: package, packageIdentifier: packageIdentifier, zip: zip, identity: sign)
+                let settings: Settings = Settings(
+                    output: output,
+                    application: application,
+                    image: image,
+                    imageIdentity: imageIdentity,
+                    package: package,
+                    packageIdentifier: packageIdentifier,
+                    packageIdentity: packageIdentity,
+                    zip: zip,
+                    zipIdentity: zipIdentity
+                )
                 try Download.run(catalog: catalog, name: name, version: macOSVersion, build: build, settings: settings)
             } else if version {
                 Version.run()
