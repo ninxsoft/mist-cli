@@ -29,7 +29,7 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
 ```bash
 OVERVIEW: macOS Installer Super Tool.
 
-Automatically generate macOS Installer Disk Images and Packages.
+Automatically generate macOS Installer Disk Images, Packages and ZIP archives.
 
 USAGE: mist <options>
 
