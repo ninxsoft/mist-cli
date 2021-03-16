@@ -29,6 +29,7 @@
 		57D135B025FEEB90003467B2 /* ExportFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D135AF25FEEB90003467B2 /* ExportFormat.swift */; };
 		57D135B825FEEE48003467B2 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 57D135B725FEEE48003467B2 /* Yams */; };
 		57D135C025FF07BC003467B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D135BF25FF07BC003467B2 /* Settings.swift */; };
+		57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F0F3CD2600907D00480DEE /* Int64+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -65,6 +66,7 @@
 		57D135AA25FED139003467B2 /* MistError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistError.swift; sourceTree = "<group>"; };
 		57D135AF25FEEB90003467B2 /* ExportFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportFormat.swift; sourceTree = "<group>"; };
 		57D135BF25FF07BC003467B2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		57F0F3CD2600907D00480DEE /* Int64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +116,7 @@
 		5744141425F8607B00DE5540 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				57F0F3CD2600907D00480DEE /* Int64+Extension.swift */,
 				5744141125F8607800DE5540 /* String+Extension.swift */,
 				57D1358825FA33AE003467B2 /* URLSession+Extension.swift */,
 			);
@@ -246,6 +249,7 @@
 				5744141225F8607800DE5540 /* String+Extension.swift in Sources */,
 				5744140925F8603300DE5540 /* Mist.swift in Sources */,
 				57D135A225FECDF6003467B2 /* FileManager+Extension.swift in Sources */,
+				57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */,
 				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
 				57D135B025FEEB90003467B2 /* ExportFormat.swift in Sources */,

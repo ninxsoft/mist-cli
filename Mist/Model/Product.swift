@@ -80,4 +80,7 @@ struct Product: Decodable {
     var isTooBigForPackagePayload: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }
+    var size: Int64 {
+        Int64(packages.map { $0.size }.reduce(0, +))
+    }
 }

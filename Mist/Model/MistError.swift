@@ -13,6 +13,7 @@ enum MistError: Error {
     case missingExportPath
     case missingExportFormat
     case missingPackageIdentifier
+    case notEnoughFreeSpace(free: Int64, required: Int64)
     case invalidData
     case invalidURL(string: String)
     case invalidURLResponse
@@ -31,6 +32,8 @@ enum MistError: Error {
             return "Export format is missing."
         case .missingPackageIdentifier:
             return "Package identifier is missing."
+        case .notEnoughFreeSpace(let free, let required):
+            return String(format: "Not enough free space: %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
         case .invalidData:
             return "Invalid data."
         case .invalidURL(let string):
