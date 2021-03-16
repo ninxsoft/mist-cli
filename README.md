@@ -14,11 +14,12 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
     *   Generate the macOS Installer application bundle (.app)
     *   Generate a Disk Image (.dmg)
     *   Generate a macOS Installer Package (.pkg)
-        *   Supports generating **macOS Big Sur** packages - with a massive 12GB+ payload!
+        *   Supports **macOS Big Sur** packages - with a massive 12GB+ payload!
     *   Generate a ZIP archive (.zip)
     *   Optionally codesign Disk Images, macOS Installer Packages and ZIP archives
+    *   Checks for free space before attempting downloads and installs
 
-*   [x] Optionally specify custom seed catalogs, allowing you to download macOS Installers betas from the following:
+*   [x] Optionally specify custom seed catalogs, allowing you to list and download macOS Installers betas from the following:
     *   **Customer Seed** - AppleSeed Program
     *   **Developer Seed** - Apple Developer Program
     *   **Public Seed** - Apple Beta Software Program

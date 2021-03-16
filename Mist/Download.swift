@@ -27,8 +27,43 @@ struct Download {
         }
 
         PrettyPrint.print(.info, string: "Found \(product.name) \(product.version) (\(product.build))...")
+
+        try verifyFreeSpace(product, settings: settings)
         try Downloader.download(product)
         try Installer.install(product)
         try Generator.generate(product, settings: settings)
+    }
+
+    private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
+
+        guard let attributes: [FileAttributeKey: Any] = try? FileManager.default.attributesOfFileSystem(forPath: "/"),
+            let number: NSNumber = attributes[.systemFreeSize] as? NSNumber else {
+            throw MistError.notEnoughFreeSpace(free: -1, required: -1)
+        }
+
+        let free: Int64 = number.int64Value
+
+        // one for the downloads and one for the macos installer application bundle
+        var required: Int64 = product.size + product.size
+
+        if settings.application {
+            required += product.size
+        }
+
+        if settings.image {
+            required += product.size
+        }
+
+        if settings.package {
+            required += product.size
+        }
+
+        if settings.zip {
+            required += product.size
+        }
+
+        guard required < free else {
+            throw MistError.notEnoughFreeSpace(free: free, required: required)
+        }
     }
 }
