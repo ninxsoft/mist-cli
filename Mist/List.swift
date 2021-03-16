@@ -10,14 +10,14 @@ import Yams
 
 struct List {
 
-    static func run(format: ExportFormat?, exportPath: String?) throws {
+    static func run(catalog: Catalog, path: String?, format: ExportFormat?) throws {
         PrettyPrint.print(.info, string: "Checking for macOS versions...")
-        let products: [Product] = HTTP.retrieveProducts()
+        let products: [Product] = HTTP.retrieveProducts(catalog)
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         list(products, using: dateFormatter)
 
-        if let path: String = exportPath {
+        if let path: String = path {
 
             guard !path.isEmpty else {
                 throw MistError.missingExportPath

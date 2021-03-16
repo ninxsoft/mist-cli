@@ -35,12 +35,6 @@ extension String {
     static let discussion: String = "Automatically generate macOS Installer Disk Images and Packages."
     static let baseTemporaryDirectory: String = "/private/var/tmp"
     static let defaultOutputDirectory: String = "/Users/Shared/macOS Installers"
-    static let catalogURLs: [String] = [
-        "https://swscan.apple.com/content/catalogs/others/index-11-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog",
-        "https://swscan.apple.com/content/catalogs/others/index-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog",
-        "https://swscan.apple.com/content/catalogs/others/index-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog",
-        "https://swscan.apple.com/content/catalogs/others/index-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
-    ]
 
     mutating func wrapInPropertyList() {
         self = "<?xml version=\"1.0\"?>" +
