@@ -47,9 +47,9 @@ struct Generator {
         try FileManager.default.copy(product.installerURL, to: temporaryApplicationURL)
         try FileManager.default.remove(destinationURL, description: "old image")
 
-        PrettyPrint.print(.info, string: "Creating new image '\(destinationURL.path)'...")
+        PrettyPrint.print(.info, string: "Creating image '\(destinationURL.path)'...")
         try Shell.execute(["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path])
-        PrettyPrint.print(.info, string: "Created new image '\(destinationURL.path)'")
+        PrettyPrint.print(.info, string: "Created image '\(destinationURL.path)'")
 
         if let identity: String = settings.imageIdentity,
             !identity.isEmpty {
@@ -92,9 +92,9 @@ struct Generator {
             try FileManager.default.remove(temporaryScriptsURL, description: "old temporary scripts directory")
             try FileManager.default.create(temporaryScriptsURL, description: "new temporary scripts directory")
             let temporaryPostInstallURL: URL = temporaryScriptsURL.appendingPathComponent("postinstall")
-            PrettyPrint.print(.info, string: "Creating new temporary post install script '\(temporaryPostInstallURL.path)'...")
+            PrettyPrint.print(.info, string: "Creating temporary post install script '\(temporaryPostInstallURL.path)'...")
             try postInstall(for: product).write(to: temporaryPostInstallURL, atomically: true, encoding: .utf8)
-            PrettyPrint.print(.info, string: "Created new temporary post install script '\(temporaryPostInstallURL.path)'...")
+            PrettyPrint.print(.info, string: "Created temporary post install script '\(temporaryPostInstallURL.path)'...")
 
             PrettyPrint.print(.info, string: "Setting executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: temporaryPostInstallURL.path)
@@ -111,9 +111,9 @@ struct Generator {
         }
 
         try FileManager.default.remove(destinationURL, description: "old package")
-        PrettyPrint.print(.info, string: "Creating new package '\(destinationURL.path)'...")
+        PrettyPrint.print(.info, string: "Creating package '\(destinationURL.path)'...")
         try Shell.execute(arguments)
-        PrettyPrint.print(.info, string: "Created new package '\(destinationURL.path)'")
+        PrettyPrint.print(.info, string: "Created package '\(destinationURL.path)'")
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
         try FileManager.default.remove(temporaryScriptsURL, description: "temporary scripts directory")
     }
