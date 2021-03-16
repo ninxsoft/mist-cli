@@ -32,6 +32,7 @@ struct Generator {
 
     private static func generateApplication(product: Product, settings: Settings) throws {
         let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.applicationName)
+        try FileManager.default.remove(destinationURL, description: "old application")
         try FileManager.default.copy(product.installerURL, to: destinationURL)
     }
 
@@ -120,6 +121,8 @@ struct Generator {
     private static func generateZip(product: Product, settings: Settings) throws {
         let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.zipName)
         let arguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, destinationURL.path]
+
+        try FileManager.default.remove(destinationURL, description: "old ZIP archive")
         PrettyPrint.print(.info, string: "Creating ZIP archive '\(destinationURL.path)'...")
         try Shell.execute(arguments)
         PrettyPrint.print(.info, string: "Created ZIP archive '\(destinationURL.path)'")
