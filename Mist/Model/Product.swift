@@ -26,29 +26,41 @@ struct Product: Decodable {
     let packages: [Package]
     var name: String {
 
+        var name: String = ""
+
         if version.hasPrefix("11") {
-            return "macOS Big Sur"
+            name = "macOS Big Sur"
         } else if version.hasPrefix("10.15") {
-            return "macOS Catalina"
+            name = "macOS Catalina"
         } else if version.hasPrefix("10.14") {
-            return "macOS Mojave"
+            name = "macOS Mojave"
         } else if version.hasPrefix("10.13") {
-            return "macOS High Sierra"
+            name = "macOS High Sierra"
         } else {
-            return "macOS"
+            name = "macOS"
         }
+
+        let beta: Bool = build.range(of: "[a-z]$", options: .regularExpression) != nil
+        name += beta ? " Beta" : ""
+        return name
     }
     var installerURL: URL {
         URL(fileURLWithPath: "/Applications/Install \(name).app")
     }
-    var imageName: String {
-        "Install \(name) \(version) \(build).dmg".replacingOccurrences(of: " ", with: "-")
+    var applicationName: String {
+        "\(baseName).app"
     }
-    var zipName: String {
-        "Install \(name) \(version) \(build).zip".replacingOccurrences(of: " ", with: "-")
+    var imageName: String {
+        "\(baseName).dmg"
     }
     var packageName: String {
-        "Install \(name) \(version) \(build).pkg".replacingOccurrences(of: " ", with: "-")
+        "\(baseName).pkg"
+    }
+    var zipName: String {
+        "\(baseName).zip"
+    }
+    private var baseName: String {
+        "Install \(name) \(version) \(build)".replacingOccurrences(of: " ", with: "-")
     }
     var totalFiles: Int {
         packages.count + 1

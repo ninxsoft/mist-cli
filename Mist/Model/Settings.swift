@@ -8,9 +8,11 @@
 import Foundation
 
 struct Settings {
+    let output: String
+    let application: Bool
     let image: Bool
     let package: Bool
-    let output: String
-    let identifier: String?
+    let packageIdentifier: String?
+    let zip: Bool
     let identity: String?
 }

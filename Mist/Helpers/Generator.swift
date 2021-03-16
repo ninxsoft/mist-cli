@@ -11,6 +11,10 @@ struct Generator {
 
     static func generate(_ product: Product, settings: Settings) throws {
 
+        if settings.application {
+            try generateApplication(product: product, settings: settings)
+        }
+
         if settings.image {
             try generateImage(product: product, settings: settings)
         }
@@ -19,7 +23,16 @@ struct Generator {
             try generatePackage(product: product, settings: settings)
         }
 
+        if settings.zip {
+            try generateZip(product: product, settings: settings)
+        }
+
         try FileManager.default.remove(product.installerURL, description: "installer")
+    }
+
+    private static func generateApplication(product: Product, settings: Settings) throws {
+        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.applicationName)
+        try FileManager.default.copy(product.installerURL, to: destinationURL)
     }
 
     private static func generateImage(product: Product, settings: Settings) throws {
@@ -40,7 +53,7 @@ struct Generator {
         if let identity: String = settings.identity,
             !identity.isEmpty {
             PrettyPrint.print(.info, string: "Codesigning image '\(destinationURL.path)'...")
-            try Shell.execute(["codesign", "-s", identity, destinationURL.path])
+            try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
             PrettyPrint.print(.info, string: "Codesigned image '\(destinationURL.path)'")
         }
 
@@ -49,7 +62,7 @@ struct Generator {
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        guard let identifier: String = settings.identifier else {
+        guard let identifier: String = settings.packageIdentifier else {
             throw MistError.missingPackageIdentifier
         }
 
@@ -102,6 +115,21 @@ struct Generator {
         PrettyPrint.print(.info, string: "Created new package '\(destinationURL.path)'")
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
         try FileManager.default.remove(temporaryScriptsURL, description: "temporary scripts directory")
+    }
+
+    private static func generateZip(product: Product, settings: Settings) throws {
+        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.zipName)
+        let arguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, destinationURL.path]
+        PrettyPrint.print(.info, string: "Creating ZIP archive '\(destinationURL.path)'...")
+        try Shell.execute(arguments)
+        PrettyPrint.print(.info, string: "Created ZIP archive '\(destinationURL.path)'")
+
+        if let identity: String = settings.identity,
+            !identity.isEmpty {
+            PrettyPrint.print(.info, string: "Codesigning ZIP archive '\(destinationURL.path)'...")
+            try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
+            PrettyPrint.print(.info, string: "Codesigned ZIP archive '\(destinationURL.path)'")
+        }
     }
 
     private static func postInstall(for product: Product) -> String {
