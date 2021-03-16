@@ -17,7 +17,7 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
         *   Supports **macOS Big Sur** packages - with a massive 12GB+ payload!
     *   Generate a ZIP archive (.zip)
     *   Optionally codesign Disk Images, macOS Installer Packages and ZIP archives
-    *   Checks for free space before attempting downloads and installs
+    *   Checks for free space before attempting any downloads and installations
 
 *   [x] Optionally specify custom seed catalogs, allowing you to list and download macOS Installers betas from the following:
     *   **Customer Seed** - AppleSeed Program
@@ -158,6 +158,14 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 *   JP Simard ([jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
 
 ## Version History
+
+*   1.1
+    *   Specify custom catalog seeds: **Customer**, **Developer** and **Public**
+        *   This allows downloading macOS Install Betas
+    *   Output the macOS Installer application bundle to a custom directory
+    *   Generate a ZIP archive of the macOS Installer application bundle
+    *   Check for free space before attempting any downloads and installations
+    *   Cleaned up CLI argument flags, options, and formatting
 
 *   1.0
     *   Initial release
