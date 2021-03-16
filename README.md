@@ -164,7 +164,7 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
         *   This allows downloading macOS Install Betas
     *   Output the macOS Installer application bundle to a custom directory
     *   Generate a ZIP archive of the macOS Installer application bundle
-    *   Check for free space before attempting any downloads and installations
+    *   Checks for free space before attempting any downloads and installations
     *   Cleaned up CLI argument flags, options, and formatting
 
 *   1.0
