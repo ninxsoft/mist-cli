@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		570D5091260034E10066E4C9 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570D5090260034E10066E4C9 /* Catalog.swift */; };
 		5744140025F85EF300DE5540 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574413FF25F85EF300DE5540 /* main.swift */; };
 		5744140925F8603300DE5540 /* Mist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744140825F8603300DE5540 /* Mist.swift */; };
 		5744140F25F8606500DE5540 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 5744140E25F8606500DE5540 /* ArgumentParser */; };
@@ -43,6 +44,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		570D5090260034E10066E4C9 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		574413FC25F85EF300DE5540 /* Mist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mist; sourceTree = BUILT_PRODUCTS_DIR; };
 		574413FF25F85EF300DE5540 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5744140825F8603300DE5540 /* Mist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mist.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 		5744142125F8675400DE5540 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				570D5090260034E10066E4C9 /* Catalog.swift */,
 				57D135AF25FEEB90003467B2 /* ExportFormat.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
 				57D1358125F9F8E5003467B2 /* Package.swift */,
@@ -246,6 +249,7 @@
 				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
 				57D135B025FEEB90003467B2 /* ExportFormat.swift in Sources */,
+				570D5091260034E10066E4C9 /* Catalog.swift in Sources */,
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
 				5744141F25F8675000DE5540 /* Product.swift in Sources */,

@@ -9,11 +9,11 @@ import Foundation
 
 struct HTTP {
 
-    static func retrieveProducts() -> [Product] {
+    static func retrieveProducts(_ catalog: Catalog) -> [Product] {
 
         var products: [Product] = []
 
-        for catalogURL in String.catalogURLs {
+        for catalogURL in catalog.urls {
 
             PrettyPrint.print(.info, string: "Downloading catalog \(catalogURL)...")
 

@@ -19,24 +19,32 @@ struct RuntimeError: Error, CustomStringConvertible {
 struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
 
+    @Option(name: .shortAndLong, help: """
+    Optionally specify a catalog seed, examples:
+    customer (Customer Seed - AppleSeed Program)
+    developer (Developer Seed - Apple Developer Program)
+    public (Public Seed - Apple Beta Software Program)
+    """)
+    var catalog: Catalog = .standard
+
     @Flag(name: .shortAndLong, help: """
     List all macOS Installers available to download.
     """)
     var list: Bool = false
 
-    @Option(name: .shortAndLong, help: """
+    @Option(name: .long, help: """
     Optionally export the list to a file.
     """)
-    var export: String?
+    var listPath: String?
 
-    @Option(name: .shortAndLong, help: """
+    @Option(name: .long, help: """
     Format of the list to export:
-    csv
-    json
-    plist
-    yaml
+    csv (Comma Separated Values)
+    json (JSON file)
+    plist (Property List)
+    yaml (YAML file)
     """)
-    var format: ExportFormat?
+    var listFormat: ExportFormat?
 
     @Flag(name: .shortAndLong, help: """
     Download a macOS Installer.
@@ -71,7 +79,7 @@ struct Mist: ParsableCommand {
     var build: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Specify the output directory
+    Optionally specify the output directory.
     """)
     var output: String = .defaultOutputDirectory
 
@@ -85,11 +93,11 @@ struct Mist: ParsableCommand {
     """)
     var package: Bool = false
 
-    @Option(name: .shortAndLong, help: """
+    @Option(name: .long, help: """
     Specify the package identifier.
     eg. com.yourcompany.pkg.mac-os-install-{name}
     """)
-    var identifier: String?
+    var packageIdentifier: String?
 
     @Option(name: .shortAndLong, help: """
     Optionally codesign macOS Disk Images (.dmg) and macOS Installer Packages (.pkg).
@@ -104,10 +112,10 @@ struct Mist: ParsableCommand {
 
         do {
             if list {
-                try List.run(format: format, exportPath: export)
+                try List.run(catalog: catalog, path: listPath, format: listFormat)
             } else if download {
-                let settings: Settings = Settings(image: image, package: package, output: output, identifier: identifier, identity: sign)
-                try Download.run(name: name, version: macOSVersion, build: build, settings: settings)
+                let settings: Settings = Settings(image: image, package: package, output: output, identifier: packageIdentifier, identity: sign)
+                try Download.run(catalog: catalog, name: name, version: macOSVersion, build: build, settings: settings)
             } else if version {
                 Version.run()
             } else {
