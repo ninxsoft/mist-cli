@@ -84,6 +84,11 @@ struct Mist: ParsableCommand {
     var output: String = .defaultOutputDirectory
 
     @Flag(name: .shortAndLong, help: """
+    Export as macOS Installer application bundle (.app).
+    """)
+    var application: Bool = false
+
+    @Flag(name: .shortAndLong, help: """
     Export as macOS Disk Image (.dmg).
     """)
     var image: Bool = false
@@ -99,8 +104,13 @@ struct Mist: ParsableCommand {
     """)
     var packageIdentifier: String?
 
+    @Flag(name: .shortAndLong, help: """
+    Export as ZIP Archive (.zip).
+    """)
+    var zip: Bool = false
+
     @Option(name: .shortAndLong, help: """
-    Optionally codesign macOS Disk Images (.dmg) and macOS Installer Packages (.pkg).
+    Optionally codesign macOS Disk Images (.dmg), macOS Installer Packages (.pkg) and ZIP archives (.zip).
     Specify a signing identity name, eg. "Developer ID Installer: ABC XYZ (Team ID)".
     """)
     var sign: String?
@@ -114,7 +124,7 @@ struct Mist: ParsableCommand {
             if list {
                 try List.run(catalog: catalog, path: listPath, format: listFormat)
             } else if download {
-                let settings: Settings = Settings(image: image, package: package, output: output, identifier: packageIdentifier, identity: sign)
+                let settings: Settings = Settings(output: output, application: application, image: image, package: package, packageIdentifier: packageIdentifier, zip: zip, identity: sign)
                 try Download.run(catalog: catalog, name: name, version: macOSVersion, build: build, settings: settings)
             } else if version {
                 Version.run()

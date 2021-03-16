@@ -11,12 +11,14 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
     *   Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
 
 *   [x] Download an available macOS Installer:
-    *   Generate a Disk Image (DMG)
-    *   Generate an Installer Package (PKG)
-        *   Supports generating **macOS Big Sur** packages (with a massive 12GB payload!)
-    *   Optionally codesign both the Disk Image and Installer Package
+    *   Generate the macOS Installer application bundle (.app)
+    *   Generate a Disk Image (.dmg)
+    *   Generate a macOS Installer Package (.pkg)
+        *   Supports generating **macOS Big Sur** packages - with a massive 12GB+ payload!
+    *   Generate a ZIP archive (.zip)
+    *   Optionally codesign Disk Images, macOS Installer Packages and ZIP archives
 
-*   [x] Optionally specify custom seed catalogs, allowing you to download macOS Installers betas from:
+*   [x] Optionally specify custom seed catalogs, allowing you to download macOS Installers betas from the following:
     *   **Customer Seed** - AppleSeed Program
     *   **Developer Seed** - Apple Developer Program
     *   **Public Seed** - Apple Beta Software Program
@@ -31,7 +33,7 @@ Automatically generate macOS Installer Disk Images and Packages.
 USAGE: mist <options>
 
 OPTIONS:
-  -c, --catalog <catalog> Optionally specify seed catalogs, examples:
+  -c, --catalog <catalog> Optionally specify a catalog seed, examples:
                           customer (Customer Seed - AppleSeed Program)
                           developer (Developer Seed - Apple Developer Program)
                           public (Public Seed - Apple Beta Software Program) (default: standard)
@@ -61,12 +63,14 @@ OPTIONS:
                           18G8022 (macOS Mojave 10.14.6)
                           17G14042 (macOS High Sierra 10.13.6) (default: latest)
   -o, --output <output>   Optionally specify the output directory. (default: /Users/Shared/macOS Installers)
+  -a, --application       Export as macOS Installer application bundle (.app).
   -i, --image             Export as macOS Disk Image (.dmg).
   -p, --package           Export as macOS Installer Package (.pkg).
   --package-identifier <package-identifier>
                           Specify the package identifier.
                           eg. com.yourcompany.pkg.mac-os-install-{name}
-  -s, --sign <sign>       Optionally codesign macOS Disk Images (.dmg) and macOS Installer Packages (.pkg).
+  -z, --zip               Export as ZIP Archive (.zip).
+  -s, --sign <sign>       Optionally codesign Disk Images (.dmg), macOS Installer Packages (.pkg) and ZIP archives (.zip).
                           Specify a signing identity name, eg. "Developer ID Installer: ABC XYZ (Team ID)".
   -v, --version           Display the version of mist.
   -h, --help              Show help information.
@@ -90,40 +94,42 @@ mist --list --list-path "/path/to/export.plist" --list-format "plist"
 # List + Export to a YAML file:
 mist --list --list-path "/path/to/export.yaml" --list-format "yaml"
 
-# Download the latest available macOS Installer and
-# generate a Disk Image in the default output directory:
-mist --download --image
+# Download the latest available macOS Installer to the default output directory:
+mist --download --application
 
-# Download the latest macOS Catalina Installer and
-# generate a codesigned Disk Image:
-mist --download \
-     --name "Catalina" \
-     --image \
-     --sign "Developer ID Installer: Nindi Gill (Team ID)"
+# Download the latest macOS Catalina Installer and generate a Disk Image:
+mist --download --name "Catalina" --image
 
-# Download the specific macOS Mojave Installer version and
-# generate an Installer Package in a custom directory:
+# Download a specific macOS Mojave Installer version and generate a
+# codesigned macOS Installer Package in a custom directory:
 mist --download \
      --name "Mojave" \
      --mac-os-version "10.14.5" \
+     --output "/path/to/custom/directory" \
      --package \
      --package-identifier "com.ninxsoft.mist.pkg.mojave-installer" \
-     --output "/path/to/custom/directory"
+     --sign "Developer ID Installer: Nindi Gill (Team ID)"
 
-# Download a specific macOS High Sierra Installer version and build and
-# generate an codesigned Installer Package:
+# Download a specific macOS High Sierra Installer version and build and generate a
+# codesigned ZIP archive:
 mist --download \
      --name "High Sierra" \
      --mac-os-version "10.13.6" \
      --build "17G66" \
-     --package \
-     --package-identifier "com.ninxsoft.mist.pkg.high-sierra-installer" \
+     --zip \
      --sign "Developer ID Installer: Nindi Gill (Team ID)"
 
 # Download the latest available macOS Installer from the Public Seed catalogs and
-# generate a Disk Image in the default output directory:
-mist --catalog "public" --download --image
-```
+# generate all available output options, signing where possible:
+mist --catalog "public" \
+     --download \
+     --output "/path/to/custom/directory" \
+     --application \
+     --image \
+     --package \
+     --package-identifier "com.ninxsoft.mist.pkg.latest-installer" \
+     --zip \
+     --sign "Developer ID Installer: Nindi Gill (Team ID)"
 
 ## Build Requirements
 
@@ -138,7 +144,7 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 
 *   Project created and maintained by Nindi Gill ([ninxsoft](https://github.com/ninxsoft)).
 *   Apple ([apple](https://github.com/apple)) for [Swift Argument Parser](https://github.com/apple/swift-argument-parser), used to perform command line argument and flag operations.
-*   JP Simard ([@jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
+*   JP Simard ([jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
 
 ## Version History
 
