@@ -16,6 +16,11 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
         *   Supports generating **macOS Big Sur** packages (with a massive 12GB payload!)
     *   Optionally codesign both the Disk Image and Installer Package
 
+*   [x] Optionally specify custom seed catalogs, allowing you to download macOS Installers betas from:
+    *   **Customer Seed** - AppleSeed Program
+    *   **Developer Seed** - Apple Developer Program
+    *   **Public Seed** - Apple Beta Software Program
+
 ## Usage
 
 ```bash
@@ -26,13 +31,18 @@ Automatically generate macOS Installer Disk Images and Packages.
 USAGE: mist <options>
 
 OPTIONS:
+  -c, --catalog <catalog> Optionally specify seed catalogs, examples:
+                          customer (Customer Seed - AppleSeed Program)
+                          developer (Developer Seed - Apple Developer Program)
+                          public (Public Seed - Apple Beta Software Program) (default: standard)
   -l, --list              List all macOS Installers available to download.
-  -e, --export <export>   Optionally export the list to a file.
-  -f, --format <format>   Format of the list to export:
-                          csv
-                          json
-                          plist
-                          yaml
+  --list-path <list-path> Optionally export the list to a file.
+  --list-format <list-format>
+                          Format of the list to export:
+                          csv (Comma Separated Values)
+                          json (JSON file)
+                          plist (Property List)
+                          yaml (YAML file)
   -d, --download          Download a macOS Installer.
   -n, --name <name>       Optionally specify macOS name, examples:
                           Big Sur (11.x)
@@ -50,10 +60,10 @@ OPTIONS:
                           19H524 (macOS Catalina 10.15.7)
                           18G8022 (macOS Mojave 10.14.6)
                           17G14042 (macOS High Sierra 10.13.6) (default: latest)
-  -o, --output <output>   Specify the output directory (default: /Users/Shared/macOS Installers)
+  -o, --output <output>   Optionally specify the output directory. (default: /Users/Shared/macOS Installers)
   -i, --image             Export as macOS Disk Image (.dmg).
   -p, --package           Export as macOS Installer Package (.pkg).
-  -i, --identifier <identifier>
+  --package-identifier <package-identifier>
                           Specify the package identifier.
                           eg. com.yourcompany.pkg.mac-os-install-{name}
   -s, --sign <sign>       Optionally codesign macOS Disk Images (.dmg) and macOS Installer Packages (.pkg).
@@ -69,16 +79,16 @@ OPTIONS:
 mist --list
 
 # List + Export to a CSV file:
-mist --list --export "/path/to/export.csv" --format csv
+mist --list --list-path "/path/to/export.csv" --list-format "csv"
 
 # List + Export to a JSON file:
-mist --list --export "/path/to/export.json" --format json
+mist --list --list-path "/path/to/export.json" --list-format "json"
 
 # List + Export to a Property List:
-mist --list --export "/path/to/export.plist" --format plist
+mist --list --list-path "/path/to/export.plist" --list-format "plist"
 
 # List + Export to a YAML file:
-mist --list --export "/path/to/export.yaml" --format yaml
+mist --list --list-path "/path/to/export.yaml" --list-format "yaml"
 
 # Download the latest available macOS Installer and
 # generate a Disk Image in the default output directory:
@@ -97,7 +107,7 @@ mist --download \
      --name "Mojave" \
      --mac-os-version "10.14.5" \
      --package \
-     --identifier "com.ninxsoft.mist.pkg.mojave-installer" \
+     --package-identifier "com.ninxsoft.mist.pkg.mojave-installer" \
      --output "/path/to/custom/directory"
 
 # Download a specific macOS High Sierra Installer version and build and
@@ -107,8 +117,12 @@ mist --download \
      --mac-os-version "10.13.6" \
      --build "17G66" \
      --package \
-     --identifier "com.ninxsoft.mist.pkg.high-sierra-installer" \
+     --package-identifier "com.ninxsoft.mist.pkg.high-sierra-installer" \
      --sign "Developer ID Installer: Nindi Gill (Team ID)"
+
+# Download the latest available macOS Installer from the Public Seed catalogs and
+# generate a Disk Image in the default output directory:
+mist --catalog "public" --download --image
 ```
 
 ## Build Requirements
