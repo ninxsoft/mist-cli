@@ -130,6 +130,7 @@ mist --catalog "public" \
      --package-identifier "com.ninxsoft.mist.pkg.latest-installer" \
      --zip \
      --sign "Developer ID Installer: Nindi Gill (Team ID)"
+```
 
 ## Build Requirements
 
