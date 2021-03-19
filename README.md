@@ -159,6 +159,9 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 
 ## Version History
 
+*   1.1.1
+    *   `--application` and `--zip` flags are now detected correctly
+
 *   1.1
     *   Specify custom catalog seeds: **Customer**, **Developer** and **Public**
         *   This allows downloading macOS Install Betas

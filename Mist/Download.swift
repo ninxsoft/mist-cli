@@ -15,7 +15,7 @@ struct Download {
             throw MistError.invalidUser
         }
 
-        guard settings.image || settings.package else {
+        guard settings.application || settings.image || settings.package || settings.zip else {
             throw MistError.invalidOutputOption
         }
 
