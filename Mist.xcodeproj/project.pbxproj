@@ -116,6 +116,7 @@
 		5744141425F8607B00DE5540 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				57D135A125FECDF6003467B2 /* FileManager+Extension.swift */,
 				57F0F3CD2600907D00480DEE /* Int64+Extension.swift */,
 				5744141125F8607800DE5540 /* String+Extension.swift */,
 				57D1358825FA33AE003467B2 /* URLSession+Extension.swift */,
@@ -140,7 +141,6 @@
 			isa = PBXGroup;
 			children = (
 				57D1357725F9F308003467B2 /* Downloader.swift */,
-				57D135A125FECDF6003467B2 /* FileManager+Extension.swift */,
 				57D1358E25FA4027003467B2 /* Generator.swift */,
 				57D1357A25F9F716003467B2 /* HTTP.swift */,
 				57D1358B25FA3CE5003467B2 /* Installer.swift */,
