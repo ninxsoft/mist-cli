@@ -16,8 +16,6 @@ enum MistError: Error {
     case notEnoughFreeSpace(free: Int64, required: Int64)
     case invalidData
     case invalidURL(url: String)
-    case invalidURLResponse(url: String)
-    case invalidHTTPStatusCode(code: Int, url: String)
     case invalidExitStatus(code: Int32, arguments: [String])
 
     var description: String {
@@ -38,10 +36,6 @@ enum MistError: Error {
             return "Invalid data."
         case .invalidURL(let url):
             return "Invalid URL: '\(url)'"
-        case .invalidURLResponse(let url):
-            return "Invalid URL Response: '\(url)'"
-        case .invalidHTTPStatusCode(let code, let url):
-            return "Invalid HTTP Status Code: '\(code)' for '\(url)'"
         case .invalidExitStatus(let code, let arguments):
             return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
         }
