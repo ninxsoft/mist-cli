@@ -154,17 +154,12 @@ struct Mist: ParsableCommand {
                 print(Mist.helpMessage())
             }
         } catch {
-            printFormattedError(error)
+            guard let mistError: MistError = error as? MistError else {
+                throw error
+            }
+
+            PrettyPrint.print(.error, string: mistError.description)
+            throw mistError
         }
-    }
-
-    private func printFormattedError(_ error: Error) {
-
-        guard let mistError: MistError = error as? MistError else {
-            PrettyPrint.print(.error, string: error.localizedDescription)
-            return
-        }
-
-        PrettyPrint.print(.error, string: mistError.description)
     }
 }
