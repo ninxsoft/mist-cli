@@ -19,7 +19,7 @@ struct Downloader {
 
         for (index, url) in urls.enumerated() {
             guard let source: URL = URL(string: url) else {
-                throw MistError.invalidURL(string: url)
+                throw MistError.invalidURL(url: url)
             }
 
             let string: String = String(format: "[%02d / %02d] Downloading %@...", index + 1, product.totalFiles, source.lastPathComponent)
@@ -34,15 +34,15 @@ struct Downloader {
 
             guard let response: URLResponse = task.response,
                 let httpResponse: HTTPURLResponse = response as? HTTPURLResponse else {
-                throw MistError.invalidURLResponse
+                throw MistError.invalidURLResponse(url: url)
             }
 
             guard httpResponse.statusCode == 200 else {
-                throw MistError.invalidHTTPStatusCode(code: httpResponse.statusCode)
+                throw MistError.invalidHTTPStatusCode(code: httpResponse.statusCode, url: url)
             }
 
             guard let url: URL = task.url else {
-                throw MistError.invalidURL(string: source.path)
+                throw MistError.invalidURL(url: source.path)
             }
 
             let destination: URL = temporaryURL.appendingPathComponent(source.lastPathComponent)

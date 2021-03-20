@@ -12,7 +12,7 @@ struct Installer {
     static func install(_ product: Product) throws {
 
         guard let url: URL = URL(string: product.distribution) else {
-            throw MistError.invalidURL(string: product.distribution)
+            throw MistError.invalidURL(url: product.distribution)
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
