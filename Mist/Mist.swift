@@ -8,14 +8,6 @@
 import ArgumentParser
 import Foundation
 
-struct RuntimeError: Error, CustomStringConvertible {
-    var description: String
-
-    init(_ description: String) {
-        self.description = description
-    }
-}
-
 struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
 
