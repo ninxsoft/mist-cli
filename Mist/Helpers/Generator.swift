@@ -11,6 +11,9 @@ struct Generator {
 
     static func generate(_ product: Product, settings: Settings) throws {
 
+        let outputURL: URL = URL(fileURLWithPath: settings.output)
+        try FileManager.default.create(outputURL, description: "output directory")
+
         if settings.application {
             try generateApplication(product: product, settings: settings)
         }
