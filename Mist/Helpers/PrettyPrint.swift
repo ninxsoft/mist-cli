@@ -34,9 +34,10 @@ struct PrettyPrint {
         }
     }
 
-    static func print(_ type: PrintType, string: String) {
-        let date: Date = Date()
-        let string: String = "[\(type.descriptionWithColor)] \(date) - \(string)"
-        Swift.print(string)
+    static func print(_ type: PrintType, prefix: Bool = true, string: String, carriageReturn: Bool = false, newLine: Bool = true) {
+        let carriageReturn: String = carriageReturn ? "\r" : ""
+        let terminator: String = newLine ? "\n" : ""
+        let string: String = "\(prefix ? "[\(type.descriptionWithColor)] \(Date()) - \(string)" : string)\(carriageReturn)"
+        Swift.print(string, terminator: terminator)
     }
 }
