@@ -7,7 +7,7 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
 ## Features
 
 *   [x] List all available macOS Installers available for download:
-    *   Displays product identifers, name, versions, builds and release dates
+    *   Display product identifiers, names, versions, builds and release dates
     *   Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
 
 *   [x] Download an available macOS Installer:
@@ -17,7 +17,7 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
         *   Supports **macOS Big Sur** packages - with a massive 12GB+ payload!
     *   Generate a ZIP archive (.zip)
     *   Optionally codesign Disk Images, macOS Installer Packages and ZIP archives
-    *   Checks for free space before attempting any downloads and installations
+    *   Check for free space before attempting any downloads and installations
 
 *   [x] Optionally specify custom seed catalogs, allowing you to list and download macOS Installers betas from the following:
     *   **Customer Seed** - AppleSeed Program
@@ -158,6 +158,10 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 *   JP Simard ([jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
 
 ## Version History
+
+*   1.2
+    *   Downloads now show progress: current + total download sizes and % completed
+    *   Mist will now create the `--output` directory if it does not exist
 
 *   1.1.1
     *   `--application` and `--zip` flags are now detected correctly
