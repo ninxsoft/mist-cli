@@ -1,6 +1,6 @@
 # MIST - macOS Installer Super Tool
 
-A Mac command-line tool that automatically generates **macOS Installer** Disk Images and Packages:
+A Mac command-line tool that automatically generates **macOS Installer** Disk Images, Packages and ZIP archives:
 
 ![Example](Readme%20Resources/Example.png)
 
