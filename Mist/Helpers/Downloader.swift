@@ -94,7 +94,7 @@ extension Downloader: URLSessionDownloadDelegate {
             exit(1)
         }
 
-        let suffix: String = "[\(formattedTotalBytesWritten) / \(formattedTotalBytesExpectedToWrite) - 100.0%]".color(.green)
+        let suffix: String = "[\(formattedTotalBytesWritten) of \(formattedTotalBytesExpectedToWrite) - 100.0%]".color(.green)
         let string: String = prefix + suffix
         PrettyPrint.print(.info, prefix: false, string: string)
         semaphore.signal()
@@ -103,7 +103,7 @@ extension Downloader: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         self.totalBytesWritten = totalBytesWritten
         self.totalBytesExpectedToWrite = totalBytesExpectedToWrite
-        let suffix: String = "[\(formattedTotalBytesWritten) / \(formattedTotalBytesExpectedToWrite) - \(percent)]".color(.blue)
+        let suffix: String = "[\(formattedTotalBytesWritten) of \(formattedTotalBytesExpectedToWrite) - \(percent)]".color(.blue)
         let string: String = prefix + suffix
         PrettyPrint.print(.info, prefix: false, string: string, carriageReturn: true, newLine: false)
     }
