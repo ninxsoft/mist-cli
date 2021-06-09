@@ -179,7 +179,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					574413FB25F85EF300DE5540 = {
 						CreatedOnToolsVersion = 12.4;
@@ -378,6 +378,7 @@
 		5744140425F85EF300DE5540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -390,6 +391,7 @@
 		5744140525F85EF300DE5540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -428,7 +430,7 @@
 			repositoryURL = "https://github.com/apple/swift-argument-parser";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.1;
+				minimumVersion = 0.4.3;
 			};
 		};
 		57D135B625FEEE48003467B2 /* XCRemoteSwiftPackageReference "Yams" */ = {
@@ -436,7 +438,7 @@
 			repositoryURL = "https://github.com/jpsim/Yams";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.4;
+				minimumVersion = 4.0.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
