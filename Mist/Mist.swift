@@ -13,6 +13,7 @@ struct Mist: ParsableCommand {
 
     @Option(name: .shortAndLong, help: """
     Optionally specify a catalog seed:
+    * standard (Standard - macOS default)
     * customer (Customer Seed - AppleSeed Program)
     * developer (Developer Seed - Apple Developer Program)
     * public (Public Seed - Apple Beta Software Program)
