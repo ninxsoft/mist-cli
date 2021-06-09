@@ -11,7 +11,7 @@ struct Generator {
 
     static func generate(_ product: Product, settings: Settings) throws {
 
-        let outputURL: URL = URL(fileURLWithPath: settings.output)
+        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
         try FileManager.default.create(outputURL, description: "output directory")
 
         if settings.application {
@@ -34,7 +34,7 @@ struct Generator {
     }
 
     private static func generateApplication(product: Product, settings: Settings) throws {
-        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.applicationName)
+        let destinationURL: URL = URL(fileURLWithPath: settings.applicationPath(for: product))
         try FileManager.default.remove(destinationURL, description: "old application")
         try FileManager.default.copy(product.installerURL, to: destinationURL)
     }
@@ -43,7 +43,7 @@ struct Generator {
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
-        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.imageName)
+        let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
         try FileManager.default.remove(temporaryURL, description: "old temporary directory")
         try FileManager.default.create(temporaryURL, description: "new temporary directory")
@@ -66,14 +66,14 @@ struct Generator {
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        guard let identifier: String = settings.packageIdentifier else {
+        guard let identifier: String = settings.packageIdentifier(for: product) else {
             throw MistError.missingPackageIdentifier
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
         let temporaryScriptsURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)-Scripts")
         let temporaryZipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
-        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.packageName)
+        let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
         var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version, destinationURL.path]
 
@@ -122,7 +122,7 @@ struct Generator {
     }
 
     private static func generateZip(product: Product, settings: Settings) throws {
-        let destinationURL: URL = URL(fileURLWithPath: settings.output).appendingPathComponent(product.zipName)
+        let destinationURL: URL = URL(fileURLWithPath: settings.zipPath(for: product))
         let arguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, destinationURL.path]
 
         try FileManager.default.remove(destinationURL, description: "old ZIP archive")

@@ -34,7 +34,8 @@ extension String {
     static let abstract: String = "macOS Installer Super Tool."
     static let discussion: String = "Automatically generate macOS Installer Disk Images, Packages and ZIP archives."
     static let baseTemporaryDirectory: String = "/private/var/tmp"
-    static let defaultOutputDirectory: String = "/Users/Shared/macOS Installers"
+    static let outputDirectory: String = "/Users/Shared/macOS Installers"
+    static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
 
     mutating func wrapInPropertyList() {
         self = "<?xml version=\"1.0\"?>" +

@@ -12,10 +12,10 @@ struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify a catalog seed, examples:
-    customer (Customer Seed - AppleSeed Program)
-    developer (Developer Seed - Apple Developer Program)
-    public (Public Seed - Apple Beta Software Program)
+    Optionally specify a catalog seed:
+    * customer (Customer Seed - AppleSeed Program)
+    * developer (Developer Seed - Apple Developer Program)
+    * public (Public Seed - Apple Beta Software Program)
     """)
     var catalog: Catalog = .standard
 
@@ -31,10 +31,10 @@ struct Mist: ParsableCommand {
 
     @Option(name: .long, help: """
     Format of the list to export:
-    csv (Comma Separated Values)
-    json (JSON file)
-    plist (Property List)
-    yaml (YAML file)
+    * csv (Comma Separated Values)
+    * json (JSON file)
+    * plist (Property List)
+    * yaml (YAML file)
     """)
     var listFormat: ExportFormat?
 
@@ -44,36 +44,48 @@ struct Mist: ParsableCommand {
     var download: Bool = false
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify macOS name, examples:
-    Big Sur (11.x)
-    Catalina (10.15.x)
-    Mojave (10.14.x)
-    High Sierra (10.13.x)
+    Optionally specify macOS name:
+    * Monterey (12.x)
+    * Big Sur (11.x)
+    * Catalina (10.15.x)
+    * Mojave (10.14.x)
+    * High Sierra (10.13.x)
     """)
     var name: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify macOS version, examples:
-    11.2.3 (macOS Big Sur)
-    10.15.7 (macOS Catalina)
-    10.14.6 (macOS Mojave)
-    10.13.6 (macOS High Sierra)
+    Optionally specify macOS version:
+    * 12.0 (macOS Monterey)
+    * 11.4 (macOS Big Sur)
+    * 10.15.7 (macOS Catalina)
+    * 10.14.6 (macOS Mojave)
+    * 10.13.6 (macOS High Sierra)
     """)
     var macOSVersion: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify macOS build number, examples:
-    20D91 (macOS Big Sur 11.2.3)
-    19H524 (macOS Catalina 10.15.7)
-    18G8022 (macOS Mojave 10.14.6)
-    17G14042 (macOS High Sierra 10.13.6)
+    Optionally specify macOS build number:
+    * 20F71 (macOS Big Sur 11.4)
+    * 19H524 (macOS Catalina 10.15.7)
+    * 18G8022 (macOS Mojave 10.14.6)
+    * 17G14042 (macOS High Sierra 10.13.6)
     """)
     var build: String = "latest"
 
     @Option(name: .shortAndLong, help: """
     Optionally specify the output directory.
+    Note: Parent directories will be created automatically.
     """)
-    var output: String = .defaultOutputDirectory
+    var outputDirectory: String = .outputDirectory
+
+    @Option(name: .shortAndLong, help: """
+    Optionally specify the filename template. The following variables will be substituted with dynamic values:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5248p'
+    Note: File extensions will be added automatically.
+    """)
+    var filenameTemplate: String = .filenameTemplate
 
     @Flag(name: .shortAndLong, help: """
     Export as macOS Installer application bundle (.app).
@@ -97,10 +109,10 @@ struct Mist: ParsableCommand {
     var package: Bool = false
 
     @Option(name: .long, help: """
-    Specify the package identifier.
-    eg. com.yourcompany.pkg.mac-os-install-{name}
+    Specify the package identifier prefix, eg. com.yourcompany.pkg
+    Note: .install-%name% will be appended to the prefix.
     """)
-    var packageIdentifier: String?
+    var packageIdentifierPrefix: String?
 
     @Option(name: .long, help: """
     Optionally codesign the exported macOS Installer Packages (.pkg).
@@ -129,12 +141,13 @@ struct Mist: ParsableCommand {
                 try List.run(catalog: catalog, path: listPath, format: listFormat)
             } else if download {
                 let settings: Settings = Settings(
-                    output: output,
+                    outputDirectory: outputDirectory,
+                    filenameTemplate: filenameTemplate,
                     application: application,
                     image: image,
                     imageIdentity: imageIdentity,
                     package: package,
-                    packageIdentifier: packageIdentifier,
+                    packageIdentifierPrefix: packageIdentifierPrefix,
                     packageIdentity: packageIdentity,
                     zip: zip,
                     zipIdentity: zipIdentity
