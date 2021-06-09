@@ -28,7 +28,9 @@ struct Product: Decodable {
 
         var name: String = ""
 
-        if version.hasPrefix("11") {
+        if version.hasPrefix("12") {
+            name = "macOS Monterey"
+        } else if version.hasPrefix("11") {
             name = "macOS Big Sur"
         } else if version.hasPrefix("10.15") {
             name = "macOS Catalina"
