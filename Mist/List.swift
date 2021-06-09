@@ -10,33 +10,47 @@ import Yams
 
 struct List {
 
-    static func run(catalog: Catalog, path: String?, format: ExportFormat?) throws {
+    static func run(catalog: Catalog, csv: String?, json: String?, plist: String?, yaml: String?) throws {
         PrettyPrint.print(.info, string: "Checking for macOS versions...")
         let products: [Product] = HTTP.retrieveProducts(catalog)
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         list(products, using: dateFormatter)
 
-        if let path: String = path {
+        if let path: String = csv {
 
             guard !path.isEmpty else {
-                throw MistError.missingExportPath
+                throw MistError.missingCSVPath
             }
 
-            guard let format: ExportFormat = format else {
-                throw MistError.missingExportFormat
+            try exportCSV(path, using: products)
+        }
+
+        if let path: String = json {
+
+            guard !path.isEmpty else {
+                throw MistError.missingJSONPath
             }
 
-            switch format {
-            case .csv:
-                try saveCSV(path, using: products)
-            case .json:
-                try saveJSON(path, using: products)
-            case .propertyList:
-                try savePropertyList(path, using: products)
-            case .yaml:
-                try saveYAML(path, using: products)
+            try exportJSON(path, using: products)
+        }
+
+        if let path: String = plist {
+
+            guard !path.isEmpty else {
+                throw MistError.missingPLISTPath
             }
+
+            try exportPropertyList(path, using: products)
+        }
+
+        if let path: String = yaml {
+
+            guard !path.isEmpty else {
+                throw MistError.missingYAMLPath
+            }
+
+            try exportYAML(path, using: products)
         }
     }
 
@@ -91,14 +105,14 @@ struct List {
         print(string)
     }
 
-    private static func saveCSV(_ path: String, using products: [Product]) throws {
+    private static func exportCSV(_ path: String, using products: [Product]) throws {
         let header: String = "Identifier,Name,Version,Build,Date\n"
         let string: String = header + products.map { $0.csvLine }.joined()
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(.info, string: "Saved list as CSV: '\(path)'")
+        PrettyPrint.print(.info, string: "Exported list as CSV: '\(path)'")
     }
 
-    private static func saveJSON(_ path: String, using products: [Product]) throws {
+    private static func exportJSON(_ path: String, using products: [Product]) throws {
         let dictionaries: [[String: Any]] = products.map { $0.dictionary }
         let data: Data = try JSONSerialization.data(withJSONObject: dictionaries, options: .prettyPrinted)
 
@@ -107,10 +121,10 @@ struct List {
         }
 
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(.info, string: "Saved list as JSON: '\(path)'")
+        PrettyPrint.print(.info, string: "Exported list as JSON: '\(path)'")
     }
 
-    private static func savePropertyList(_ path: String, using products: [Product]) throws {
+    private static func exportPropertyList(_ path: String, using products: [Product]) throws {
         let dictionaries: [[String: Any]] = products.map { $0.dictionary }
         let data: Data = try PropertyListSerialization.data(fromPropertyList: dictionaries, format: .xml, options: .bitWidth)
 
@@ -119,13 +133,13 @@ struct List {
         }
 
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(.info, string: "Saved list as Property List: '\(path)'")
+        PrettyPrint.print(.info, string: "Exported list as Property List: '\(path)'")
     }
 
-    private static func saveYAML(_ path: String, using products: [Product]) throws {
+    private static func exportYAML(_ path: String, using products: [Product]) throws {
         let dictionaries: [[String: Any]] = products.map { $0.dictionary }
         let string: String = try Yams.dump(object: dictionaries)
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(.info, string: "Saved list as YAML: '\(path)'")
+        PrettyPrint.print(.info, string: "Exported list as YAML: '\(path)'")
     }
 }

@@ -25,18 +25,24 @@ struct Mist: ParsableCommand {
     var list: Bool = false
 
     @Option(name: .long, help: """
-    Optionally export the list to a file.
+    Export the list to CSV (comma separated values) file.
     """)
-    var listPath: String?
+    var exportCSV: String?
 
     @Option(name: .long, help: """
-    Format of the list to export:
-    * csv (Comma Separated Values)
-    * json (JSON file)
-    * plist (Property List)
-    * yaml (YAML file)
+    Export the list to JSON file.
     """)
-    var listFormat: ExportFormat?
+    var exportJSON: String?
+
+    @Option(name: .long, help: """
+    Export the list to PLIST (Property List) file.
+    """)
+    var exportPLIST: String?
+
+    @Option(name: .long, help: """
+    Export the list to a YAML file.
+    """)
+    var exportYAML: String?
 
     @Flag(name: .shortAndLong, help: """
     Download a macOS Installer.
@@ -129,7 +135,7 @@ struct Mist: ParsableCommand {
 
         do {
             if list {
-                try List.run(catalog: catalog, path: listPath, format: listFormat)
+                try List.run(catalog: catalog, csv: exportCSV, json: exportJSON, plist: exportPLIST, yaml: exportYAML)
             } else if download {
                 let settings: Settings = Settings(
                     outputDirectory: outputDirectory,

@@ -10,8 +10,10 @@ import Foundation
 enum MistError: Error {
     case invalidUser
     case invalidOutputOption
-    case missingExportPath
-    case missingExportFormat
+    case missingCSVPath
+    case missingJSONPath
+    case missingPLISTPath
+    case missingYAMLPath
     case missingPackageIdentifier
     case notEnoughFreeSpace(free: Int64, required: Int64)
     case invalidData
@@ -24,10 +26,14 @@ enum MistError: Error {
             return "This command requires to be run as 'root'."
         case .invalidOutputOption:
             return "Invalid output option."
-        case .missingExportPath:
-            return "Export path is missing."
-        case .missingExportFormat:
-            return "Export format is missing."
+        case .missingCSVPath:
+            return "CSV path is missing."
+        case .missingJSONPath:
+            return "JSON path is missing."
+        case .missingPLISTPath:
+            return "PLIST path is missing."
+        case .missingYAMLPath:
+            return "YAML path is missing."
         case .missingPackageIdentifier:
             return "Package identifier is missing."
         case .notEnoughFreeSpace(let free, let required):
