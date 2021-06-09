@@ -47,20 +47,8 @@ struct Product: Decodable {
     var installerURL: URL {
         URL(fileURLWithPath: "/Applications/Install \(name).app")
     }
-    var applicationName: String {
-        "\(baseName).app"
-    }
-    var imageName: String {
-        "\(baseName).dmg"
-    }
-    var packageName: String {
-        "\(baseName).pkg"
-    }
     var zipName: String {
-        "\(baseName).zip"
-    }
-    private var baseName: String {
-        "Install \(name) \(version) \(build)".replacingOccurrences(of: " ", with: "-")
+        "Install \(name) \(version) \(build).zip".replacingOccurrences(of: " ", with: "-")
     }
     var totalFiles: Int {
         packages.count + 1
