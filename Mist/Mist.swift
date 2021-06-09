@@ -44,27 +44,18 @@ struct Mist: ParsableCommand {
     var download: Bool = false
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify macOS name:
-    * Monterey (12.x)
-    * Big Sur (11.x)
-    * Catalina (10.15.x)
-    * Mojave (10.14.x)
-    * High Sierra (10.13.x)
-    """)
-    var name: String = "latest"
-
-    @Option(name: .shortAndLong, help: """
-    Optionally specify macOS version:
-    * 12.0 (macOS Monterey)
-    * 11.4 (macOS Big Sur)
-    * 10.15.7 (macOS Catalina)
-    * 10.14.6 (macOS Mojave)
-    * 10.13.6 (macOS High Sierra)
+    Optionally specify a macOS name or version:
+    * Monterey or 12.x
+    * Big Sur or 11.x
+    * Catalina or 10.15.x
+    * Mojave or 10.14.x
+    * High Sierra or 10.13.x
+    Note: Specifying a macOS name will assume the latest version.
     """)
     var macOSVersion: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify macOS build number:
+    Optionally specify a macOS build:
     * 20F71 (macOS Big Sur 11.4)
     * 19H524 (macOS Catalina 10.15.7)
     * 18G8022 (macOS Mojave 10.14.6)
@@ -152,7 +143,7 @@ struct Mist: ParsableCommand {
                     zip: zip,
                     zipIdentity: zipIdentity
                 )
-                try Download.run(catalog: catalog, name: name, version: macOSVersion, build: build, settings: settings)
+                try Download.run(catalog: catalog, version: macOSVersion, build: build, settings: settings)
             } else if version {
                 Version.run()
             } else {

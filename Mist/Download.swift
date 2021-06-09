@@ -9,7 +9,7 @@ import Foundation
 
 struct Download {
 
-    static func run(catalog: Catalog, name: String, version: String, build: String, settings: Settings) throws {
+    static func run(catalog: Catalog, version: String, build: String, settings: Settings) throws {
 
         guard NSUserName() == "root" else {
             throw MistError.invalidUser
@@ -19,10 +19,10 @@ struct Download {
             throw MistError.invalidOutputOption
         }
 
-        PrettyPrint.print(.info, string: "Checking for macOS with name '\(name)', version '\(version)' and build '\(build)'...")
+        PrettyPrint.print(.info, string: "Checking for macOS with version '\(version)' and build '\(build)'...")
 
-        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalog), name: name, version: version, build: build) else {
-            PrettyPrint.print(.warning, string: "No macOS found with name '\(name)', version '\(version)' and build '\(build)', exiting...")
+        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalog), version: version, build: build) else {
+            PrettyPrint.print(.warning, string: "No macOS found with version '\(version)' and build '\(build)', exiting...")
             return
         }
 

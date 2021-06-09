@@ -103,24 +103,15 @@ struct HTTP {
         return products
     }
 
-    static func product(from products: [Product], name: String, version: String, build: String) -> Product? {
+    static func product(from products: [Product], version: String, build: String) -> Product? {
+        let version: String = version.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let build: String = build.lowercased()
+        let filteredProducts: [Product] = products.filter { [$0.name.lowercased().replacingOccurrences(of: "macos ", with: ""), $0.version.lowercased()].contains(version) }
 
-        guard name.lowercased() != "latest" else {
-            return products.first
+        if version == "latest" {
+            return build == "latest" ? products.first : products.filter { $0.version.lowercased() == version && $0.build.lowercased() == build }.first
+        } else {
+            return build == "latest" ? filteredProducts.first : filteredProducts.filter { $0.version.lowercased() == version && $0.build.lowercased() == build }.first
         }
-
-        let productsFilteredByName: [Product] = products.filter { $0.name.lowercased().contains(name.lowercased()) }
-
-        guard version.lowercased() != "latest" else {
-            return productsFilteredByName.first
-        }
-
-        let productsFilteredByBuild: [Product] = productsFilteredByName.filter { $0.version.lowercased().contains(version.lowercased()) }
-
-        guard build.lowercased() != "latest" else {
-            return productsFilteredByBuild.first
-        }
-
-        return productsFilteredByBuild.first { $0.build.lowercased() == build.lowercased() }
     }
 }
