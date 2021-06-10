@@ -11,9 +11,9 @@ struct Downloader {
 
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
 
-    func download(_ product: Product) throws {
+    func download(_ product: Product, settings: Settings) throws {
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
 
         try FileManager.default.remove(temporaryURL, description: "old temporary directory")

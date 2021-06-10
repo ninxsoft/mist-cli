@@ -9,13 +9,13 @@ import Foundation
 
 struct Installer {
 
-    static func install(_ product: Product) throws {
+    static func install(_ product: Product, settings: Settings) throws {
 
         guard let url: URL = URL(string: product.distribution) else {
             throw MistError.invalidURL(url: product.distribution)
         }
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
         try FileManager.default.remove(product.installerURL, description: "old installer")

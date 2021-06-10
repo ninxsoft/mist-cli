@@ -29,8 +29,8 @@ struct Download {
         PrettyPrint.print(.info, string: "Found \(product.name) \(product.version) (\(product.build))...")
 
         try verifyFreeSpace(product, settings: settings)
-        try Downloader().download(product)
-        try Installer.install(product)
+        try Downloader().download(product, settings: settings)
+        try Installer.install(product, settings: settings)
         try Generator.generate(product, settings: settings)
     }
 

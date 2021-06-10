@@ -41,7 +41,7 @@ struct Generator {
 
     private static func generateImage(product: Product, settings: Settings) throws {
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
@@ -70,8 +70,8 @@ struct Generator {
             throw MistError.missingPackageIdentifier
         }
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)")
-        let temporaryScriptsURL: URL = URL(fileURLWithPath: "\(String.baseTemporaryDirectory)/\(product.identifier)-Scripts")
+        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryScriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
         let temporaryZipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
@@ -145,7 +145,7 @@ struct Generator {
         set -e
 
         NAME="Install \(product.name)"
-        TEMP_DIR="\(String.baseTemporaryDirectory)/\(product.identifier)"
+        TEMP_DIR="\(String.temporaryDirectory)/\(product.identifier)"
         ZIP="$TEMP_DIR/\(product.zipName)"
         APPS_DIR="/Applications"
         APP="$APPS_DIR/$NAME.app"

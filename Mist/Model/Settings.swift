@@ -8,6 +8,7 @@
 import Foundation
 
 struct Settings {
+    let temporaryDirectory: String
     let outputDirectory: String
     let filenameTemplate: String
     let application: Bool

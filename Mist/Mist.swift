@@ -71,6 +71,12 @@ struct Mist: ParsableCommand {
     var build: String = "latest"
 
     @Option(name: .shortAndLong, help: """
+    Optionally specify the temporary downloads directory.
+    Note: Parent directories will be created automatically.
+    """)
+    var temporaryDirectory: String = .temporaryDirectory
+
+    @Option(name: .shortAndLong, help: """
     Optionally specify the output directory.
     Note: Parent directories will be created automatically.
     """)
@@ -139,6 +145,7 @@ struct Mist: ParsableCommand {
                 try List.run(catalog: catalog, csv: exportCSV, json: exportJSON, plist: exportPLIST, yaml: exportYAML)
             } else if download {
                 let settings: Settings = Settings(
+                    temporaryDirectory: temporaryDirectory,
                     outputDirectory: outputDirectory,
                     filenameTemplate: filenameTemplate,
                     application: application,

@@ -33,7 +33,7 @@ extension String {
     static var identifier: String { "com.ninxsoft.\(appName)" }
     static let abstract: String = "macOS Installer Super Tool."
     static let discussion: String = "Automatically generate macOS Installers."
-    static let baseTemporaryDirectory: String = "/private/var/tmp"
+    static let temporaryDirectory: String = "/private/var/tmp"
     static let outputDirectory: String = "/Users/Shared/macOS Installers"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
 
