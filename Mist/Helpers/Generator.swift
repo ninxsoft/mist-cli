@@ -104,7 +104,7 @@ struct Generator {
             PrettyPrint.print(.success, string: "Set executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
 
             arguments = [
-                "pkgbuild", "--identifier", identifier, "--install-location", String.temporaryDirectory, "--scripts", temporaryScriptsURL.path, "--root", "\(temporaryURL.path)",
+                "pkgbuild", "--identifier", identifier, "--install-location", "\(String.temporaryDirectory)/\(product.identifier)", "--scripts", temporaryScriptsURL.path, "--root", "\(temporaryURL.path)",
                 "--version", "\(product.version)-\(product.build)", destinationURL.path
             ]
         }
