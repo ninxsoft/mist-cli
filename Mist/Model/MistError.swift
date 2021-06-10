@@ -15,7 +15,7 @@ enum MistError: Error {
     case missingPLISTPath
     case missingYAMLPath
     case missingPackageIdentifier
-    case notEnoughFreeSpace(free: Int64, required: Int64)
+    case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case invalidData
     case invalidURL(url: String)
     case invalidExitStatus(code: Int32, arguments: [String])
@@ -36,8 +36,8 @@ enum MistError: Error {
             return "YAML path is missing."
         case .missingPackageIdentifier:
             return "Package identifier is missing."
-        case .notEnoughFreeSpace(let free, let required):
-            return String(format: "Not enough free space: %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
+        case .notEnoughFreeSpace(let volume, let free, let required):
+            return String(format: "Not enough free space on volume '\(volume)': %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
         case .invalidData:
             return "Invalid data."
         case .invalidURL(let url):

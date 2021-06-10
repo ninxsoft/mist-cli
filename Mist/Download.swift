@@ -36,34 +36,54 @@ struct Download {
 
     private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
 
-        guard let attributes: [FileAttributeKey: Any] = try? FileManager.default.attributesOfFileSystem(forPath: "/"),
-            let number: NSNumber = attributes[.systemFreeSize] as? NSNumber else {
-            throw MistError.notEnoughFreeSpace(free: -1, required: -1)
+        var volumes: [(path: String, count: Int64)] = []
+
+        guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
+            let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: settings.temporaryDirectory)?.first,
+            let outputVolumePath: String = FileManager.default.componentsToDisplay(forPath: settings.outputDirectory)?.first else {
+            throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
         }
 
-        let free: Int64 = number.int64Value
+        var bootVolume: (path: String, count: Int64) = (path: "/", count: 1)
+        var temporaryVolume: (path: String, count: Int64) = (path: settings.temporaryDirectory, count: 1)
+        var outputVolume: (path: String, count: Int64) = (path: settings.outputDirectory, count: 0)
 
-        // one for the downloads and one for the macos installer application bundle
-        var required: Int64 = product.size + product.size
-
-        if settings.application {
-            required += product.size
+        if temporaryVolumePath == bootVolumePath {
+            bootVolume.count += 1
         }
 
-        if settings.image {
-            required += product.size
+        if outputVolumePath == bootVolumePath {
+            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+                bootVolume.count += 1
+            }
+        } else if outputVolumePath == temporaryVolumePath {
+            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+                temporaryVolume.count += 1
+            }
+        } else {
+            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+                outputVolume.count += 1
+            }
+
+            volumes.append(outputVolume)
         }
 
-        if settings.package {
-            required += product.size
-        }
+        volumes.insert(temporaryVolume, at: 0)
+        volumes.insert(bootVolume, at: 0)
 
-        if settings.zip {
-            required += product.size
-        }
+        for volume in volumes {
 
-        guard required < free else {
-            throw MistError.notEnoughFreeSpace(free: free, required: required)
+            guard let attributes: [FileAttributeKey: Any] = try? FileManager.default.attributesOfFileSystem(forPath: volume.path),
+                let number: NSNumber = attributes[.systemFreeSize] as? NSNumber else {
+                throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
+            }
+
+            let required: Int64 = product.size * volume.count
+            let free: Int64 = number.int64Value
+
+            guard required < free else {
+                throw MistError.notEnoughFreeSpace(volume: volume.path, free: free, required: required)
+            }
         }
     }
 }
