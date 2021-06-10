@@ -13,12 +13,11 @@ struct Settings {
     let filenameTemplate: String
     let application: Bool
     let image: Bool
-    let imageIdentity: String?
     let package: Bool
     let packageIdentifierPrefix: String?
-    let packageIdentity: String?
     let zip: Bool
-    let zipIdentity: String?
+    let signingIdentityApplication: String?
+    let signingIdentityInstaller: String?
 
     func applicationPath(for product: Product) -> String {
         outputPath(for: product).appending(".app")

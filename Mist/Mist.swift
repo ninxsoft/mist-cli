@@ -101,12 +101,6 @@ struct Mist: ParsableCommand {
     """)
     var image: Bool = false
 
-    @Option(name: .long, help: """
-    Optionally codesign the exported macOS Disk Image (.dmg).
-    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
-    """)
-    var imageIdentity: String?
-
     @Flag(name: .shortAndLong, help: """
     Export as macOS Installer Package (.pkg).
     """)
@@ -118,22 +112,22 @@ struct Mist: ParsableCommand {
     """)
     var packageIdentifierPrefix: String?
 
-    @Option(name: .long, help: """
-    Optionally codesign the exported macOS Installer Packages (.pkg).
-    Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
-    """)
-    var packageIdentity: String?
-
     @Flag(name: .shortAndLong, help: """
     Export as ZIP Archive (.zip).
     """)
     var zip: Bool = false
 
     @Option(name: .long, help: """
-    Optionally codesign the exported ZIP archive (.zip).
+    Optionally codesign the exported macOS Disk Image (.dmg) or ZIP archive (.zip).
     Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
     """)
-    var zipIdentity: String?
+    var signingIdentityApplication: String?
+
+    @Option(name: .long, help: """
+    Optionally codesign the exported macOS Installer Packages (.pkg).
+    Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
+    """)
+    var signingIdentityInstaller: String?
 
     @Flag(name: .shortAndLong, help: "Display the version of \(String.appName).")
     var version: Bool = false
@@ -150,12 +144,11 @@ struct Mist: ParsableCommand {
                     filenameTemplate: filenameTemplate,
                     application: application,
                     image: image,
-                    imageIdentity: imageIdentity,
                     package: package,
                     packageIdentifierPrefix: packageIdentifierPrefix,
-                    packageIdentity: packageIdentity,
                     zip: zip,
-                    zipIdentity: zipIdentity
+                    signingIdentityApplication: signingIdentityApplication,
+                    signingIdentityInstaller: signingIdentityInstaller
                 )
                 try Download.run(catalog: catalog, version: macOSVersion, build: build, settings: settings)
             } else if version {
