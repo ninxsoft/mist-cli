@@ -36,12 +36,15 @@ enum MistError: Error {
             return "YAML path is missing."
         case .missingPackageIdentifier:
             return "Package identifier is missing."
+        // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
             return String(format: "Not enough free space on volume '\(volume)': %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
         case .invalidData:
             return "Invalid data."
+        // swiftlint:disable:next explicit_type_interface
         case .invalidURL(let url):
             return "Invalid URL: '\(url)'"
+        // swiftlint:disable:next explicit_type_interface
         case .invalidExitStatus(let code, let arguments):
             return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
         }
