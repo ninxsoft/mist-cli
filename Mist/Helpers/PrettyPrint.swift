@@ -19,10 +19,8 @@ struct PrettyPrint {
         }
     }
 
-    static func print(_ type: PrintType, prefix: Bool = true, string: String, carriageReturn: Bool = false, newLine: Bool = true) {
-        let carriageReturn: String = carriageReturn ? "\r" : ""
-        let terminator: String = newLine ? "\n" : ""
-        let string: String = "\(prefix ? "\(type.identifier) \(string)" : string)\(carriageReturn)"
-        Swift.print(string, terminator: terminator)
+    static func print(_ type: PrintType, string: String) {
+        let string: String = "\(type.identifier)  \(string)"
+        Swift.print(string)
     }
 }
