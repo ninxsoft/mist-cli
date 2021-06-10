@@ -17,7 +17,7 @@ extension FileManager {
 
         PrettyPrint.print(.info, string: "Creating \(description) '\(url.path)'...")
         try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
-        PrettyPrint.print(.info, string: "Created \(description) '\(url.path)'")
+        PrettyPrint.print(.success, string: "Created \(description) '\(url.path)'")
     }
 
     func copy(_ source: URL, to destination: URL) throws {
@@ -28,7 +28,7 @@ extension FileManager {
 
         PrettyPrint.print(.info, string: "Copying '\(source.path)' to '\(destination.path)'...")
         try FileManager.default.copyItem(at: source, to: destination)
-        PrettyPrint.print(.info, string: "Copied '\(source.path)' to '\(destination.path)'...")
+        PrettyPrint.print(.success, string: "Copied '\(source.path)' to '\(destination.path)'...")
     }
 
     func move(_ source: URL, to destination: URL) throws {
@@ -48,6 +48,6 @@ extension FileManager {
 
         PrettyPrint.print(.info, string: "Deleting \(description) '\(url.path)'...")
         try FileManager.default.removeItem(at: url)
-        PrettyPrint.print(.info, string: "Deleted \(description) '\(url.path)'")
+        PrettyPrint.print(.success, string: "Deleted \(description) '\(url.path)'")
     }
 }

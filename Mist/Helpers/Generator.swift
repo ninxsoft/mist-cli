@@ -52,13 +52,13 @@ struct Generator {
 
         PrettyPrint.print(.info, string: "Creating image '\(destinationURL.path)'...")
         try Shell.execute(["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path])
-        PrettyPrint.print(.info, string: "Created image '\(destinationURL.path)'")
+        PrettyPrint.print(.success, string: "Created image '\(destinationURL.path)'")
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
             PrettyPrint.print(.info, string: "Codesigning image '\(destinationURL.path)'...")
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
-            PrettyPrint.print(.info, string: "Codesigned image '\(destinationURL.path)'")
+            PrettyPrint.print(.success, string: "Codesigned image '\(destinationURL.path)'")
         }
 
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
@@ -84,12 +84,12 @@ struct Generator {
             let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, temporaryZipURL.path]
             PrettyPrint.print(.info, string: "Creating ZIP archive '\(temporaryZipURL.path)'...")
             try Shell.execute(zipArguments)
-            PrettyPrint.print(.info, string: "Created ZIP archive '\(temporaryZipURL.path)'")
+            PrettyPrint.print(.success, string: "Created ZIP archive '\(temporaryZipURL.path)'")
 
             let splitArguments: [String] = ["split", "-b", "8191m", temporaryZipURL.path, "\(product.zipName)."]
             PrettyPrint.print(.info, string: "Splitting ZIP archive '\(temporaryZipURL.path)'...")
             try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
-            PrettyPrint.print(.info, string: "Split ZIP archive '\(temporaryZipURL.path)'")
+            PrettyPrint.print(.success, string: "Split ZIP archive '\(temporaryZipURL.path)'")
             try FileManager.default.remove(temporaryZipURL, description: "temporary ZIP archive")
 
             try FileManager.default.remove(temporaryScriptsURL, description: "old temporary scripts directory")
@@ -97,11 +97,11 @@ struct Generator {
             let temporaryPostInstallURL: URL = temporaryScriptsURL.appendingPathComponent("postinstall")
             PrettyPrint.print(.info, string: "Creating temporary post install script '\(temporaryPostInstallURL.path)'...")
             try postInstall(for: product).write(to: temporaryPostInstallURL, atomically: true, encoding: .utf8)
-            PrettyPrint.print(.info, string: "Created temporary post install script '\(temporaryPostInstallURL.path)'...")
+            PrettyPrint.print(.success, string: "Created temporary post install script '\(temporaryPostInstallURL.path)'...")
 
             PrettyPrint.print(.info, string: "Setting executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: temporaryPostInstallURL.path)
-            PrettyPrint.print(.info, string: "Set executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
+            PrettyPrint.print(.success, string: "Set executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
 
             arguments = [
                 "pkgbuild", "--identifier", identifier, "--install-location", temporaryURL.path, "--scripts", temporaryScriptsURL.path, "--root", "\(temporaryURL.path)",
@@ -116,7 +116,7 @@ struct Generator {
         try FileManager.default.remove(destinationURL, description: "old package")
         PrettyPrint.print(.info, string: "Creating package '\(destinationURL.path)'...")
         try Shell.execute(arguments)
-        PrettyPrint.print(.info, string: "Created package '\(destinationURL.path)'")
+        PrettyPrint.print(.success, string: "Created package '\(destinationURL.path)'")
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
         try FileManager.default.remove(temporaryScriptsURL, description: "temporary scripts directory")
     }
@@ -128,13 +128,13 @@ struct Generator {
         try FileManager.default.remove(destinationURL, description: "old ZIP archive")
         PrettyPrint.print(.info, string: "Creating ZIP archive '\(destinationURL.path)'...")
         try Shell.execute(arguments)
-        PrettyPrint.print(.info, string: "Created ZIP archive '\(destinationURL.path)'")
+        PrettyPrint.print(.success, string: "Created ZIP archive '\(destinationURL.path)'")
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
             PrettyPrint.print(.info, string: "Codesigning ZIP archive '\(destinationURL.path)'...")
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
-            PrettyPrint.print(.info, string: "Codesigned ZIP archive '\(destinationURL.path)'")
+            PrettyPrint.print(.success, string: "Codesigned ZIP archive '\(destinationURL.path)'")
         }
     }
 

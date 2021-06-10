@@ -10,6 +10,7 @@ import Foundation
 struct PrettyPrint {
 
     enum PrintType: String {
+        case success = "✅"
         case info = "ℹ️"
         case warning = "⚠️"
         case error = "⛔️"

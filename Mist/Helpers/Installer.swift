@@ -21,7 +21,7 @@ struct Installer {
         try FileManager.default.remove(product.installerURL, description: "old installer")
         PrettyPrint.print(.info, string: "Creating new installer '\(product.installerURL.path)'...")
         try Shell.execute(["installer", "-pkg", distributionURL.path, "-target", "/"])
-        PrettyPrint.print(.info, string: "Created new installer '\(product.installerURL.path)'")
+        PrettyPrint.print(.success, string: "Created new installer '\(product.installerURL.path)'")
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
     }
 }
