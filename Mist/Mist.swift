@@ -12,7 +12,7 @@ struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify a catalog seed:
+    Specify a catalog seed:
     * standard (Standard - macOS default)
     * customer (Customer Seed - AppleSeed Program)
     * developer (Developer Seed - Apple Developer Program)
@@ -51,7 +51,7 @@ struct Mist: ParsableCommand {
     var download: Bool = false
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify a macOS name or version:
+    Specify a macOS name or version:
     * Monterey or 12.x
     * Big Sur or 11.x
     * Catalina or 10.15.x
@@ -62,7 +62,7 @@ struct Mist: ParsableCommand {
     var macOSVersion: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify a macOS build:
+    Specify a macOS build:
     * 20F71 (macOS Big Sur 11.4)
     * 19H524 (macOS Catalina 10.15.7)
     * 18G8022 (macOS Mojave 10.14.6)
@@ -71,19 +71,19 @@ struct Mist: ParsableCommand {
     var build: String = "latest"
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify the temporary downloads directory.
+    Specify the temporary downloads directory.
     Note: Parent directories will be created automatically.
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify the output directory.
+    Specify the output directory.
     Note: Parent directories will be created automatically.
     """)
     var outputDirectory: String = .outputDirectory
 
     @Option(name: .shortAndLong, help: """
-    Optionally specify the filename template. The following variables will be substituted with dynamic values:
+    Specify the filename template. The following variables will be substituted with dynamic values:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
     * %BUILD% will be replaced with '21A5248p'
@@ -106,25 +106,25 @@ struct Mist: ParsableCommand {
     """)
     var package: Bool = false
 
-    @Option(name: .long, help: """
-    Specify the package identifier prefix, eg. com.yourcompany.pkg
-    Note: .install-%name% will be appended to the prefix.
-    """)
-    var packageIdentifierPrefix: String?
-
     @Flag(name: .shortAndLong, help: """
     Export as ZIP Archive (.zip).
     """)
     var zip: Bool = false
 
     @Option(name: .long, help: """
-    Optionally codesign the exported macOS Disk Image (.dmg) or ZIP archive (.zip).
+    Specify the package identifier prefix, eg. com.yourcompany.pkg
+    Note: .install-%name% will be appended to the prefix.
+    """)
+    var packageIdentifierPrefix: String?
+
+    @Option(name: .long, help: """
+    Codesign the exported macOS Disk Image (.dmg) or ZIP archive (.zip).
     Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
     """)
     var signingIdentityApplication: String?
 
     @Option(name: .long, help: """
-    Optionally codesign the exported macOS Installer Packages (.pkg).
+    Codesign the exported macOS Installer Packages (.pkg).
     Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
     """)
     var signingIdentityInstaller: String?
