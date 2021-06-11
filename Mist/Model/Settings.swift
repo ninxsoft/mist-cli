@@ -18,6 +18,7 @@ struct Settings {
     let zip: Bool
     let signingIdentityApplication: String?
     let signingIdentityInstaller: String?
+    let keychain: String?
 
     func applicationPath(for product: Product) -> String {
         outputPath(for: product).appending(".app")

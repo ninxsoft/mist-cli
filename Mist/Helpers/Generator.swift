@@ -59,8 +59,18 @@ struct Generator {
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
+
+            var arguments: [String] = ["codesign", "--sign", identity]
+
+            if let keychain: String = settings.keychain,
+                !keychain.isEmpty {
+                arguments += ["--keychain", keychain]
+            }
+
+            arguments += [destinationURL.path]
+
             PrettyPrint.print(.info, string: "Codesigning image '\(destinationURL.path)'...")
-            try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
+            try Shell.execute(arguments)
             PrettyPrint.print(.success, string: "Codesigned image '\(destinationURL.path)'")
         }
 
@@ -81,7 +91,7 @@ struct Generator {
         let temporaryZipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
-        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version, destinationURL.path]
+        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 
         if product.isTooBigForPackagePayload {
             try FileManager.default.remove(temporaryURL, description: "old temporary directory")
@@ -109,15 +119,22 @@ struct Generator {
             try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: temporaryPostInstallURL.path)
             PrettyPrint.print(.success, string: "Set executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
 
-            arguments = [
-                "pkgbuild", "--identifier", identifier, "--install-location", "\(String.temporaryDirectory)/\(product.identifier)", "--scripts", temporaryScriptsURL.path, "--root", "\(temporaryURL.path)",
-                "--version", "\(product.version)-\(product.build)", destinationURL.path
-            ]
+            let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
+            arguments = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", temporaryScriptsURL.path, "--root", temporaryURL.path, "--version", version]
         }
 
-        if let identity: String = settings.signingIdentityInstaller, !identity.isEmpty {
+        if let identity: String = settings.signingIdentityInstaller,
+            !identity.isEmpty {
+
             arguments += ["--sign", identity]
+
+            if let keychain: String = settings.keychain,
+                !keychain.isEmpty {
+                arguments += ["--keychain", keychain]
+            }
         }
+
+        arguments += [destinationURL.path]
 
         try FileManager.default.remove(destinationURL, description: "old package")
         PrettyPrint.print(.info, string: "Creating package '\(destinationURL.path)'...")
@@ -140,8 +157,18 @@ struct Generator {
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
+
+            var arguments: [String] = ["codesign", "--sign", identity]
+
+            if let keychain: String = settings.keychain,
+                !keychain.isEmpty {
+                arguments += ["--keychain", keychain]
+            }
+
+            arguments += [destinationURL.path]
+
             PrettyPrint.print(.info, string: "Codesigning ZIP archive '\(destinationURL.path)'...")
-            try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
+            try Shell.execute(arguments)
             PrettyPrint.print(.success, string: "Codesigned ZIP archive '\(destinationURL.path)'")
         }
 

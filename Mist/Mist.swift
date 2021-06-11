@@ -129,6 +129,11 @@ struct Mist: ParsableCommand {
     """)
     var signingIdentityInstaller: String?
 
+    @Option(name: .shortAndLong, help: """
+    Specify a keychain path to search for signing identities.
+    """)
+    var keychain: String?
+
     @Flag(name: .shortAndLong, help: "Display the version of \(String.appName).")
     var version: Bool = false
 
@@ -148,7 +153,8 @@ struct Mist: ParsableCommand {
                     packageIdentifierPrefix: packageIdentifierPrefix,
                     zip: zip,
                     signingIdentityApplication: signingIdentityApplication,
-                    signingIdentityInstaller: signingIdentityInstaller
+                    signingIdentityInstaller: signingIdentityInstaller,
+                    keychain: keychain
                 )
                 try Download.run(catalog: catalog, version: macOSVersion, build: build, settings: settings)
             } else if version {
