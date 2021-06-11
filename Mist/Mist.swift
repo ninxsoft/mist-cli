@@ -26,7 +26,7 @@ struct Mist: ParsableCommand {
     var list: Bool = false
 
     @Option(name: .long, help: """
-    Export the list to CSV (comma separated values) file.
+    Export the list to CSV file.
     """)
     var exportCSV: String?
 
