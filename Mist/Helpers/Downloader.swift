@@ -25,7 +25,7 @@ struct Downloader {
             }
 
             let indexString: String = "\(index <= 10 && urls.count >= 10 ? "0" : "")\(index + 1)"
-            let string: String = "[\(indexString) / \(product.totalFiles)] Downloading \(source.lastPathComponent)..."
+            let string: String = "Downloading file \(indexString) of \(product.totalFiles) - \(source.lastPathComponent)..."
             PrettyPrint.print(.info, string: string)
 
             let task: URLSessionDownloadTask = URLSession.shared.downloadTask(with: source) { url, response, error in
