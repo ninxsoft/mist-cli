@@ -54,7 +54,8 @@ struct Generator {
         try FileManager.default.remove(destinationURL, description: "old image")
 
         PrettyPrint.print(.info, string: "Creating image '\(destinationURL.path)'...")
-        try Shell.execute(["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path])
+        let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
+        try Shell.execute(arguments)
         PrettyPrint.print(.success, string: "Created image '\(destinationURL.path)'")
 
         if let identity: String = settings.signingIdentityApplication,
