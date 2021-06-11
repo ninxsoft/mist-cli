@@ -24,8 +24,9 @@ struct Downloader {
                 throw MistError.invalidURL(url: url)
             }
 
-            let indexString: String = "\(index <= 10 && urls.count >= 10 ? "0" : "")\(index + 1)"
-            let string: String = "Downloading file \(indexString) of \(product.totalFiles) - \(source.lastPathComponent)..."
+            let current: Int = index + 1
+            let currentString: String = "\(current < 10 && product.totalFiles >= 10 ? "0" : "")\(current)"
+            let string: String = "Downloading file \(currentString) of \(product.totalFiles) - \(source.lastPathComponent)..."
             PrettyPrint.print(.info, string: string)
 
             let task: URLSessionDownloadTask = URLSession.shared.downloadTask(with: source) { url, response, error in
