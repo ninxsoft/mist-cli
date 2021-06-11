@@ -19,6 +19,13 @@ struct Download {
             throw MistError.invalidOutputOption
         }
 
+        if settings.package {
+            guard let prefix: String = settings.packageIdentifierPrefix,
+                !prefix.isEmpty else {
+                throw MistError.missingPackageIdentifierPrefix
+            }
+        }
+
         PrettyPrint.print(.info, string: "Checking for macOS with version '\(version)' and build '\(build)'...")
 
         guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalog), version: version, build: build) else {

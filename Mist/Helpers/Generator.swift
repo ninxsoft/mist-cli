@@ -73,7 +73,7 @@ struct Generator {
         PrettyPrint.print(.info, string: "Exporting Package...")
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
-            throw MistError.missingPackageIdentifier
+            throw MistError.missingPackageIdentifierPrefix
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
@@ -144,6 +144,7 @@ struct Generator {
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
             PrettyPrint.print(.success, string: "Codesigned ZIP archive '\(destinationURL.path)'")
         }
+
         PrettyPrint.print(.success, string: "Exported ZIP archive")
     }
 

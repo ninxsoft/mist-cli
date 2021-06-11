@@ -14,7 +14,7 @@ enum MistError: Error {
     case missingJSONPath
     case missingPLISTPath
     case missingYAMLPath
-    case missingPackageIdentifier
+    case missingPackageIdentifierPrefix
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case invalidData
     case invalidURL(url: String)
@@ -34,8 +34,8 @@ enum MistError: Error {
             return "PLIST path is missing."
         case .missingYAMLPath:
             return "YAML path is missing."
-        case .missingPackageIdentifier:
-            return "Package identifier is missing."
+        case .missingPackageIdentifierPrefix:
+            return "Package identifier prefix is missing."
         // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
             return String(format: "Not enough free space on volume '\(volume)': %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
