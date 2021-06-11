@@ -34,13 +34,16 @@ struct Generator {
     }
 
     private static func generateApplication(product: Product, settings: Settings) throws {
+        PrettyPrint.print(.info, string: "Exporting Application...")
         let destinationURL: URL = URL(fileURLWithPath: settings.applicationPath(for: product))
         try FileManager.default.remove(destinationURL, description: "old application")
         try FileManager.default.copy(product.installerURL, to: destinationURL)
+        PrettyPrint.print(.success, string: "Exported Application")
     }
 
     private static func generateImage(product: Product, settings: Settings) throws {
 
+        PrettyPrint.print(.info, string: "Exporting Image...")
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
@@ -62,9 +65,12 @@ struct Generator {
         }
 
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
+        PrettyPrint.print(.success, string: "Exported Image")
     }
 
     private static func generatePackage(product: Product, settings: Settings) throws {
+
+        PrettyPrint.print(.info, string: "Exporting Package...")
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
             throw MistError.missingPackageIdentifier
@@ -119,9 +125,11 @@ struct Generator {
         PrettyPrint.print(.success, string: "Created package '\(destinationURL.path)'")
         try FileManager.default.remove(temporaryURL, description: "temporary directory")
         try FileManager.default.remove(temporaryScriptsURL, description: "temporary scripts directory")
+        PrettyPrint.print(.success, string: "Exported Package")
     }
 
     private static func generateZip(product: Product, settings: Settings) throws {
+        PrettyPrint.print(.info, string: "Exporting Zip archive...")
         let destinationURL: URL = URL(fileURLWithPath: settings.zipPath(for: product))
         let arguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, destinationURL.path]
 
@@ -136,6 +144,7 @@ struct Generator {
             try Shell.execute(["codesign", "--sign", identity, destinationURL.path])
             PrettyPrint.print(.success, string: "Codesigned ZIP archive '\(destinationURL.path)'")
         }
+        PrettyPrint.print(.success, string: "Exported ZIP archive")
     }
 
     private static func postInstall(for product: Product) -> String {
