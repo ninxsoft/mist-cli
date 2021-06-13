@@ -45,30 +45,28 @@ struct Mist: ParsableCommand {
     """)
     var exportYAML: String?
 
-    @Flag(name: .shortAndLong, help: """
+    @Option(name: .shortAndLong, help: """
     Download a macOS Installer.
-    """)
-    var download: Bool = false
-
-    @Option(name: .shortAndLong, help: """
-    Specify a macOS name or version:
-    * Monterey or 12.x
-    * Big Sur or 11.x
-    * Catalina or 10.15.x
-    * Mojave or 10.14.x
-    * High Sierra or 10.13.x
-    Note: Specifying a macOS name will assume the latest version.
-    """)
-    var macOSVersion: String = "latest"
-
-    @Option(name: .shortAndLong, help: """
-    Specify a macOS build:
+    Specify a macOS name, version or build:
+    * macOS Monterey
+    * macOS Big Sur
+    * macOS Catalina
+    * macOS Mojave
+    * macOS High Sierra
+    * 12.x (macOS Monterey)
+    * 11.x (macOS Big Sur)
+    * 10.15.x (macOS Catalina)
+    * 10.14.x (macOS Mojave)
+    * 10.13.x (macOS High Sierra)
+    * 21A5248p (macOS Monterey Beta 12.0)
     * 20F71 (macOS Big Sur 11.4)
     * 19H524 (macOS Catalina 10.15.7)
     * 18G8022 (macOS Mojave 10.14.6)
     * 17G14042 (macOS High Sierra 10.13.6)
+    Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
+    Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
-    var build: String = "latest"
+    var download: String?
 
     @Option(name: .shortAndLong, help: """
     Specify the temporary downloads directory.
@@ -142,7 +140,7 @@ struct Mist: ParsableCommand {
         do {
             if list {
                 try List.run(catalog: catalog, csv: exportCSV, json: exportJSON, plist: exportPLIST, yaml: exportYAML)
-            } else if download {
+            } else if let download: String = download {
                 let settings: Settings = Settings(
                     temporaryDirectory: temporaryDirectory,
                     outputDirectory: outputDirectory,
@@ -156,7 +154,7 @@ struct Mist: ParsableCommand {
                     signingIdentityInstaller: signingIdentityInstaller,
                     keychain: keychain
                 )
-                try Download.run(catalog: catalog, version: macOSVersion, build: build, settings: settings)
+                try Download.run(catalog: catalog, download: download, settings: settings)
             } else if version {
                 Version.run()
             } else {
