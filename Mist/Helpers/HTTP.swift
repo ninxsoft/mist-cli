@@ -53,6 +53,7 @@ struct HTTP {
         var products: [Product] = []
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        var format: PropertyListSerialization.PropertyListFormat = .xml
 
         for (key, value) in dictionary {
 
@@ -70,23 +71,20 @@ struct HTTP {
                 continue
             }
 
-            var format: PropertyListSerialization.PropertyListFormat = .xml
-
             do {
-                var distributionString: String = try String(contentsOf: url, encoding: .utf8)
-                distributionString = distributionString.replacingOccurrences(of: "(?m)^[\\s\\S]*<auxinfo>\\s*", with: "", options: .regularExpression)
-                distributionString = distributionString.replacingOccurrences(of: "(?m)\\s*</auxinfo>[\\s\\S]*$", with: "", options: .regularExpression)
-                distributionString.wrapInPropertyList()
+                let string: String = try productPropertyList(from: url)
 
-                guard let distributionData: Data = distributionString.data(using: .utf8),
+                guard let distributionData: Data = string.data(using: .utf8),
                     let distribution: [String: Any] = try PropertyListSerialization.propertyList(from: distributionData, options: [.mutableContainers], format: &format) as? [String: Any],
+                    let name: String = distribution["NAME"] as? String,
                     let version: String = distribution["VERSION"] as? String,
                     let build: String = distribution["BUILD"] as? String else {
-                    PrettyPrint.print(.warning, string: "No 'Version' or 'Build' found, skipping...")
+                    PrettyPrint.print(.warning, string: "No 'Name', 'Version' or 'Build' found, skipping...")
                     continue
                 }
 
                 value["Identifier"] = key
+                value["Name"] = name
                 value["Version"] = version
                 value["Build"] = build
                 value["PostDate"] = dateFormatter.string(from: date)
@@ -103,15 +101,26 @@ struct HTTP {
         return products
     }
 
-    static func product(from products: [Product], version: String, build: String) -> Product? {
-        let version: String = version.lowercased().replacingOccurrences(of: "macos ", with: "")
-        let build: String = build.lowercased()
-        let filteredProducts: [Product] = products.filter { [$0.name.lowercased().replacingOccurrences(of: "macos ", with: ""), $0.version.lowercased()].contains(version) }
+    private static func productPropertyList(from url: URL) throws -> String {
+        let distributionString: String = try String(contentsOf: url, encoding: .utf8)
 
-        if version == "latest" {
-            return build == "latest" ? products.first : products.filter { $0.version.lowercased() == version && $0.build.lowercased() == build }.first
-        } else {
-            return build == "latest" ? filteredProducts.first : filteredProducts.filter { $0.version.lowercased() == version && $0.build.lowercased() == build }.first
-        }
+        let name: String = distributionString.replacingOccurrences(of: "^[\\s\\S]*suDisabledGroupID=\"", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\"[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "Install ", with: "")
+
+        let string: String = distributionString.replacingOccurrences(of: "^[\\s\\S]*<auxinfo>\\s*", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\\s*</auxinfo>[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "</dict>", with: "<key>NAME</key><string>\(name)</string></dict>")
+            .wrappedInPropertyList()
+
+        return string
+    }
+
+    static func product(from products: [Product], download: String) -> Product? {
+        let download: String = download.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
+        let filteredProductsByVersion: [Product] = products.filter { $0.version == download }
+        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased() == download }
+        return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first ?? nil
     }
 }

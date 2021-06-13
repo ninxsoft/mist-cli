@@ -11,6 +11,7 @@ struct Product: Decodable {
 
     enum CodingKeys: String, CodingKey {
         case identifier = "Identifier"
+        case name = "Name"
         case version = "Version"
         case build = "Build"
         case date = "PostDate"
@@ -19,33 +20,12 @@ struct Product: Decodable {
     }
 
     let identifier: String
+    let name: String
     let version: String
     let build: String
     let date: String
     let distribution: String
     let packages: [Package]
-    var name: String {
-
-        var name: String = ""
-
-        if version.hasPrefix("12") {
-            name = "macOS Monterey"
-        } else if version.hasPrefix("11") {
-            name = "macOS Big Sur"
-        } else if version.hasPrefix("10.15") {
-            name = "macOS Catalina"
-        } else if version.hasPrefix("10.14") {
-            name = "macOS Mojave"
-        } else if version.hasPrefix("10.13") {
-            name = "macOS High Sierra"
-        } else {
-            name = "macOS"
-        }
-
-        let beta: Bool = build.range(of: "[a-z]$", options: .regularExpression) != nil
-        name += beta ? " Beta" : ""
-        return name
-    }
     var installerURL: URL {
         URL(fileURLWithPath: "/Applications/Install \(name).app")
     }

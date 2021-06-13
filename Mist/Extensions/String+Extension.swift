@@ -37,12 +37,12 @@ extension String {
     static let outputDirectory: String = "/Users/Shared/macOS Installers"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
 
-    mutating func wrapInPropertyList() {
-        self = "<?xml version=\"1.0\"?>" +
-            "<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" +
-            "<plist version=\"1.0\">" +
-            self +
-            "</plist>"
+    func wrappedInPropertyList() -> String {
+        "<?xml version=\"1.0\"?>" +
+        "<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" +
+        "<plist version=\"1.0\">" +
+        self +
+        "</plist>"
     }
 
     func color(_ color: Color) -> String {
