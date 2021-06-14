@@ -137,7 +137,7 @@ mist --catalog "public" \
      --image-identity "Developer ID Application: Nindi Gill (Team ID)" \
      --package \
      --package-identifier "com.ninxsoft.mist.pkg.latest-installer" \
-     --package-identity "Developer ID Installer: Nindi Gill (Team ID)"
+     --package-identity "Developer ID Installer: Nindi Gill (Team ID)" \
      --zip \
      --zip-identity "Developer ID Application: Nindi Gill (Team ID)"
 ```
