@@ -9,7 +9,7 @@ import Foundation
 
 struct Download {
 
-    static func run(catalog: Catalog, download: String, settings: Settings) throws {
+    static func run(catalogURL: String?, download: String, settings: Settings) throws {
 
         guard NSUserName() == "root" else {
             throw MistError.invalidUser
@@ -55,10 +55,11 @@ struct Download {
 
         PrettyPrint.print(string: "[CHECK]".color(.green))
         PrettyPrint.print(prefix: "├─", string: "Checking for macOS download '\(download)'...")
+        let catalogURL: String = catalogURL ?? Catalog.defaultURL
 
-        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalog), download: download) else {
-            return
+        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: download) else {
             PrettyPrint.print(prefix: "└─", string: "No macOS download found with '\(download)', exiting...")
+            exit(0)
         }
 
         PrettyPrint.print(prefix: "└─", string: "Found \(product.name) \(product.version) (\(product.build))...")

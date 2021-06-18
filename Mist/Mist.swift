@@ -21,29 +21,18 @@ struct Mist: ParsableCommand {
     """)
     var list: Bool = false
 
-    @Option(name: .long, help: """
-    Export the list to CSV file.
+    @Option(name: [.customShort("e"), .customLong("list-export")], help: """
+    Specify the path to export the list to one of the following formats:
+    * /path/to/export.csv (CSV file).
+    * /path/to/export.json (JSON file).
+    * /path/to/export.plist (Property List) file).
+    * /path/to/export.yaml (YAML file).
+    Note: The file extension will determine the output file format.
     """)
-    var exportCSV: String?
-
-    @Option(name: .long, help: """
-    Export the list to JSON file.
-    """)
-    var exportJSON: String?
-
-    @Option(name: .long, help: """
-    Export the list to PLIST (Property List) file.
-    """)
-    var exportPLIST: String?
-
-    @Option(name: .long, help: """
-    Export the list to a YAML file.
-    """)
-    var exportYAML: String?
+    var export: String?
 
     @Option(name: .shortAndLong, help: """
-    Download a macOS Installer.
-    Specify a macOS name, version or build:
+    Download a macOS Installer, specifying a macOS name, version or build:
     * macOS Monterey
     * macOS Big Sur
     * macOS Catalina
@@ -65,64 +54,72 @@ struct Mist: ParsableCommand {
     var download: String?
 
     @Option(name: .shortAndLong, help: """
-    Specify the temporary downloads directory.
-    Note: Parent directories will be created automatically.
-    """)
-    var temporaryDirectory: String = .temporaryDirectory
-
-    @Option(name: .shortAndLong, help: """
-    Specify the output directory.
-    Note: Parent directories will be created automatically.
-    """)
-    var outputDirectory: String = .outputDirectory
-
-    @Option(name: .shortAndLong, help: """
-    Specify the filename template. The following variables will be substituted with dynamic values:
+    Specify the output directory. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
     * %BUILD% will be replaced with '21A5248p'
-    Note: File extensions will be added automatically.
+    Note: Parent directories will be created automatically.\n
     """)
-    var filenameTemplate: String = .filenameTemplate
+    var outputDirectory: String = .outputDirectory + "/" + .filenameTemplate
 
     @Flag(name: .shortAndLong, help: """
-    """)
-
-    @Flag(name: .shortAndLong, help: """
-    Export as macOS Disk Image (.dmg).
+    Generate a macOS Disk Image.
     """)
     var image: Bool = false
 
+    @Option(name: .long, help: """
+    Specify the macOS Disk Image output filename. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5248p'\n
+    """)
+    var imageName: String = .filenameTemplate + ".dmg"
+
+    @Option(name: .long, help: """
+    Codesign the exported macOS Disk Image (.dmg).
+    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
+    """)
+    var imageSigningIdentity: String?
+
     @Flag(name: .shortAndLong, help: """
-    Export as macOS Installer Package (.pkg).
+    Generate a macOS Installer Package.
     """)
     var package: Bool = false
 
-    @Flag(name: .shortAndLong, help: """
+    @Option(name: .long, help: """
+    Specify the macOS Installer Package output filename. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5248p'\n
     """)
+    var packageName: String = .filenameTemplate + ".pkg"
 
     @Option(name: .long, help: """
-    Specify the package identifier prefix, eg. com.yourcompany.pkg
-    Note: .install-%name% will be appended to the prefix.
+    Specify the macOS Installer Package identifier. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5248p'
+    * Spaces will be replaced with hyphens -\n
     """)
-    var packageIdentifierPrefix: String?
+    var packageIdentifier: String = "com.mycompany.pkg.install-%NAME%"
 
     @Option(name: .long, help: """
-    Codesign the exported macOS Disk Image (.dmg) or ZIP archive (.zip).
-    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
-    """)
-    var signingIdentityApplication: String?
-
-    @Option(name: .long, help: """
-    Codesign the exported macOS Installer Packages (.pkg).
+    Codesign the exported macOS Installer Package (.pkg).
     Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
     """)
-    var signingIdentityInstaller: String?
+    var packageSigningIdentity: String?
 
     @Option(name: .shortAndLong, help: """
     Specify a keychain path to search for signing identities.
+    Note: If no keychain is specified, the default user login keychain will be used.
     """)
     var keychain: String?
+
+    @Option(name: .shortAndLong, help: """
+    Specify the temporary downloads directory.
+    Note: Parent directories will be created automatically.\n
+    """)
+    var temporaryDirectory: String = .temporaryDirectory
 
     @Flag(name: .shortAndLong, help: "Display the version of \(String.appName).")
     var version: Bool = false
@@ -131,18 +128,19 @@ struct Mist: ParsableCommand {
 
         do {
             if list {
-                try List.run(catalog: catalog, csv: exportCSV, json: exportJSON, plist: exportPLIST, yaml: exportYAML)
+                try List.run(catalogURL: catalogURL, export: export)
             } else if let download: String = download {
                 let settings: Settings = Settings(
-                    temporaryDirectory: temporaryDirectory,
                     outputDirectory: outputDirectory,
-                    filenameTemplate: filenameTemplate,
                     image: image,
+                    imageName: imageName,
+                    imageSigningIdentity: imageSigningIdentity,
                     package: package,
-                    packageIdentifierPrefix: packageIdentifierPrefix,
-                    signingIdentityApplication: signingIdentityApplication,
-                    signingIdentityInstaller: signingIdentityInstaller,
-                    keychain: keychain
+                    packageName: packageName,
+                    packageIdentifier: packageIdentifier,
+                    packageSigningIdentity: packageSigningIdentity,
+                    keychain: keychain,
+                    temporaryDirectory: temporaryDirectory
                 )
                 try Download.run(catalogURL: catalogURL, download: download, settings: settings)
             } else if version {

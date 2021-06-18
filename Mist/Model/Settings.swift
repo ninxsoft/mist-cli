@@ -8,38 +8,37 @@
 import Foundation
 
 struct Settings {
-    let temporaryDirectory: String
     let outputDirectory: String
-    let filenameTemplate: String
     let image: Bool
+    let imageName: String
+    let imageSigningIdentity: String?
     let package: Bool
-    let packageIdentifierPrefix: String?
-    let signingIdentityApplication: String?
-    let signingIdentityInstaller: String?
+    let packageName: String
+    let packageIdentifier: String
+    let packageSigningIdentity: String?
     let keychain: String?
+    let temporaryDirectory: String
 
     func imagePath(for product: Product) -> String {
-        outputPath(for: product).appending(".dmg")
+        outputDirectory + "/" + imageName
+            .replacingOccurrences(of: "%NAME%", with: product.name)
+            .replacingOccurrences(of: "%VERSION%", with: product.version)
+            .replacingOccurrences(of: "%BUILD%", with: product.build)
     }
 
     func packagePath(for product: Product) -> String {
-        outputPath(for: product).appending(".pkg")
-    }
-
-
-    private func outputPath(for product: Product) -> String {
-        outputDirectory + "/" + filenameTemplate
+        outputDirectory + "/" + packageName
             .replacingOccurrences(of: "%NAME%", with: product.name)
             .replacingOccurrences(of: "%VERSION%", with: product.version)
             .replacingOccurrences(of: "%BUILD%", with: product.build)
     }
 
     func packageIdentifier(for product: Product) -> String? {
-
-        guard let packageIdentifierPrefix: String = packageIdentifierPrefix else {
-            return nil
-        }
-
-        return packageIdentifierPrefix + ".install \(product.name)".lowercased().replacingOccurrences(of: " ", with: "-")
+        packageIdentifier
+            .replacingOccurrences(of: "%NAME%", with: product.name)
+            .replacingOccurrences(of: "%VERSION%", with: product.version)
+            .replacingOccurrences(of: "%BUILD%", with: product.build)
+            .replacingOccurrences(of: " ", with: "-")
+            .lowercased()
     }
 }
