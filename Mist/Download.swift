@@ -72,7 +72,22 @@ struct Download {
 
     private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
 
-        var volumes: [(path: String, count: Int64)] = []
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
+        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
+
+        if !FileManager.default.fileExists(atPath: temporaryURL.path) || !FileManager.default.fileExists(atPath: outputURL.path) {
+            PrettyPrint.print(string: "[OUTPUT]".color(.green))
+        }
+
+        if !FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Creating temporary directory '\(temporaryURL.path)'...")
+            try FileManager.default.createDirectory(atPath: settings.temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+        }
+
+        if !FileManager.default.fileExists(atPath: outputURL.path) {
+            PrettyPrint.print(prefix: "└─", string: "Creating output directory '\(outputURL.path)'...")
+            try FileManager.default.createDirectory(atPath: settings.outputDirectory, withIntermediateDirectories: true, attributes: nil)
+        }
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
             let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: settings.temporaryDirectory)?.first,
@@ -80,6 +95,7 @@ struct Download {
             throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
         }
 
+        var volumes: [(path: String, count: Int64)] = []
         var bootVolume: (path: String, count: Int64) = (path: "/", count: 1)
         var temporaryVolume: (path: String, count: Int64) = (path: settings.temporaryDirectory, count: 1)
         var outputVolume: (path: String, count: Int64) = (path: settings.outputDirectory, count: 0)
