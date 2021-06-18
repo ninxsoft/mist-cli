@@ -73,7 +73,7 @@ struct Download {
     private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
 
         let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
-        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
+        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory(for: product))
 
         if !FileManager.default.fileExists(atPath: temporaryURL.path) || !FileManager.default.fileExists(atPath: outputURL.path) {
             PrettyPrint.print(string: "[OUTPUT]".color(.blue))
@@ -81,24 +81,24 @@ struct Download {
 
         if !FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Creating temporary directory '\(temporaryURL.path)'...")
-            try FileManager.default.createDirectory(atPath: settings.temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: temporaryURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
             PrettyPrint.print(prefix: "└─", string: "Creating output directory '\(outputURL.path)'...")
-            try FileManager.default.createDirectory(atPath: settings.outputDirectory, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
-            let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: settings.temporaryDirectory)?.first,
-            let outputVolumePath: String = FileManager.default.componentsToDisplay(forPath: settings.outputDirectory)?.first else {
+            let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: temporaryURL.path)?.first,
+            let outputVolumePath: String = FileManager.default.componentsToDisplay(forPath: outputURL.path)?.first else {
             throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
         }
 
         var volumes: [(path: String, count: Int64)] = []
         var bootVolume: (path: String, count: Int64) = (path: "/", count: 1)
-        var temporaryVolume: (path: String, count: Int64) = (path: settings.temporaryDirectory, count: 1)
-        var outputVolume: (path: String, count: Int64) = (path: settings.outputDirectory, count: 0)
+        var temporaryVolume: (path: String, count: Int64) = (path: temporaryURL.path, count: 1)
+        var outputVolume: (path: String, count: Int64) = (path: outputURL.path, count: 0)
 
         if temporaryVolumePath == bootVolumePath {
             bootVolume.count += 1

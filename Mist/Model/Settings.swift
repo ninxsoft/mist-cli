@@ -19,6 +19,13 @@ struct Settings {
     let keychain: String?
     let temporaryDirectory: String
 
+    func outputDirectory(for product: Product) -> String {
+        outputDirectory
+            .replacingOccurrences(of: "%NAME%", with: product.name)
+            .replacingOccurrences(of: "%VERSION%", with: product.version)
+            .replacingOccurrences(of: "%BUILD%", with: product.build)
+    }
+
     func imagePath(for product: Product) -> String {
         outputDirectory + "/" + imageName
             .replacingOccurrences(of: "%NAME%", with: product.name)
