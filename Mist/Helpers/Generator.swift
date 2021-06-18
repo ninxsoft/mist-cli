@@ -11,12 +11,6 @@ struct Generator {
 
     static func generate(_ product: Product, settings: Settings) throws {
 
-        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
-
-        if !FileManager.default.fileExists(atPath: outputURL.path) {
-            try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true, attributes: nil)
-        }
-
         if settings.image {
             try generateImage(product: product, settings: settings)
         }
@@ -24,12 +18,6 @@ struct Generator {
         if settings.package {
             try generatePackage(product: product, settings: settings)
         }
-
-        if settings.zip {
-            try generateZip(product: product, settings: settings)
-        }
-
-    }
 
         PrettyPrint.print(string: "[OUTPUT]".color(.green))
         PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
@@ -64,7 +52,7 @@ struct Generator {
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
         try Shell.execute(arguments)
 
-        if let identity: String = settings.signingIdentityApplication,
+        if let identity: String = settings.imageSigningIdentity,
             !identity.isEmpty {
 
             var arguments: [String] = ["codesign", "--sign", identity]
@@ -90,36 +78,30 @@ struct Generator {
 
         PrettyPrint.print(string: "[OUTPUT - PACKAGE]".color(.green))
 
+        if product.isTooBigForPackagePayload {
+            try generateBigPackage(product: product, settings: settings)
+        } else {
+            try generateSmallPackage(product: product, settings: settings)
+        }
+    }
+
+    private static func generateBigPackage(product: Product, settings: Settings) throws {
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
             throw MistError.missingPackageIdentifier
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
-        let temporaryScriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
-        let temporaryZipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
+        let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
+        let scriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
+        let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
+        let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, zipURL.path]
+        let splitArguments: [String] = ["split", "-b", "8191m", zipURL.path, "\(product.zipName)."]
+        let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
-        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
+        var arguments: [String] = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", scriptsURL.path, "--root", temporaryURL.path, "--version", version]
 
-        if product.isTooBigForPackagePayload {
-
-            let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, temporaryZipURL.path]
-            PrettyPrint.print(.info, string: "Creating ZIP archive '\(temporaryZipURL.path)'...")
-            try Shell.execute(zipArguments)
-            PrettyPrint.print(.success, string: "Created ZIP archive '\(temporaryZipURL.path)'")
-
-            let splitArguments: [String] = ["split", "-b", "8191m", temporaryZipURL.path, "\(product.zipName)."]
-            PrettyPrint.print(.info, string: "Splitting ZIP archive '\(temporaryZipURL.path)'...")
-            try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
-            PrettyPrint.print(.success, string: "Split ZIP archive '\(temporaryZipURL.path)'")
-
-            let temporaryPostInstallURL: URL = temporaryScriptsURL.appendingPathComponent("postinstall")
-            PrettyPrint.print(.info, string: "Creating temporary post install script '\(temporaryPostInstallURL.path)'...")
-            try postInstall(for: product).write(to: temporaryPostInstallURL, atomically: true, encoding: .utf8)
-
-            let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
-            arguments = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", temporaryScriptsURL.path, "--root", temporaryURL.path, "--version", version]
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
             try FileManager.default.removeItem(at: temporaryURL)
@@ -129,7 +111,11 @@ struct Generator {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
         PrettyPrint.print(prefix: "├─", string: "Creating ZIP archive '\(zipURL.path)'...")
+        try Shell.execute(zipArguments)
+
         PrettyPrint.print(prefix: "├─", string: "Splitting ZIP archive '\(zipURL.path)'...")
+        try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
+
         PrettyPrint.print(prefix: "├─", string: "Deleting temporary ZIP archive '\(zipURL.path)'")
         try FileManager.default.removeItem(at: zipURL)
 
@@ -138,12 +124,16 @@ struct Generator {
             try FileManager.default.removeItem(at: scriptsURL)
         }
 
-        if let identity: String = settings.signingIdentityInstaller,
         PrettyPrint.print(prefix: "├─", string: "Creating new temporary scripts directory '\(scriptsURL.path)'...")
         try FileManager.default.createDirectory(at: scriptsURL, withIntermediateDirectories: true, attributes: nil)
 
         PrettyPrint.print(prefix: "├─", string: "Creating temporary post install script '\(postInstallURL.path)'...")
+        try postInstall(for: product).write(to: postInstallURL, atomically: true, encoding: .utf8)
+
         PrettyPrint.print(prefix: "├─", string: "Setting executable permissions on temporary post install script '\(postInstallURL.path)'...")
+        try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: postInstallURL.path)
+
+        if let identity: String = settings.packageSigningIdentity,
             !identity.isEmpty {
 
             arguments += ["--sign", identity]
@@ -173,22 +163,28 @@ struct Generator {
         PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'")
     }
 
+    private static func generateSmallPackage(product: Product, settings: Settings) throws {
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
             throw MistError.missingPackageIdentifier
         }
 
-        if let identity: String = settings.signingIdentityApplication,
+        let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
+        let version: String = "\(product.version)-\(product.build)"
+        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
+
+        if let identity: String = settings.packageSigningIdentity,
             !identity.isEmpty {
 
-            var arguments: [String] = ["codesign", "--sign", identity]
+            arguments += ["--sign", identity]
 
             if let keychain: String = settings.keychain,
                 !keychain.isEmpty {
                 arguments += ["--keychain", keychain]
             }
+        }
 
-            arguments += [destinationURL.path]
+        arguments += [destinationURL.path]
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old package '\(destinationURL.path)'...")
@@ -196,6 +192,7 @@ struct Generator {
         }
 
         PrettyPrint.print(prefix: "├─", string: "Creating package '\(destinationURL.path)'...")
+        try Shell.execute(arguments)
         PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'...")
     }
 
