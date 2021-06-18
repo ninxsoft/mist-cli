@@ -48,6 +48,8 @@ struct List {
 
             guard !path.isEmpty else {
                 throw MistError.missingYAMLPath
+            if !FileManager.default.fileExists(atPath: directory.path) {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
             }
 
             try exportYAML(path, using: products)

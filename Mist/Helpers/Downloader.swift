@@ -16,8 +16,9 @@ struct Downloader {
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
 
-        try FileManager.default.remove(temporaryURL, description: "old temporary directory")
-        try FileManager.default.create(temporaryURL, description: "new temporary directory")
+        if FileManager.default.fileExists(atPath: temporaryURL.path) {
+            try FileManager.default.removeItem(at: temporaryURL)
+        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
         for (index, url) in urls.enumerated() {
             guard let source: URL = URL(string: url) else {

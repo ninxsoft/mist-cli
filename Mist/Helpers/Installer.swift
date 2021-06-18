@@ -18,12 +18,14 @@ struct Installer {
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
-        try FileManager.default.remove(product.installerURL, description: "old installer")
         PrettyPrint.print(.info, string: "Creating new installer '\(product.installerURL.path)'...")
+        if FileManager.default.fileExists(atPath: product.installerURL.path) {
+            try FileManager.default.removeItem(at: product.installerURL)
+        }
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
         try Shell.execute(arguments, environment: variables)
         PrettyPrint.print(.success, string: "Created new installer '\(product.installerURL.path)'")
-        try FileManager.default.remove(temporaryURL, description: "temporary directory")
+        try FileManager.default.removeItem(at: temporaryURL)
     }
 }
