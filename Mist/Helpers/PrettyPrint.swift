@@ -9,19 +9,8 @@ import Foundation
 
 struct PrettyPrint {
 
-    enum PrintType: String {
-        case success = "✅"
-        case info = "ℹ️"
-        case warning = "⚠️"
-        case error = "⛔️"
-
-        var identifier: String {
-            rawValue
-        }
-    }
-
-    static func print(_ type: PrintType, string: String) {
-        let string: String = "\(type.identifier)  \(string)"
+    static func print(prefix: String = "", string: String) {
+        let string: String = prefix.isEmpty ? string : "  \(prefix.color(.magenta)) \(string)"
         Swift.print(string)
     }
 }

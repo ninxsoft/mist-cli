@@ -159,8 +159,8 @@ struct Mist: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(.error, string: mistError.description)
-            throw mistError
+            PrettyPrint.print(string: mistError.description)
+            Mist.exit(withError: mistError)
         }
     }
 }

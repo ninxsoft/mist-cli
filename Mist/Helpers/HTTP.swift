@@ -18,7 +18,7 @@ struct HTTP {
             PrettyPrint.print(.info, string: "Downloading catalog \(catalogURL)...")
 
             guard let url: URL = URL(string: catalogURL) else {
-                PrettyPrint.print(.warning, string: "There was an error retrieving the catalog \(catalogURL), skipping...")
+                PrettyPrint.print(prefix: "├─", string: "There was an error retrieving the catalog \(catalogURL), skipping...")
                 continue
             }
 
@@ -26,7 +26,7 @@ struct HTTP {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
                 guard let data: Data = string.data(using: .utf8) else {
-                    PrettyPrint.print(.warning, string: "Unable to get data from catalog, skipping...")
+                    PrettyPrint.print(prefix: "├─", string: "Unable to get data from catalog, skipping...")
                     continue
                 }
 
@@ -34,13 +34,13 @@ struct HTTP {
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-                    PrettyPrint.print(.warning, string: "Unable to get 'Products' dictionary from catalog, skipping...")
+                    PrettyPrint.print(prefix: "├─", string: "Unable to get 'Products' dictionary from catalog, skipping...")
                     continue
                 }
 
                 products.append(contentsOf: getProducts(from: productsDictionary).filter { !products.map { $0.identifier }.contains($0.identifier) })
             } catch {
-                PrettyPrint.print(.warning, string: error.localizedDescription)
+                PrettyPrint.print(prefix: "├─", string: error.localizedDescription)
             }
         }
 
@@ -67,7 +67,7 @@ struct HTTP {
             guard let distributions: [String: Any] = value["Distributions"] as? [String: Any],
                 let distributionURL: String = distributions["English"] as? String,
                 let url: URL = URL(string: distributionURL) else {
-                PrettyPrint.print(.warning, string: "No English distribution found, skipping...")
+                PrettyPrint.print(prefix: "├─", string: "No English distribution found, skipping...")
                 continue
             }
 
@@ -79,7 +79,7 @@ struct HTTP {
                     let name: String = distribution["NAME"] as? String,
                     let version: String = distribution["VERSION"] as? String,
                     let build: String = distribution["BUILD"] as? String else {
-                    PrettyPrint.print(.warning, string: "No 'Name', 'Version' or 'Build' found, skipping...")
+                    PrettyPrint.print(prefix: "├─", string: "No 'Name', 'Version' or 'Build' found, skipping...")
                     continue
                 }
 
@@ -94,7 +94,7 @@ struct HTTP {
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
             } catch {
-                PrettyPrint.print(.error, string: error.localizedDescription)
+                PrettyPrint.print(prefix: "├─", string: error.localizedDescription)
             }
         }
 

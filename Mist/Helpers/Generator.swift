@@ -31,29 +31,38 @@ struct Generator {
 
     }
 
+        PrettyPrint.print(string: "[OUTPUT]".color(.green))
+        PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
         try FileManager.default.removeItem(at: product.installerURL)
     }
 
     private static func generateImage(product: Product, settings: Settings) throws {
 
-        PrettyPrint.print(.info, string: "Exporting Image...")
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
+        PrettyPrint.print(string: "[OUTPUT - IMAGE]".color(.green))
+
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
             try FileManager.default.removeItem(at: temporaryURL)
         }
+
+        PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+
+        PrettyPrint.print(prefix: "├─", string: "Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...")
         try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
+
         if FileManager.default.fileExists(atPath: destinationURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old image '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print(.info, string: "Creating image '\(destinationURL.path)'...")
+        PrettyPrint.print(prefix: "├─", string: "Creating image '\(destinationURL.path)'...")
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
         try Shell.execute(arguments)
-        PrettyPrint.print(.success, string: "Created image '\(destinationURL.path)'")
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
@@ -67,18 +76,20 @@ struct Generator {
 
             arguments += [destinationURL.path]
 
-            PrettyPrint.print(.info, string: "Codesigning image '\(destinationURL.path)'...")
+            PrettyPrint.print(prefix: "├─", string: "Codesigning image '\(destinationURL.path)'...")
             try Shell.execute(arguments)
-            PrettyPrint.print(.success, string: "Codesigned image '\(destinationURL.path)'")
         }
 
-        PrettyPrint.print(.success, string: "Exported Image")
+        PrettyPrint.print(prefix: "├─", string: "Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
+
+        PrettyPrint.print(prefix: "└─", string: "Created image '\(destinationURL.path)'...")
     }
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        PrettyPrint.print(.info, string: "Exporting Package...")
+        PrettyPrint.print(string: "[OUTPUT - PACKAGE]".color(.green))
+
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
             throw MistError.missingPackageIdentifierPrefix
@@ -106,24 +117,33 @@ struct Generator {
             let temporaryPostInstallURL: URL = temporaryScriptsURL.appendingPathComponent("postinstall")
             PrettyPrint.print(.info, string: "Creating temporary post install script '\(temporaryPostInstallURL.path)'...")
             try postInstall(for: product).write(to: temporaryPostInstallURL, atomically: true, encoding: .utf8)
-            PrettyPrint.print(.success, string: "Created temporary post install script '\(temporaryPostInstallURL.path)'...")
-
-            PrettyPrint.print(.info, string: "Setting executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
-            PrettyPrint.print(.success, string: "Set executable permissions on temporary post install script '\(temporaryPostInstallURL.path)'...")
 
             let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
             arguments = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", temporaryScriptsURL.path, "--root", temporaryURL.path, "--version", version]
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
             try FileManager.default.removeItem(at: temporaryURL)
         }
+
+        PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+
+        PrettyPrint.print(prefix: "├─", string: "Creating ZIP archive '\(zipURL.path)'...")
+        PrettyPrint.print(prefix: "├─", string: "Splitting ZIP archive '\(zipURL.path)'...")
+        PrettyPrint.print(prefix: "├─", string: "Deleting temporary ZIP archive '\(zipURL.path)'")
         try FileManager.default.removeItem(at: zipURL)
+
         if FileManager.default.fileExists(atPath: scriptsURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary scripts directory '\(scriptsURL.path)'...")
             try FileManager.default.removeItem(at: scriptsURL)
         }
 
         if let identity: String = settings.signingIdentityInstaller,
+        PrettyPrint.print(prefix: "├─", string: "Creating new temporary scripts directory '\(scriptsURL.path)'...")
         try FileManager.default.createDirectory(at: scriptsURL, withIntermediateDirectories: true, attributes: nil)
+
+        PrettyPrint.print(prefix: "├─", string: "Creating temporary post install script '\(postInstallURL.path)'...")
+        PrettyPrint.print(prefix: "├─", string: "Setting executable permissions on temporary post install script '\(postInstallURL.path)'...")
             !identity.isEmpty {
 
             arguments += ["--sign", identity]
@@ -136,15 +156,21 @@ struct Generator {
 
         arguments += [destinationURL.path]
 
-        PrettyPrint.print(.info, string: "Creating package '\(destinationURL.path)'...")
         if FileManager.default.fileExists(atPath: destinationURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old package '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
         }
+
+        PrettyPrint.print(prefix: "├─", string: "Creating package '\(destinationURL.path)'...")
         try Shell.execute(arguments)
-        PrettyPrint.print(.success, string: "Created package '\(destinationURL.path)'")
-        PrettyPrint.print(.success, string: "Exported Package")
+
+        PrettyPrint.print(prefix: "├─", string: "Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
+
+        PrettyPrint.print(prefix: "├─", string: "Deleting temporary scripts directory '\(scriptsURL.path)'...")
         try FileManager.default.removeItem(at: scriptsURL)
+
+        PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'")
     }
 
 
@@ -162,9 +188,12 @@ struct Generator {
             arguments += [destinationURL.path]
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old package '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
         }
 
+        PrettyPrint.print(prefix: "├─", string: "Creating package '\(destinationURL.path)'...")
+        PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'...")
     }
 
     private static func postInstall(for product: Product) -> String {

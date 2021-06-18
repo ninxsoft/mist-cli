@@ -24,14 +24,15 @@ struct Download {
             }
         }
 
-        PrettyPrint.print(.info, string: "Checking for macOS download '\(download)'...")
+        PrettyPrint.print(string: "[CHECK]".color(.green))
+        PrettyPrint.print(prefix: "├─", string: "Checking for macOS download '\(download)'...")
 
         guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalog), download: download) else {
-            PrettyPrint.print(.warning, string: "No macOS download found with '\(download)', exiting...")
             return
+            PrettyPrint.print(prefix: "└─", string: "No macOS download found with '\(download)', exiting...")
         }
 
-        PrettyPrint.print(.success, string: "Found \(product.name) \(product.version) (\(product.build))...")
+        PrettyPrint.print(prefix: "└─", string: "Found \(product.name) \(product.version) (\(product.build))...")
 
         try verifyFreeSpace(product, settings: settings)
         try Downloader().download(product, settings: settings)
