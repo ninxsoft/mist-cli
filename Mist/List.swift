@@ -16,45 +16,41 @@ struct List {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         list(products, using: dateFormatter)
 
-        if let path: String = csv {
+        if let path: String = export {
 
             guard !path.isEmpty else {
-                throw MistError.missingCSVPath
+                throw MistError.missingExportPath
             }
 
-            try exportCSV(path, using: products)
-        }
+            let url: URL = URL(fileURLWithPath: path)
 
-        if let path: String = json {
-
-            guard !path.isEmpty else {
-                throw MistError.missingJSONPath
+            guard ["csv", "json", "plist", "yaml"].contains(url.pathExtension) else {
+                throw MistError.invalidExportFileExtension
             }
-
-            try exportJSON(path, using: products)
         }
 
-        if let path: String = plist {
-
-            guard !path.isEmpty else {
-                throw MistError.missingPLISTPath
-            }
-
-            try exportPropertyList(path, using: products)
-        }
         PrettyPrint.print(string: "[CHECK]".color(.green))
         PrettyPrint.print(prefix: "├─", string: "Checking for macOS versions...")
 
         if let path: String = yaml {
 
-            guard !path.isEmpty else {
-                throw MistError.missingYAMLPath
             if !FileManager.default.fileExists(atPath: directory.path) {
                 PrettyPrint.print(prefix: "├─", string: "Creating parent directory '\(directory.path)'...")
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
             }
 
-            try exportYAML(path, using: products)
+            switch url.pathExtension {
+            case "csv":
+                try exportCSV(path, using: products)
+            case "json":
+                try exportJSON(path, using: products)
+            case "plist":
+                try exportPropertyList(path, using: products)
+            case "yaml":
+                try exportYAML(path, using: products)
+            default:
+                break
+            }
         }
     }
 

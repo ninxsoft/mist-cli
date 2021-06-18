@@ -15,12 +15,41 @@ struct Download {
             throw MistError.invalidUser
         }
 
+        guard !download.isEmpty else {
+            throw MistError.missingDownloadType
+        }
+
+        guard !settings.outputDirectory.isEmpty else {
+            throw MistError.missingOutputDirectory
+        }
+
+        guard settings.image || settings.package else {
+            throw MistError.missingOutputType
+        }
+
+        if settings.image {
+            guard !settings.imageName.isEmpty else {
+                throw MistError.missingImageName
+            }
+
+            if let identity: String = settings.imageSigningIdentity,
+                identity.isEmpty {
+                throw MistError.missingImageSigningIdentity
+            }
         }
 
         if settings.package {
-            guard let prefix: String = settings.packageIdentifierPrefix,
-                !prefix.isEmpty else {
-                throw MistError.missingPackageIdentifierPrefix
+            guard !settings.packageName.isEmpty else {
+                throw MistError.missingPackageName
+            }
+
+            guard !settings.packageIdentifier.isEmpty else {
+                throw MistError.missingPackageIdentifier
+            }
+
+            if let identity: String = settings.packageSigningIdentity,
+                identity.isEmpty {
+                throw MistError.missingPackageSigningIdentity
             }
         }
 

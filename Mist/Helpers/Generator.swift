@@ -92,7 +92,7 @@ struct Generator {
 
 
         guard let identifier: String = settings.packageIdentifier(for: product) else {
-            throw MistError.missingPackageIdentifierPrefix
+            throw MistError.missingPackageIdentifier
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
@@ -174,6 +174,9 @@ struct Generator {
     }
 
 
+        guard let identifier: String = settings.packageIdentifier(for: product) else {
+            throw MistError.missingPackageIdentifier
+        }
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
