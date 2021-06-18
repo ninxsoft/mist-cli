@@ -11,18 +11,12 @@ struct Settings {
     let temporaryDirectory: String
     let outputDirectory: String
     let filenameTemplate: String
-    let application: Bool
     let image: Bool
     let package: Bool
     let packageIdentifierPrefix: String?
-    let zip: Bool
     let signingIdentityApplication: String?
     let signingIdentityInstaller: String?
     let keychain: String?
-
-    func applicationPath(for product: Product) -> String {
-        outputPath(for: product).appending(".app")
-    }
 
     func imagePath(for product: Product) -> String {
         outputPath(for: product).appending(".dmg")
@@ -32,9 +26,6 @@ struct Settings {
         outputPath(for: product).appending(".pkg")
     }
 
-    func zipPath(for product: Product) -> String {
-        outputPath(for: product).appending(".zip")
-    }
 
     private func outputPath(for product: Product) -> String {
         outputDirectory + "/" + filenameTemplate

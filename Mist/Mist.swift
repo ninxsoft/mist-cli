@@ -90,9 +90,7 @@ struct Mist: ParsableCommand {
     var filenameTemplate: String = .filenameTemplate
 
     @Flag(name: .shortAndLong, help: """
-    Export as macOS Installer application bundle (.app).
     """)
-    var application: Bool = false
 
     @Flag(name: .shortAndLong, help: """
     Export as macOS Disk Image (.dmg).
@@ -105,9 +103,7 @@ struct Mist: ParsableCommand {
     var package: Bool = false
 
     @Flag(name: .shortAndLong, help: """
-    Export as ZIP Archive (.zip).
     """)
-    var zip: Bool = false
 
     @Option(name: .long, help: """
     Specify the package identifier prefix, eg. com.yourcompany.pkg
@@ -145,11 +141,9 @@ struct Mist: ParsableCommand {
                     temporaryDirectory: temporaryDirectory,
                     outputDirectory: outputDirectory,
                     filenameTemplate: filenameTemplate,
-                    application: application,
                     image: image,
                     package: package,
                     packageIdentifierPrefix: packageIdentifierPrefix,
-                    zip: zip,
                     signingIdentityApplication: signingIdentityApplication,
                     signingIdentityInstaller: signingIdentityInstaller,
                     keychain: keychain

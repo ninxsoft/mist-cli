@@ -15,8 +15,6 @@ struct Download {
             throw MistError.invalidUser
         }
 
-        guard settings.application || settings.image || settings.package || settings.zip else {
-            throw MistError.invalidOutputOption
         }
 
         if settings.package {
@@ -60,15 +58,15 @@ struct Download {
         }
 
         if outputVolumePath == bootVolumePath {
-            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+            for boolean in [settings.image, settings.package] where boolean {
                 bootVolume.count += 1
             }
         } else if outputVolumePath == temporaryVolumePath {
-            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+            for boolean in [settings.image, settings.package] where boolean {
                 temporaryVolume.count += 1
             }
         } else {
-            for boolean in [settings.application, settings.image, settings.package, settings.zip] where boolean {
+            for boolean in [settings.image, settings.package] where boolean {
                 outputVolume.count += 1
             }
 

@@ -13,8 +13,6 @@ struct Generator {
 
         let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
 
-        if settings.application {
-            try generateApplication(product: product, settings: settings)
         if !FileManager.default.fileExists(atPath: outputURL.path) {
             try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true, attributes: nil)
         }
@@ -33,12 +31,6 @@ struct Generator {
 
     }
 
-    private static func generateApplication(product: Product, settings: Settings) throws {
-        PrettyPrint.print(.info, string: "Exporting Application...")
-        let destinationURL: URL = URL(fileURLWithPath: settings.applicationPath(for: product))
-        try FileManager.default.remove(destinationURL, description: "old application")
-        try FileManager.default.copy(product.installerURL, to: destinationURL)
-        PrettyPrint.print(.success, string: "Exported Application")
         try FileManager.default.removeItem(at: product.installerURL)
     }
 
@@ -80,7 +72,6 @@ struct Generator {
             PrettyPrint.print(.success, string: "Codesigned image '\(destinationURL.path)'")
         }
 
-        try FileManager.default.remove(temporaryURL, description: "temporary directory")
         PrettyPrint.print(.success, string: "Exported Image")
         try FileManager.default.removeItem(at: temporaryURL)
     }
@@ -156,15 +147,7 @@ struct Generator {
         try FileManager.default.removeItem(at: scriptsURL)
     }
 
-    private static func generateZip(product: Product, settings: Settings) throws {
-        PrettyPrint.print(.info, string: "Exporting Zip archive...")
-        let destinationURL: URL = URL(fileURLWithPath: settings.zipPath(for: product))
-        let arguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, destinationURL.path]
 
-        try FileManager.default.remove(destinationURL, description: "old ZIP archive")
-        PrettyPrint.print(.info, string: "Creating ZIP archive '\(destinationURL.path)'...")
-        try Shell.execute(arguments)
-        PrettyPrint.print(.success, string: "Created ZIP archive '\(destinationURL.path)'")
 
         if let identity: String = settings.signingIdentityApplication,
             !identity.isEmpty {
@@ -178,14 +161,10 @@ struct Generator {
 
             arguments += [destinationURL.path]
 
-            PrettyPrint.print(.info, string: "Codesigning ZIP archive '\(destinationURL.path)'...")
-            try Shell.execute(arguments)
-            PrettyPrint.print(.success, string: "Codesigned ZIP archive '\(destinationURL.path)'")
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print(.success, string: "Exported ZIP archive")
     }
 
     private static func postInstall(for product: Product) -> String {
