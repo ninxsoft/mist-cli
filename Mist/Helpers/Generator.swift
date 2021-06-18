@@ -19,7 +19,7 @@ struct Generator {
             try generatePackage(product: product, settings: settings)
         }
 
-        PrettyPrint.print(string: "[OUTPUT]".color(.green))
+        PrettyPrint.print(string: "[OUTPUT]".color(.blue))
         PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
         try FileManager.default.removeItem(at: product.installerURL)
     }
@@ -30,7 +30,7 @@ struct Generator {
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
-        PrettyPrint.print(string: "[OUTPUT - IMAGE]".color(.green))
+        PrettyPrint.print(string: "[OUTPUT - IMAGE]".color(.blue))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
@@ -71,12 +71,12 @@ struct Generator {
         PrettyPrint.print(prefix: "├─", string: "Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print(prefix: "└─", string: "Created image '\(destinationURL.path)'...")
+        PrettyPrint.print(prefix: "└─", string: "Created image '\(destinationURL.path)'")
     }
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        PrettyPrint.print(string: "[OUTPUT - PACKAGE]".color(.green))
+        PrettyPrint.print(string: "[OUTPUT - PACKAGE]".color(.blue))
 
         if product.isTooBigForPackagePayload {
             try generateBigPackage(product: product, settings: settings)
@@ -193,7 +193,7 @@ struct Generator {
 
         PrettyPrint.print(prefix: "├─", string: "Creating package '\(destinationURL.path)'...")
         try Shell.execute(arguments)
-        PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'...")
+        PrettyPrint.print(prefix: "└─", string: "Created package '\(destinationURL.path)'")
     }
 
     private static func postInstall(for product: Product) -> String {

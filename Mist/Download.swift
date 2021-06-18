@@ -53,7 +53,7 @@ struct Download {
             }
         }
 
-        PrettyPrint.print(string: "[LOOKUP]".color(.green))
+        PrettyPrint.print(string: "[LOOKUP]".color(.blue))
         PrettyPrint.print(prefix: "├─", string: "Looking for macOS download '\(download)'...")
         let catalogURL: String = catalogURL ?? Catalog.defaultURL
 
@@ -76,7 +76,7 @@ struct Download {
         let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory)
 
         if !FileManager.default.fileExists(atPath: temporaryURL.path) || !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print(string: "[OUTPUT]".color(.green))
+            PrettyPrint.print(string: "[OUTPUT]".color(.blue))
         }
 
         if !FileManager.default.fileExists(atPath: temporaryURL.path) {

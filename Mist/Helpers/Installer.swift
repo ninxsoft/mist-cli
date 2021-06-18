@@ -18,7 +18,7 @@ struct Installer {
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
-        PrettyPrint.print(string: "[INSTALL]".color(.green))
+        PrettyPrint.print(string: "[INSTALL]".color(.blue))
 
         if FileManager.default.fileExists(atPath: product.installerURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old installer '\(product.installerURL.path)'...")

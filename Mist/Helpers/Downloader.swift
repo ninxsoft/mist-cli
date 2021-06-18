@@ -16,7 +16,7 @@ struct Downloader {
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
 
-        PrettyPrint.print(string: "[DOWNLOAD]".color(.green))
+        PrettyPrint.print(string: "[DOWNLOAD]".color(.blue))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
