@@ -13,6 +13,7 @@ struct Shell {
         let process: Process = Process()
         process.launchPath = "/usr/bin/env"
         process.arguments = arguments
+        process.standardOutput = Pipe()
 
         if let variables: [String: String] = variables {
             var environment: [String: String] = ProcessInfo.processInfo.environment
