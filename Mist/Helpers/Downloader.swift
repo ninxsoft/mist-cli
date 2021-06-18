@@ -61,7 +61,7 @@ struct Downloader {
                 let destination: URL = temporaryURL.appendingPathComponent(source.lastPathComponent)
 
                 do {
-                    try FileManager.default.move(location, to: destination)
+                    try FileManager.default.moveItem(at: location, to: destination)
                     semaphore.signal()
                 } catch {
                     PrettyPrint.print(prefix: "└─", string: error.localizedDescription)
