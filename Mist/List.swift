@@ -10,11 +10,7 @@ import Yams
 
 struct List {
 
-    static func run(catalog: Catalog, csv: String?, json: String?, plist: String?, yaml: String?) throws {
-        let products: [Product] = HTTP.retrieveProducts(catalog)
-        let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        list(products, using: dateFormatter)
+    static func run(catalogURL: String?, export: String?) throws {
 
         if let path: String = export {
 
@@ -31,8 +27,12 @@ struct List {
 
         PrettyPrint.print(string: "[CHECK]".color(.green))
         PrettyPrint.print(prefix: "├─", string: "Checking for macOS versions...")
+        let catalogURL: String = catalogURL ?? Catalog.defaultURL
+        let products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL)
 
-        if let path: String = yaml {
+        if let path: String = export {
+            let url: URL = URL(fileURLWithPath: path)
+            let directory: URL = url.deletingLastPathComponent()
 
             if !FileManager.default.fileExists(atPath: directory.path) {
                 PrettyPrint.print(prefix: "├─", string: "Creating parent directory '\(directory.path)'...")
@@ -52,6 +52,10 @@ struct List {
                 break
             }
         }
+
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        list(products, using: dateFormatter)
     }
 
     private static func list(_ products: [Product], using dateFormatter: DateFormatter) {

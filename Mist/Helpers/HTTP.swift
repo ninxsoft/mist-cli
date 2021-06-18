@@ -9,13 +9,14 @@ import Foundation
 
 struct HTTP {
 
-    static func retrieveProducts(_ catalog: Catalog) -> [Product] {
-
+    static func retrieveProducts(catalogURL: String) -> [Product] {
         var products: [Product] = []
 
-        for catalogURL in catalog.urls {
+        for catalog in Catalog.CatalogType.allCases {
 
-            PrettyPrint.print(.info, string: "Downloading catalog \(catalogURL)...")
+            let catalogURL: String = catalog.url(for: catalogURL)
+
+            PrettyPrint.print(prefix: "├─", string: "Checking \(catalog.description) catalog...")
 
             guard let url: URL = URL(string: catalogURL) else {
                 PrettyPrint.print(prefix: "├─", string: "There was an error retrieving the catalog \(catalogURL), skipping...")

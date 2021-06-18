@@ -12,13 +12,9 @@ struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
 
     @Option(name: .shortAndLong, help: """
-    Specify a catalog seed:
-    * standard (Standard - macOS default)
-    * customer (Customer Seed - AppleSeed Program)
-    * developer (Developer Seed - Apple Developer Program)
-    * public (Public Seed - Apple Beta Software Program)
+    Override the default Software Update Catalog URL.
     """)
-    var catalog: Catalog = .standard
+    var catalogURL: String?
 
     @Flag(name: .shortAndLong, help: """
     List all macOS Installers available to download.
@@ -148,7 +144,7 @@ struct Mist: ParsableCommand {
                     signingIdentityInstaller: signingIdentityInstaller,
                     keychain: keychain
                 )
-                try Download.run(catalog: catalog, download: download, settings: settings)
+                try Download.run(catalogURL: catalogURL, download: download, settings: settings)
             } else if version {
                 Version.run()
             } else {
