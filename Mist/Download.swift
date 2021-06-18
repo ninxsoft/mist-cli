@@ -62,7 +62,7 @@ struct Download {
             exit(0)
         }
 
-        PrettyPrint.print(prefix: "└─", string: "Found \(product.name) \(product.version) (\(product.build))...")
+        PrettyPrint.print(prefix: "└─", string: "Found \(product.name) \(product.version) (\(product.build))")
 
         try verifyFreeSpace(product, settings: settings)
         try Downloader().download(product, settings: settings)
