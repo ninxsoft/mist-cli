@@ -30,7 +30,7 @@ struct Generator {
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
-        PrettyPrint.print(string: "[OUTPUT - IMAGE]".color(.blue))
+        PrettyPrint.print(string: "[IMAGE]".color(.blue))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
@@ -76,7 +76,7 @@ struct Generator {
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        PrettyPrint.print(string: "[OUTPUT - PACKAGE]".color(.blue))
+        PrettyPrint.print(string: "[PACKAGE]".color(.blue))
 
         if product.isTooBigForPackagePayload {
             try generateBigPackage(product: product, settings: settings)
