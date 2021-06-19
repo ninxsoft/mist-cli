@@ -87,10 +87,7 @@ struct Generator {
 
     private static func generateBigPackage(product: Product, settings: Settings) throws {
 
-        guard let identifier: String = settings.packageIdentifier(for: product) else {
-            throw MistError.missingPackageIdentifier
-        }
-
+        let identifier: String = settings.packageIdentifier(for: product)
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
         let scriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
@@ -165,10 +162,7 @@ struct Generator {
 
     private static func generateSmallPackage(product: Product, settings: Settings) throws {
 
-        guard let identifier: String = settings.packageIdentifier(for: product) else {
-            throw MistError.missingPackageIdentifier
-        }
-
+        let identifier: String = settings.packageIdentifier(for: product)
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
         var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]

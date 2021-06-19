@@ -40,7 +40,7 @@ struct Settings {
             .replacingOccurrences(of: "%BUILD%", with: product.build)
     }
 
-    func packageIdentifier(for product: Product) -> String? {
+    func packageIdentifier(for product: Product) -> String {
         packageIdentifier
             .replacingOccurrences(of: "%NAME%", with: product.name)
             .replacingOccurrences(of: "%VERSION%", with: product.version)
