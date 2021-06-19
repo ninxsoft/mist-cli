@@ -60,7 +60,7 @@ struct Mist: ParsableCommand {
     * %BUILD% will be replaced with '21A5248p'
     Note: Parent directories will be created automatically.\n
     """)
-    var outputDirectory: String = .outputDirectory + "/" + .filenameTemplate
+    var outputDirectory: String = .outputDirectory
 
     @Flag(name: .shortAndLong, help: """
     Generate a macOS Disk Image.
