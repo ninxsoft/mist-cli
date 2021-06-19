@@ -53,8 +53,8 @@ struct Download {
             }
         }
 
-        PrettyPrint.print(string: "[LOOKUP]".color(.blue))
-        PrettyPrint.print(prefix: "├─", string: "Looking for macOS download '\(download)'...")
+        PrettyPrint.print(string: "[SEARCH]".color(.blue))
+        PrettyPrint.print(prefix: "├─", string: "Searching for macOS download '\(download)'...")
         let catalogURL: String = catalogURL ?? Catalog.defaultURL
 
         guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: download) else {

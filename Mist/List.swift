@@ -25,8 +25,8 @@ struct List {
             }
         }
 
-        PrettyPrint.print(string: "[LOOKUP]".color(.blue))
-        PrettyPrint.print(prefix: "├─", string: "Looking for macOS versions...")
+        PrettyPrint.print(string: "[SEARCH]".color(.blue))
+        PrettyPrint.print(prefix: "├─", string: "Searching for macOS versions...")
         let catalogURL: String = catalogURL ?? Catalog.defaultURL
         let products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL)
 
