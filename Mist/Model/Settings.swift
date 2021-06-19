@@ -27,14 +27,14 @@ struct Settings {
     }
 
     func imagePath(for product: Product) -> String {
-        outputDirectory + "/" + imageName
+        "\(outputDirectory)/\(imageName)"
             .replacingOccurrences(of: "%NAME%", with: product.name)
             .replacingOccurrences(of: "%VERSION%", with: product.version)
             .replacingOccurrences(of: "%BUILD%", with: product.build)
     }
 
     func packagePath(for product: Product) -> String {
-        outputDirectory + "/" + packageName
+        "\(outputDirectory)/\(packageName)"
             .replacingOccurrences(of: "%NAME%", with: product.name)
             .replacingOccurrences(of: "%VERSION%", with: product.version)
             .replacingOccurrences(of: "%BUILD%", with: product.build)
