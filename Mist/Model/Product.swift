@@ -26,8 +26,11 @@ struct Product: Decodable {
     let date: String
     let distribution: String
     let packages: [Package]
-    var installerURL: URL {
-        URL(fileURLWithPath: "/Applications/Install \(name).app")
+    var mountURL: URL {
+        URL(fileURLWithPath: .temporaryDirectory + "/" + identifier + ".mount")
+    }
+    var applicationURL: URL {
+        URL(fileURLWithPath: mountURL.path + "/Applications/Install \(name).app")
     }
     var zipName: String {
         "Install \(name) \(version) \(build).zip".replacingOccurrences(of: " ", with: "-")
