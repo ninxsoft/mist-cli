@@ -16,7 +16,7 @@ struct HTTP {
 
             let catalogURL: String = catalog.url(for: catalogURL)
 
-            PrettyPrint.print(prefix: "├─", string: "Checking \(catalog.description) catalog...")
+            PrettyPrint.print(prefix: "├─", string: "Searching \(catalog.description) catalog...")
 
             guard let url: URL = URL(string: catalogURL) else {
                 PrettyPrint.print(prefix: "├─", string: "There was an error retrieving the catalog \(catalogURL), skipping...")
