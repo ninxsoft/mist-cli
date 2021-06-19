@@ -72,21 +72,21 @@ struct Download {
 
     private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
 
-        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
         let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
 
-        if !FileManager.default.fileExists(atPath: temporaryURL.path) || !FileManager.default.fileExists(atPath: outputURL.path) {
+        if !FileManager.default.fileExists(atPath: outputURL.path) || !FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(string: "[OUTPUT]".color(.blue))
         }
 
-        if !FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print(prefix: "├─", string: "Creating temporary directory '\(temporaryURL.path)'...")
-            try FileManager.default.createDirectory(atPath: temporaryURL.path, withIntermediateDirectories: true, attributes: nil)
+        if !FileManager.default.fileExists(atPath: outputURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Creating output directory '\(outputURL.path)'...")
+            try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
-        if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print(prefix: "└─", string: "Creating output directory '\(outputURL.path)'...")
-            try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
+        if !FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print(prefix: "└─", string: "Creating temporary directory '\(temporaryURL.path)'...")
+            try FileManager.default.createDirectory(atPath: temporaryURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
