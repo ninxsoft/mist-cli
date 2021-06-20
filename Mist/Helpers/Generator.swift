@@ -40,8 +40,8 @@ struct Generator {
         PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print(prefix: "├─", string: "Copying '\(product.applicationURL.path)' to '\(temporaryApplicationURL.path)'...")
-        try FileManager.default.copyItem(at: product.applicationURL, to: temporaryApplicationURL)
+        PrettyPrint.print(prefix: "├─", string: "Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...")
+        try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old image '\(destinationURL.path)'...")
@@ -92,7 +92,7 @@ struct Generator {
         let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
         let scriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
         let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
-        let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.applicationURL.path, zipURL.path]
+        let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, zipURL.path]
         let splitArguments: [String] = ["split", "-b", "8191m", zipURL.path, "\(product.zipName)."]
         let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
@@ -165,7 +165,7 @@ struct Generator {
         let identifier: String = settings.packageIdentifier(for: product)
         let destinationURL: URL = URL(fileURLWithPath: settings.packagePath(for: product))
         let version: String = "\(product.version)-\(product.build)"
-        var arguments: [String] = ["pkgbuild", "--component", product.applicationURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
+        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 
         if let identity: String = settings.packageSigningIdentity,
             !identity.isEmpty {
