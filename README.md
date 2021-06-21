@@ -1,6 +1,6 @@
 # MIST - macOS Installer Super Tool
 
-A Mac command-line tool that automatically generates **macOS Installer** Disk Images, Packages and ZIP archives:
+A Mac command-line tool that automatically generates **macOS Installers**:
 
 ![Example](Readme%20Resources/Example.png)
 
@@ -9,17 +9,13 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
 *   [x] List all available macOS Installers available for download:
     *   Display product identifiers, names, versions, builds and release dates
     *   Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
-
 *   [x] Download an available macOS Installer:
-    *   Generate the macOS Installer application bundle (.app)
     *   Generate a Disk Image (.dmg)
     *   Generate a macOS Installer Package (.pkg)
         *   Supports **macOS Big Sur** packages - with a massive 12GB+ payload!
-    *   Generate a ZIP archive (.zip)
-    *   Optionally codesign Disk Images, macOS Installer Packages and ZIP archives
-    *   Check for free space before attempting any downloads and installations
-
-*   [x] Optionally specify custom seed catalogs, allowing you to list and download macOS Installers betas from the following:
+    *   Optionally codesign Disk Images and macOS Installer Packages
+    *   Check for free space before attempting any downloads or installations
+*   [x] Optionally specify a custom catalog URL, allowing you to list and download macOS Installers from the following:
     *   **Customer Seed** - AppleSeed Program
     *   **Developer Seed** - Apple Developer Program
     *   **Public Seed** - Apple Beta Software Program
@@ -29,57 +25,81 @@ A Mac command-line tool that automatically generates **macOS Installer** Disk Im
 ```bash
 OVERVIEW: macOS Installer Super Tool.
 
-Automatically generate macOS Installer Disk Images, Packages and ZIP archives.
+Automatically generate macOS Installers.
 
 USAGE: mist <options>
 
 OPTIONS:
-  -c, --catalog <catalog> Optionally specify a catalog seed, examples:
-                          customer (Customer Seed - AppleSeed Program)
-                          developer (Developer Seed - Apple Developer Program)
-                          public (Public Seed - Apple Beta Software Program) (default: standard)
+  -c, --catalog-url <catalog-url>
+                          Override the default Software Update Catalog URL.
   -l, --list              List all macOS Installers available to download.
-  --list-path <list-path> Optionally export the list to a file.
-  --list-format <list-format>
-                          Format of the list to export:
-                          csv (Comma Separated Values)
-                          json (JSON file)
-                          plist (Property List)
-                          yaml (YAML file)
-  -d, --download          Download a macOS Installer.
-  -n, --name <name>       Optionally specify macOS name, examples:
-                          Big Sur (11.x)
-                          Catalina (10.15.x)
-                          Mojave (10.14.x)
-                          High Sierra (10.13.x) (default: latest)
-  -m, --mac-os-version <mac-os-version>
-                          Optionally specify macOS version, examples:
-                          11.2.3 (macOS Big Sur)
-                          10.15.7 (macOS Catalina)
-                          10.14.6 (macOS Mojave)
-                          10.13.6 (macOS High Sierra) (default: latest)
-  -b, --build <build>     Optionally specify macOS build number, examples:
-                          20D91 (macOS Big Sur 11.2.3)
-                          19H524 (macOS Catalina 10.15.7)
-                          18G8022 (macOS Mojave 10.14.6)
-                          17G14042 (macOS High Sierra 10.13.6) (default: latest)
-  -o, --output <output>   Optionally specify the output directory. (default: /Users/Shared/macOS Installers)
-  -a, --application       Export as macOS Installer application bundle (.app).
-  -i, --image             Export as macOS Disk Image (.dmg).
-  --image-identity <image-identity>
-                          Optionally codesign the exported macOS Disk Image (.dmg).
+  -e, --list-export <list-export>
+                          Specify the path to export the list to one of the following formats:
+                          * /path/to/export.csv (CSV file).
+                          * /path/to/export.json (JSON file).
+                          * /path/to/export.plist (Property List) file).
+                          * /path/to/export.yaml (YAML file).
+                          Note: The file extension will determine the output file format.
+  -d, --download <download>
+                          Download a macOS Installer, specifying a macOS name, version or build:
+                          * macOS Monterey
+                          * macOS Big Sur
+                          * macOS Catalina
+                          * macOS Mojave
+                          * macOS High Sierra
+                          * 12.x (macOS Monterey)
+                          * 11.x (macOS Big Sur)
+                          * 10.15.x (macOS Catalina)
+                          * 10.14.x (macOS Mojave)
+                          * 10.13.x (macOS High Sierra)
+                          * 21A5248p (macOS Monterey Beta 12.0)
+                          * 20F71 (macOS Big Sur 11.4)
+                          * 19H524 (macOS Catalina 10.15.7)
+                          * 18G8022 (macOS Mojave 10.14.6)
+                          * 17G14042 (macOS High Sierra 10.13.6)
+                          Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
+                          Note: Specifying a macOS version will assume the latest build of that particular macOS.
+  -o, --output-directory <output-directory>
+                          Specify the output directory. The following variables will be dynamically substituted:
+                          * %NAME% will be replaced with 'macOS Monterey'
+                          * %VERSION% will be replaced with '12.0'
+                          * %BUILD% will be replaced with '21A5248p'
+                          Note: Parent directories will be created automatically.
+                           (default: /Users/Shared/macOS Installers)
+  -i, --image             Generate a macOS Disk Image.
+  --image-name <image-name>
+                          Specify the macOS Disk Image output filename. The following variables will be dynamically substituted:
+                          * %NAME% will be replaced with 'macOS Monterey'
+                          * %VERSION% will be replaced with '12.0'
+                          * %BUILD% will be replaced with '21A5248p'
+                           (default: Install %NAME% %VERSION%-%BUILD%.dmg)
+  --image-signing-identity <image-signing-identity>
+                          Codesign the exported macOS Disk Image (.dmg).
                           Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
-  -p, --package           Export as macOS Installer Package (.pkg).
+  -p, --package           Generate a macOS Installer Package.
+  --package-name <package-name>
+                          Specify the macOS Installer Package output filename. The following variables will be dynamically substituted:
+                          * %NAME% will be replaced with 'macOS Monterey'
+                          * %VERSION% will be replaced with '12.0'
+                          * %BUILD% will be replaced with '21A5248p'
+                           (default: Install %NAME% %VERSION%-%BUILD%.pkg)
   --package-identifier <package-identifier>
-                          Specify the package identifier.
-                          eg. com.yourcompany.pkg.mac-os-install-{name}
-  --package-identity <package-identity>
-                          Optionally codesign the exported macOS Installer Packages (.pkg).
+                          Specify the macOS Installer Package identifier. The following variables will be dynamically substituted:
+                          * %NAME% will be replaced with 'macOS Monterey'
+                          * %VERSION% will be replaced with '12.0'
+                          * %BUILD% will be replaced with '21A5248p'
+                          * Spaces will be replaced with hyphens -
+                           (default: com.mycompany.pkg.install-%NAME%)
+  --package-signing-identity <package-signing-identity>
+                          Codesign the exported macOS Installer Package (.pkg).
                           Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
-  -z, --zip               Export as ZIP Archive (.zip).
-  --zip-identity <zip-identity>
-                          Optionally codesign the exported ZIP archive (.zip).
-                          Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
+  -k, --keychain <keychain>
+                          Specify a keychain path to search for signing identities.
+                          Note: If no keychain is specified, the default user login keychain will be used.
+  -t, --temporary-directory <temporary-directory>
+                          Specify the temporary downloads directory.
+                          Note: Parent directories will be created automatically.
+                           (default: /private/tmp)
   -v, --version           Display the version of mist.
   -h, --help              Show help information.
 ```
@@ -91,55 +111,43 @@ OPTIONS:
 mist --list
 
 # List + Export to a CSV file:
-mist --list --list-path "/path/to/export.csv" --list-format "csv"
+mist --list --list-export "/path/to/export.csv"
 
 # List + Export to a JSON file:
-mist --list --list-path "/path/to/export.json" --list-format "json"
+mist --list --list-export "/path/to/export.json"
 
 # List + Export to a Property List:
-mist --list --list-path "/path/to/export.plist" --list-format "plist"
+mist --list --list-export "/path/to/export.plist"
 
 # List + Export to a YAML file:
-mist --list --list-path "/path/to/export.yaml" --list-format "yaml"
+mist --list --list-export "/path/to/export.yaml"
 
-# Download the latest available macOS Installer to the default output directory:
-mist --download --application
+# Download the latest macOS Big Sur Installer and generate a Disk Image:
+mist --download "Big Sur" --image
 
-# Download the latest macOS Catalina Installer and generate a Disk Image:
-mist --download --name "Catalina" --image
+# Download a specific macOS Installer version
+# and generate a Disk Image with a custom name:
+mist --download "11.4" --image --image-name "Install %NAME %VERSION%.dmg"
 
-# Download a specific macOS Mojave Installer version and generate a
-# codesigned macOS Installer Package in a custom directory:
-mist --download \
-     --name "Mojave" \
-     --mac-os-version "10.14.5" \
-     --output "/path/to/custom/directory" \
-     --package \
-     --package-identifier "com.ninxsoft.mist.pkg.mojave-installer" \
-     --package-identity "Developer ID Installer: Nindi Gill (Team ID)"
-
-# Download a specific macOS High Sierra Installer version and build and generate a
-# codesigned ZIP archive:
-mist --download \
-     --name "High Sierra" \
-     --mac-os-version "10.13.6" \
-     --build "17G66" \
-     --zip \
-     --zip-identity "Developer ID Application: Nindi Gill (Team ID)"
-
-# Download the latest available macOS Installer from the Public Seed catalogs and
-# generate all available output options, signing where possible:
-mist --catalog "public" \
-     --download \
-     --output "/path/to/custom/directory" \
-     --application \
+# Download a specific macOS Installer build and generate
+# a codesigned Disk Image output to a custom directory:
+mist --download "19H15" \
      --image \
-     --image-identity "Developer ID Application: Nindi Gill (Team ID)" \
+     --image-signing-identity "Developer ID Application: First Last (Team ID)" \
+     --output-directory "/path/to/custom/directory"
+
+# Download the latest macOS Big Sur Installer and generate
+# a Disk Image and macOS Installer Package, both with custom
+# names, codesigned, output to a custom directory:
+mist --download "Big Sur" \
+     --image \
+     --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+     --image-signing-identity "Developer ID Application: First Last (Team ID)" \
      --package \
-     --package-identifier "com.ninxsoft.mist.pkg.latest-installer" \
-     --package-identity "Developer ID Installer: Nindi Gill (Team ID)"
-     --zip \
-     --zip-identity "Developer ID Application: Nindi Gill (Team ID)"
+     --package-name "Install %NAME% %VERSION%-%BUILD%.pkg" \
+     --package-identifier "com.mycompany.pkg.install-%NAME%" \
+     --package-signing-identity "Developer ID Installer: First Last (Team ID)" \
+     --output-directory "/path/to/custom/directory"
 ```
 
 ## Build Requirements
@@ -149,7 +157,7 @@ mist --catalog "public" \
 
 ## Download
 
-Grab the latest version of **MIST** from the [releases page](https://github.com/ninxsoft/MIST/releases).
+Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/MIST/releases).
 
 ## Credits / Thank You
 
@@ -159,6 +167,21 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 
 ## Version History
 
+*   1.3
+    *   Removed `name`, `--mac-os-version` and `--build` options, `--download` now supports all three
+    *   Removed `--list-format` option and renamed `--list-path` to `--list-export`, file extension determines export type
+    *   Removed `--application` and `--zip` options
+    *   Added `--catalogURL`
+    *   Added `--temporary-directory` option
+    *   Added `--keychain` option
+    *   Added free space check before downloads are initiated
+    *   Support for building hardware specific installers on all Macs
+    *   macOS name is now determined from the distribution files, no longer hardcoded
+    *   CSV cells with spaces now display correctly
+    *   Better sanity checks before downloads are initiated
+    *   Cleanup of standard output messaging (less verbose)
+    *   Removed download progress output
+    *   General code refactoring
 *   1.2
     *   Downloads now show progress: current + total download sizes and % completed
     *   Mist will now create the `--output` directory if it does not exist
@@ -179,22 +202,22 @@ Grab the latest version of **MIST** from the [releases page](https://github.com/
 
 ## License
 
-    Copyright © 2021 Nindi Gill
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+>   Copyright © 2021 Nindi Gill
+>
+>   Permission is hereby granted, free of charge, to any person obtaining a copy
+>   of this software and associated documentation files (the "Software"), to deal
+>   in the Software without restriction, including without limitation the rights
+>   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+>   copies of the Software, and to permit persons to whom the Software is
+>   furnished to do so, subject to the following conditions:
+>
+>   The above copyright notice and this permission notice shall be included in all
+>   copies or substantial portions of the Software.
+>
+>   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+>   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+>   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+>   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+>   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+>   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+>   SOFTWARE.
