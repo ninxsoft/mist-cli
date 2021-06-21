@@ -22,7 +22,7 @@ struct List {
             try export(path, products: products)
         }
 
-        PrettyPrint.print("Found \(products.count) macOS Installers available for download\n")
+        PrettyPrint.print(prefix: "└─", "Found \(products.count) macOS Installers available for download\n")
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         list(products, using: dateFormatter)
