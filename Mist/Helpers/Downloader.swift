@@ -12,7 +12,7 @@ struct Downloader {
     static func download(_ product: Product, settings: Settings) throws {
 
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
 
         PrettyPrint.printHeader("DOWNLOAD")

@@ -22,7 +22,7 @@ struct Generator {
 
     private static func generateImage(product: Product, settings: Settings) throws {
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
@@ -84,9 +84,9 @@ struct Generator {
     private static func generateBigPackage(product: Product, settings: Settings) throws {
 
         let identifier: String = settings.packageIdentifier(for: product)
-        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
         let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
-        let scriptsURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)-Scripts")
+        let scriptsURL: URL = URL(fileURLWithPath: settings.temporaryScriptsDirectory(for: product))
         let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
         let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, zipURL.path]
         let splitArguments: [String] = ["split", "-b", "8191m", zipURL.path, "\(product.zipName)."]

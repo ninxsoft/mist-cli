@@ -78,7 +78,7 @@ struct Download {
     private static func setup(_ product: Product, settings: Settings) throws {
 
         let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory(for: product))
-        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
 
         if !FileManager.default.fileExists(atPath: outputURL.path) || !FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.printHeader("SETUP")

@@ -15,7 +15,7 @@ struct Installer {
             throw MistError.invalidURL(url: product.distribution)
         }
 
-        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
         PrettyPrint.printHeader("INSTALL")
