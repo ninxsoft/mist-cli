@@ -43,7 +43,7 @@
 
 /* Begin PBXFileReference section */
 		570D5090260034E10066E4C9 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
-		574413FC25F85EF300DE5540 /* Mist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mist; sourceTree = BUILT_PRODUCTS_DIR; };
+		574413FC25F85EF300DE5540 /* mist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mist; sourceTree = BUILT_PRODUCTS_DIR; };
 		574413FF25F85EF300DE5540 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5744140825F8603300DE5540 /* Mist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mist.swift; sourceTree = "<group>"; };
 		5744141125F8607800DE5540 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 		574413FD25F85EF300DE5540 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				574413FC25F85EF300DE5540 /* Mist */,
+				574413FC25F85EF300DE5540 /* mist */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,9 +144,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		574413FB25F85EF300DE5540 /* Mist */ = {
+		574413FB25F85EF300DE5540 /* mist */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5744140325F85EF300DE5540 /* Build configuration list for PBXNativeTarget "Mist" */;
+			buildConfigurationList = 5744140325F85EF300DE5540 /* Build configuration list for PBXNativeTarget "mist" */;
 			buildPhases = (
 				574413F825F85EF300DE5540 /* Sources */,
 				574413F925F85EF300DE5540 /* Frameworks */,
@@ -157,13 +157,13 @@
 			);
 			dependencies = (
 			);
-			name = Mist;
+			name = mist;
 			packageProductDependencies = (
 				5744140E25F8606500DE5540 /* ArgumentParser */,
 				57D135B725FEEE48003467B2 /* Yams */,
 			);
 			productName = MIC;
-			productReference = 574413FC25F85EF300DE5540 /* Mist */;
+			productReference = 574413FC25F85EF300DE5540 /* mist */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -197,7 +197,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				574413FB25F85EF300DE5540 /* Mist */,
+				574413FB25F85EF300DE5540 /* mist */,
 			);
 		};
 /* End PBXProject section */
@@ -409,7 +409,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5744140325F85EF300DE5540 /* Build configuration list for PBXNativeTarget "Mist" */ = {
+		5744140325F85EF300DE5540 /* Build configuration list for PBXNativeTarget "mist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5744140425F85EF300DE5540 /* Debug */,

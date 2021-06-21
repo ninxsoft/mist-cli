@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "574413FB25F85EF300DE5540"
-               BuildableName = "Mist"
-               BlueprintName = "Mist"
+               BuildableName = "mist"
+               BlueprintName = "mist"
                ReferencedContainer = "container:Mist.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "574413FB25F85EF300DE5540"
-            BuildableName = "Mist"
-            BlueprintName = "Mist"
+            BuildableName = "mist"
+            BlueprintName = "mist"
             ReferencedContainer = "container:Mist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "574413FB25F85EF300DE5540"
-            BuildableName = "Mist"
-            BlueprintName = "Mist"
+            BuildableName = "mist"
+            BlueprintName = "mist"
             ReferencedContainer = "container:Mist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
