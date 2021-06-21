@@ -13,4 +13,10 @@ struct PrettyPrint {
         let string: String = prefix.isEmpty ? string : "  \(prefix.color(.green)) \(string)"
         Swift.print(string)
     }
+
+    static func printHeader(_ header: String) {
+        let horizontal: String = String(repeating: "─", count: header.count + 2)
+        let string: String = "┌\(horizontal)┐\n│ \(header) │\n└\(horizontal)┘"
+        Swift.print(string.color(.blue))
+    }
 }

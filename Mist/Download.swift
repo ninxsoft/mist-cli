@@ -15,6 +15,27 @@ struct Download {
             throw MistError.invalidUser
         }
 
+        try sanityChecks(download, settings: settings)
+        let catalogURL: String = catalogURL ?? Catalog.defaultURL
+        PrettyPrint.printHeader("SEARCH")
+        PrettyPrint.print(prefix: "├─", string: "Searching for macOS download '\(download)'...")
+
+        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: download) else {
+            PrettyPrint.print(prefix: "└─", string: "No macOS download found with '\(download)', exiting...")
+            return
+        }
+
+        PrettyPrint.print(prefix: "└─", string: "Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
+        try setup(product, settings: settings)
+        try verifyFreeSpace(product, settings: settings)
+        try Downloader.download(product, settings: settings)
+        try Installer.install(product, settings: settings)
+        try Generator.generate(product, settings: settings)
+        try teardown(product, settings: settings)
+    }
+
+    private static func sanityChecks(_ download: String, settings: Settings) throws {
+
         guard !download.isEmpty else {
             throw MistError.missingDownloadType
         }
@@ -52,31 +73,15 @@ struct Download {
                 throw MistError.missingPackageSigningIdentity
             }
         }
-
-        PrettyPrint.print(string: "[SEARCH]".color(.blue))
-        PrettyPrint.print(prefix: "├─", string: "Searching for macOS download '\(download)'...")
-        let catalogURL: String = catalogURL ?? Catalog.defaultURL
-
-        guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: download) else {
-            PrettyPrint.print(prefix: "└─", string: "No macOS download found with '\(download)', exiting...")
-            exit(0)
-        }
-
-        PrettyPrint.print(prefix: "└─", string: "Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
-
-        try verifyFreeSpace(product, settings: settings)
-        try Downloader().download(product, settings: settings)
-        try Installer.install(product, settings: settings)
-        try Generator.generate(product, settings: settings)
     }
 
-    private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
+    private static func setup(_ product: Product, settings: Settings) throws {
 
         let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory(for: product))
-        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
+        let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
 
         if !FileManager.default.fileExists(atPath: outputURL.path) || !FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print(string: "[OUTPUT]".color(.blue))
+            PrettyPrint.printHeader("SETUP")
         }
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
@@ -84,10 +89,19 @@ struct Download {
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
-        if !FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print(prefix: "└─", string: "Creating temporary directory '\(temporaryURL.path)'...")
-            try FileManager.default.createDirectory(atPath: temporaryURL.path, withIntermediateDirectories: true, attributes: nil)
+        if FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
+            try FileManager.default.removeItem(at: temporaryURL)
         }
+
+        PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
+        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+    }
+
+    private static func verifyFreeSpace(_ product: Product, settings: Settings) throws {
+
+        let outputURL: URL = URL(fileURLWithPath: settings.outputDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory)
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
             let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: temporaryURL.path)?.first,
@@ -99,10 +113,6 @@ struct Download {
         var bootVolume: (path: String, count: Int64) = (path: "/", count: 1)
         var temporaryVolume: (path: String, count: Int64) = (path: temporaryURL.path, count: 1)
         var outputVolume: (path: String, count: Int64) = (path: outputURL.path, count: 0)
-
-        if temporaryVolumePath == bootVolumePath {
-            bootVolume.count += 1
-        }
 
         if outputVolumePath == bootVolumePath {
             for boolean in [settings.image, settings.package] where boolean {
@@ -117,10 +127,15 @@ struct Download {
                 outputVolume.count += 1
             }
 
-            volumes.append(outputVolume)
+            volumes.insert(outputVolume, at: 0)
         }
 
-        volumes.insert(temporaryVolume, at: 0)
+        if temporaryVolumePath == bootVolumePath {
+            bootVolume.count += 1
+        } else {
+            volumes.insert(temporaryVolume, at: 0)
+        }
+
         volumes.insert(bootVolume, at: 0)
 
         for volume in volumes {
@@ -137,5 +152,11 @@ struct Download {
                 throw MistError.notEnoughFreeSpace(volume: volume.path, free: free, required: required)
             }
         }
+    }
+
+    private static func teardown(_ product: Product, settings: Settings) throws {
+        PrettyPrint.printHeader("TEARDOWN")
+        PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
+        try FileManager.default.removeItem(at: product.installerURL)
     }
 }

@@ -29,7 +29,7 @@ struct Mist: ParsableCommand {
     * /path/to/export.yaml (YAML file).
     Note: The file extension will determine the output file format.
     """)
-    var export: String?
+    var exportPath: String?
 
     @Option(name: .shortAndLong, help: """
     Download a macOS Installer, specifying a macOS name, version or build:
@@ -128,7 +128,7 @@ struct Mist: ParsableCommand {
 
         do {
             if list {
-                try List.run(catalogURL: catalogURL, export: export)
+                try List.run(catalogURL: catalogURL, exportPath: exportPath)
             } else if let download: String = download {
                 let settings: Settings = Settings(
                     outputDirectory: outputDirectory,

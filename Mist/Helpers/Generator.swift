@@ -18,10 +18,6 @@ struct Generator {
         if settings.package {
             try generatePackage(product: product, settings: settings)
         }
-
-        PrettyPrint.print(string: "[OUTPUT]".color(.blue))
-        PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
-        try FileManager.default.removeItem(at: product.installerURL)
     }
 
     private static func generateImage(product: Product, settings: Settings) throws {
@@ -30,7 +26,7 @@ struct Generator {
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
-        PrettyPrint.print(string: "[IMAGE]".color(.blue))
+        PrettyPrint.printHeader("IMAGE")
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
@@ -76,7 +72,7 @@ struct Generator {
 
     private static func generatePackage(product: Product, settings: Settings) throws {
 
-        PrettyPrint.print(string: "[PACKAGE]".color(.blue))
+        PrettyPrint.printHeader("PACKAGE")
 
         if product.isTooBigForPackagePayload {
             try generateBigPackage(product: product, settings: settings)

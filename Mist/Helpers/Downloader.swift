@@ -9,22 +9,13 @@ import Foundation
 
 struct Downloader {
 
-    private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
+    static func download(_ product: Product, settings: Settings) throws {
 
-    func download(_ product: Product, settings: Settings) throws {
-
+        let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
         let temporaryURL: URL = URL(fileURLWithPath: "\(settings.temporaryDirectory)/\(product.identifier)")
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
 
-        PrettyPrint.print(string: "[DOWNLOAD]".color(.blue))
-
-        if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
-            try FileManager.default.removeItem(at: temporaryURL)
-        }
-
-        PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
-        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+        PrettyPrint.printHeader("DOWNLOAD")
 
         for (index, url) in urls.enumerated() {
             guard let source: URL = URL(string: url) else {
