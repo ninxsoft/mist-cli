@@ -21,16 +21,16 @@ struct Installer {
         PrettyPrint.printHeader("INSTALL")
 
         if FileManager.default.fileExists(atPath: product.installerURL.path) {
-            PrettyPrint.print(prefix: "├─", string: "Deleting old installer '\(product.installerURL.path)'...")
+            PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...")
             try FileManager.default.removeItem(at: product.installerURL)
         }
 
-        PrettyPrint.print(prefix: "├─", string: "Creating new installer '\(product.installerURL.path)'...")
+        PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...")
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
         try Shell.execute(arguments, environment: variables)
-        PrettyPrint.print(prefix: "├─", string: "Deleting temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
-        PrettyPrint.print(prefix: "└─", string: "Created new installer '\(product.installerURL.path)'")
+        PrettyPrint.print("Created new installer '\(product.installerURL.path)'")
     }
 }

@@ -14,7 +14,7 @@ struct List {
         try sanityChecks(exportPath)
 
         PrettyPrint.printHeader("SEARCH")
-        PrettyPrint.print(prefix: "├─", string: "Searching for macOS versions...")
+        PrettyPrint.print("Searching for macOS versions...")
         let catalogURL: String = catalogURL ?? Catalog.defaultURL
         let products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL)
 
@@ -22,7 +22,7 @@ struct List {
             try export(path, products: products)
         }
 
-        PrettyPrint.print(prefix: "└─", string: "Found \(products.count) macOS Installers available for download\n")
+        PrettyPrint.print("Found \(products.count) macOS Installers available for download\n")
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         list(products, using: dateFormatter)
@@ -49,7 +49,7 @@ struct List {
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
-            PrettyPrint.print(prefix: "├─", string: "Creating parent directory '\(directory.path)'...")
+            PrettyPrint.print("Creating parent directory '\(directory.path)'...")
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
 
@@ -71,7 +71,7 @@ struct List {
         let header: String = "Identifier,Name,Version,Build,Date\n"
         let string: String = header + products.map { $0.csvLine }.joined()
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(prefix: "├─", string: "Exported list as CSV: '\(path)'")
+        PrettyPrint.print("Exported list as CSV: '\(path)'")
     }
 
     private static func exportJSON(_ path: String, using products: [Product]) throws {
@@ -83,7 +83,7 @@ struct List {
         }
 
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(prefix: "├─", string: "Exported list as JSON: '\(path)'")
+        PrettyPrint.print("Exported list as JSON: '\(path)'")
     }
 
     private static func exportPropertyList(_ path: String, using products: [Product]) throws {
@@ -95,14 +95,14 @@ struct List {
         }
 
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(prefix: "├─", string: "Exported list as Property List: '\(path)'")
+        PrettyPrint.print("Exported list as Property List: '\(path)'")
     }
 
     private static func exportYAML(_ path: String, using products: [Product]) throws {
         let dictionaries: [[String: Any]] = products.map { $0.dictionary }
         let string: String = try Yams.dump(object: dictionaries)
         try string.write(toFile: path, atomically: true, encoding: .utf8)
-        PrettyPrint.print(prefix: "├─", string: "Exported list as YAML: '\(path)'")
+        PrettyPrint.print("Exported list as YAML: '\(path)'")
     }
 
     private static func list(_ products: [Product], using dateFormatter: DateFormatter) {

@@ -18,14 +18,14 @@ struct Download {
         try sanityChecks(download, settings: settings)
         let catalogURL: String = catalogURL ?? Catalog.defaultURL
         PrettyPrint.printHeader("SEARCH")
-        PrettyPrint.print(prefix: "├─", string: "Searching for macOS download '\(download)'...")
+        PrettyPrint.print("Searching for macOS download '\(download)'...")
 
         guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: download) else {
-            PrettyPrint.print(prefix: "└─", string: "No macOS download found with '\(download)', exiting...")
+            PrettyPrint.print(prefix: "└─", "No macOS download found with '\(download)', exiting...")
             return
         }
 
-        PrettyPrint.print(prefix: "└─", string: "Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
+        PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
         try setup(product, settings: settings)
         try verifyFreeSpace(product, settings: settings)
         try Downloader.download(product, settings: settings)
@@ -85,16 +85,16 @@ struct Download {
         }
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print(prefix: "├─", string: "Creating output directory '\(outputURL.path)'...")
+            PrettyPrint.print("Creating output directory '\(outputURL.path)'...")
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print(prefix: "├─", string: "Deleting old temporary directory '\(temporaryURL.path)'...")
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print(prefix: "├─", string: "Creating new temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -156,7 +156,7 @@ struct Download {
 
     private static func teardown(_ product: Product, settings: Settings) throws {
         PrettyPrint.printHeader("TEARDOWN")
-        PrettyPrint.print(prefix: "└─", string: "Deleting installer '\(product.installerURL.path)'...")
+        PrettyPrint.print(prefix: "└─", "Deleting installer '\(product.installerURL.path)'...")
         try FileManager.default.removeItem(at: product.installerURL)
     }
 }

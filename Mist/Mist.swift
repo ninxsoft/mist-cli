@@ -153,7 +153,7 @@ struct Mist: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(string: mistError.description)
+            PrettyPrint.print(prefix: "└─", mistError.description)
             Mist.exit(withError: mistError)
         }
     }

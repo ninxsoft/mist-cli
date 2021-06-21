@@ -24,28 +24,27 @@ struct Downloader {
 
             let current: Int = index + 1
             let currentString: String = "\(current < 10 && product.totalFiles >= 10 ? "0" : "")\(current)"
-            let string: String = "Downloading file \(currentString) of \(product.totalFiles) - \(source.lastPathComponent)..."
-            PrettyPrint.print(prefix: index == urls.count - 1 ? "└─" : "├─", string: string)
+            PrettyPrint.print("Downloading file \(currentString) of \(product.totalFiles) - \(source.lastPathComponent)...")
 
             let task: URLSessionDownloadTask = URLSession.shared.downloadTask(with: source) { url, response, error in
 
                 if let error: Error = error {
-                    PrettyPrint.print(prefix: "└─", string: error.localizedDescription)
+                    PrettyPrint.print(prefix: "└─", error.localizedDescription)
                     exit(1)
                 }
 
                 guard let response: HTTPURLResponse = response as? HTTPURLResponse else {
-                    PrettyPrint.print(prefix: "└─", string: "There was an error retrieving \(source.lastPathComponent)")
+                    PrettyPrint.print(prefix: "└─", "There was an error retrieving \(source.lastPathComponent)")
                     exit(1)
                 }
 
                 guard response.statusCode == 200 else {
-                    PrettyPrint.print(prefix: "└─", string: "Invalid HTTP status code: \(response.statusCode)")
+                    PrettyPrint.print(prefix: "└─", "Invalid HTTP status code: \(response.statusCode)")
                     exit(1)
                 }
 
                 guard let location: URL = url else {
-                    PrettyPrint.print(prefix: "└─", string: "Invalid temporary URL")
+                    PrettyPrint.print(prefix: "└─", "Invalid temporary URL")
                     exit(1)
                 }
 
@@ -55,7 +54,7 @@ struct Downloader {
                     try FileManager.default.moveItem(at: location, to: destination)
                     semaphore.signal()
                 } catch {
-                    PrettyPrint.print(prefix: "└─", string: error.localizedDescription)
+                    PrettyPrint.print(prefix: "└─", error.localizedDescription)
                     exit(1)
                 }
             }
