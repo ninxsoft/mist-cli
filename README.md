@@ -168,7 +168,7 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
 ## Version History
 
 *   1.3
-    *   Removed `name`, `--mac-os-version` and `--build` options, `--download` now supports all three
+    *   Removed `--name`, `--mac-os-version` and `--build` options, `--download` now supports all three
     *   Removed `--list-format` option and renamed `--list-path` to `--list-export`, file extension determines export type
     *   Removed `--application` and `--zip` options
     *   Added `--catalogURL`
