@@ -91,6 +91,9 @@ struct HTTP {
                 value["PostDate"] = dateFormatter.string(from: date)
                 value["DistributionURL"] = distributionURL
 
+                // JSON object creation freaks out with the default DeferredSUEnablementDate date format
+                value.removeValue(forKey: "DeferredSUEnablementDate")
+
                 let productData: Data = try JSONSerialization.data(withJSONObject: value, options: .prettyPrinted)
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
