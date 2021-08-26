@@ -24,50 +24,47 @@ struct HTTP {
         do {
             let string: String = try String(contentsOf: devicesURL, encoding: .utf8)
 
-            guard let data: Data = string.data(using: .utf8) else {
+            guard let data: Data = string.data(using: .utf8),
+                let devices: [[String: Any]] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] else {
                 PrettyPrint.print("There was an error retrieving devices from \(devicesURLString)...")
                 return []
             }
 
-            if let devices: [[String: Any]] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] {
-                for device in devices {
-                    guard let name: String = device["name"] as? String,
-                        let identifier: String = device["identifier"] as? String,
-                        identifier.contains("Mac") else {
-                        continue
-                    }
+            for device in devices {
+                guard let name: String = device["name"] as? String,
+                    let identifier: String = device["identifier"] as? String,
+                    identifier.contains("Mac") else {
+                    continue
+                }
 
-                    PrettyPrint.print("Retrieving firmware versions for '\(name)'...")
+                PrettyPrint.print("Retrieving firmware versions for '\(name)'...")
+                let deviceURLString: String = Firmware.deviceURL(for: identifier)
 
-                    let deviceURLString: String = Firmware.deviceURL(for: identifier)
+                guard let deviceURL: URL = URL(string: deviceURLString) else {
+                    PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
+                    continue
+                }
 
-                    guard let deviceURL: URL = URL(string: deviceURLString) else {
-                        PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
-                        continue
-                    }
+                let string: String = try String(contentsOf: deviceURL, encoding: .utf8)
 
-                    let string: String = try String(contentsOf: deviceURL, encoding: .utf8)
+                guard let data: Data = string.data(using: .utf8) else {
+                    PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
+                    continue
+                }
 
-                    guard let data: Data = string.data(using: .utf8) else {
-                        PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
-                        continue
-                    }
+                guard let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+                    let firmwaresArray: [[String: Any]] = dictionary["firmwares"] as? [[String: Any]] else {
+                    continue
+                }
 
-                    if let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-                        let firmwaresArray: [[String: Any]] = dictionary["firmwares"] as? [[String: Any]] {
+                for firmwareDictionary in firmwaresArray {
+                    let firmwareData: Data = try JSONSerialization.data(withJSONObject: firmwareDictionary, options: .prettyPrinted)
+                    let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
 
-                        for firmwareDictionary in firmwaresArray {
-                            let firmwareData: Data = try JSONSerialization.data(withJSONObject: firmwareDictionary, options: .prettyPrinted)
-                            let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
-
-                            if !firmwares.contains(where: { $0 == firmware }) {
-                                firmwares.append(firmware)
-                            }
-                        }
+                    if !firmwares.contains(where: { $0 == firmware }) {
+                        firmwares.append(firmware)
                     }
                 }
-            } else {
-                PrettyPrint.print("There was an error retrieving devices from \(devicesURLString)...")
             }
         } catch {
             PrettyPrint.print(error.localizedDescription)

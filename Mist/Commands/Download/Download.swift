@@ -70,66 +70,73 @@ struct Download {
 
         switch options.platform {
         case .apple:
-            guard !options.firmwareName.isEmpty else {
-                throw MistError.missingFirmwareName
-            }
-
-            PrettyPrint.print("Firmware name is '\(options.firmwareName)'...")
+            try sanityChecksFirmware(options)
         case .intel:
+            try sanityChecksInstaller(options)
+        }
+    }
 
-            guard options.application || options.image || options.package else {
-                throw MistError.missingOutputType
+    private static func sanityChecksFirmware(_ options: DownloadOptions) throws {
+
+        guard !options.firmwareName.isEmpty else {
+            throw MistError.missingFirmwareName
+        }
+
+        PrettyPrint.print("Firmware name is '\(options.firmwareName)'...")
+    }
+
+    private static func sanityChecksInstaller(_ options: DownloadOptions) throws {
+
+        guard options.application || options.image || options.package else {
+            throw MistError.missingOutputType
+        }
+
+        PrettyPrint.print("Valid download type(s) specified...")
+
+        if options.application && options.applicationName.isEmpty {
+            throw MistError.missingApplicationName
+        }
+
+        PrettyPrint.print("Application name is '\(options.applicationName)'...")
+
+        if options.image {
+            guard !options.imageName.isEmpty else {
+                throw MistError.missingImageName
             }
 
-            PrettyPrint.print("Valid download type(s) specified...")
+            PrettyPrint.print("Disk Image name is '\(options.imageName)'...")
 
-            if options.application {
-                guard !options.applicationName.isEmpty else {
-                    throw MistError.missingApplicationName
+            if let identity: String = options.imageSigningIdentity {
+
+                guard !identity.isEmpty else {
+                    throw MistError.missingImageSigningIdentity
                 }
 
-                PrettyPrint.print("Application name is '\(options.applicationName)'...")
+                PrettyPrint.print("Disk Image signing identity is '\(identity)'...")
+            }
+        }
+
+        if options.package {
+            guard !options.packageName.isEmpty else {
+                throw MistError.missingPackageName
             }
 
-            if options.image {
-                guard !options.imageName.isEmpty else {
-                    throw MistError.missingImageName
-                }
+            PrettyPrint.print("Package name is '\(options.packageName)'...")
 
-                PrettyPrint.print("Disk Image name is '\(options.imageName)'...")
-
-                if let identity: String = options.imageSigningIdentity {
-
-                    guard !identity.isEmpty else {
-                        throw MistError.missingImageSigningIdentity
-                    }
-
-                    PrettyPrint.print("Disk Image signing identity is '\(identity)'...")
-                }
+            guard let identifier: String = options.packageIdentifier,
+                !identifier.isEmpty else {
+                throw MistError.missingPackageIdentifier
             }
 
-            if options.package {
-                guard !options.packageName.isEmpty else {
-                    throw MistError.missingPackageName
+            PrettyPrint.print("Package identifier is '\(identifier)'...")
+
+            if let identity: String = options.packageSigningIdentity {
+
+                guard !identity.isEmpty else {
+                    throw MistError.missingPackageSigningIdentity
                 }
 
-                PrettyPrint.print("Package name is '\(options.packageName)'...")
-
-                guard let identifier: String = options.packageIdentifier,
-                    !identifier.isEmpty else {
-                    throw MistError.missingPackageIdentifier
-                }
-
-                PrettyPrint.print("Package identifier is '\(identifier)'...")
-
-                if let identity: String = options.packageSigningIdentity {
-
-                    guard !identity.isEmpty else {
-                        throw MistError.missingPackageSigningIdentity
-                    }
-
-                    PrettyPrint.print("Package signing identity is '\(identity)'...")
-                }
+                PrettyPrint.print("Package signing identity is '\(identity)'...")
             }
         }
     }
