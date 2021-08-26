@@ -9,6 +9,8 @@ import Foundation
 
 struct Settings {
     let outputDirectory: String
+    let application: Bool
+    let applicationName: String
     let image: Bool
     let imageName: String
     let imageSigningIdentity: String?
@@ -20,11 +22,7 @@ struct Settings {
     let temporaryDirectory: String
 
     func outputDirectory(for product: Product) -> String {
-        outputDirectory
-            .replacingOccurrences(of: "%NAME%", with: product.name)
-            .replacingOccurrences(of: "%VERSION%", with: product.version)
-            .replacingOccurrences(of: "%BUILD%", with: product.build)
-            .replacingOccurrences(of: "//", with: "/")
+        outputDirectory.stringWithSubstitutions(using: product)
     }
 
     func temporaryDirectory(for product: Product) -> String {
@@ -37,28 +35,21 @@ struct Settings {
             .replacingOccurrences(of: "//", with: "/")
     }
 
+    func applicationPath(for product: Product) -> String {
+        "\(outputDirectory)/\(applicationName)".stringWithSubstitutions(using: product)
+    }
+
     func imagePath(for product: Product) -> String {
-        "\(outputDirectory)/\(imageName)"
-            .replacingOccurrences(of: "%NAME%", with: product.name)
-            .replacingOccurrences(of: "%VERSION%", with: product.version)
-            .replacingOccurrences(of: "%BUILD%", with: product.build)
-            .replacingOccurrences(of: "//", with: "/")
+        "\(outputDirectory)/\(imageName)".stringWithSubstitutions(using: product)
     }
 
     func packagePath(for product: Product) -> String {
-        "\(outputDirectory)/\(packageName)"
-            .replacingOccurrences(of: "%NAME%", with: product.name)
-            .replacingOccurrences(of: "%VERSION%", with: product.version)
-            .replacingOccurrences(of: "%BUILD%", with: product.build)
-            .replacingOccurrences(of: "//", with: "/")
+        "\(outputDirectory)/\(packageName)".stringWithSubstitutions(using: product)
     }
 
     func packageIdentifier(for product: Product) -> String {
         packageIdentifier
-            .replacingOccurrences(of: "%NAME%", with: product.name)
-            .replacingOccurrences(of: "%VERSION%", with: product.version)
-            .replacingOccurrences(of: "%BUILD%", with: product.build)
-            .replacingOccurrences(of: "//", with: "/")
+            .stringWithSubstitutions(using: product)
             .replacingOccurrences(of: " ", with: "-")
             .lowercased()
     }

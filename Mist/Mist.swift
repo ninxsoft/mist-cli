@@ -63,6 +63,19 @@ struct Mist: ParsableCommand {
     var outputDirectory: String = .outputDirectory
 
     @Flag(name: .shortAndLong, help: """
+    Generate a macOS Installer Application Bundle.
+    """)
+    var application: Bool = false
+
+    @Option(name: .long, help: """
+    Specify the macOS Installer output filename. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5248p'\n
+    """)
+    var applicationName: String = .filenameTemplate + ".app"
+
+    @Flag(name: .shortAndLong, help: """
     Generate a macOS Disk Image.
     """)
     var image: Bool = false
@@ -132,6 +145,8 @@ struct Mist: ParsableCommand {
             } else if let download: String = download {
                 let settings: Settings = Settings(
                     outputDirectory: outputDirectory,
+                    application: application,
+                    applicationName: applicationName,
                     image: image,
                     imageName: imageName,
                     imageSigningIdentity: imageSigningIdentity,

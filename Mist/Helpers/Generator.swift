@@ -11,6 +11,10 @@ struct Generator {
 
     static func generate(_ product: Product, settings: Settings) throws {
 
+        if settings.application {
+            try generateApplication(product: product, settings: settings)
+        }
+
         if settings.image {
             try generateImage(product: product, settings: settings)
         }
@@ -20,13 +24,26 @@ struct Generator {
         }
     }
 
+    private static func generateApplication(product: Product, settings: Settings) throws {
+        PrettyPrint.printHeader("APPLICATION")
+        let destinationURL: URL = URL(fileURLWithPath: settings.applicationPath(for: product))
+
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            PrettyPrint.print("Deleting old application '\(destinationURL.path)'...")
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+
+        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...")
+        try FileManager.default.copyItem(at: product.installerURL, to: destinationURL)
+    }
+
     private static func generateImage(product: Product, settings: Settings) throws {
 
         let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: settings.imagePath(for: product))
 
-        PrettyPrint.printHeader("IMAGE")
+        PrettyPrint.printHeader("DISK IMAGE")
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")

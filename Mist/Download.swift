@@ -44,8 +44,14 @@ struct Download {
             throw MistError.missingOutputDirectory
         }
 
-        guard settings.image || settings.package else {
+        guard settings.application || settings.image || settings.package else {
             throw MistError.missingOutputType
+        }
+
+        if settings.application {
+            guard !settings.applicationName.isEmpty else {
+                throw MistError.missingApplicationName
+            }
         }
 
         if settings.image {
@@ -115,15 +121,15 @@ struct Download {
         var outputVolume: (path: String, count: Int64) = (path: outputURL.path, count: 0)
 
         if outputVolumePath == bootVolumePath {
-            for boolean in [settings.image, settings.package] where boolean {
+            for boolean in [settings.application, settings.image, settings.package] where boolean {
                 bootVolume.count += 1
             }
         } else if outputVolumePath == temporaryVolumePath {
-            for boolean in [settings.image, settings.package] where boolean {
+            for boolean in [settings.application, settings.image, settings.package] where boolean {
                 temporaryVolume.count += 1
             }
         } else {
-            for boolean in [settings.image, settings.package] where boolean {
+            for boolean in [settings.application, settings.image, settings.package] where boolean {
                 outputVolume.count += 1
             }
 

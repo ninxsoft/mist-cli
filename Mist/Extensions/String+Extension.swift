@@ -48,4 +48,11 @@ extension String {
     func color(_ color: Color) -> String {
         color.rawValue + self + Color.reset.rawValue
     }
+
+    func stringWithSubstitutions(using product: Product) -> String {
+        self.replacingOccurrences(of: "%NAME%", with: product.name)
+            .replacingOccurrences(of: "%VERSION%", with: product.version)
+            .replacingOccurrences(of: "%BUILD%", with: product.build)
+            .replacingOccurrences(of: "//", with: "/")
+    }
 }

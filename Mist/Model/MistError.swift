@@ -14,6 +14,7 @@ enum MistError: Error {
     case missingDownloadType
     case missingOutputDirectory
     case missingOutputType
+    case missingApplicationName
     case missingImageName
     case missingImageSigningIdentity
     case missingPackageName
@@ -38,6 +39,8 @@ enum MistError: Error {
             return "[-d, --output-directory] Output directory is missing or empty."
         case .missingOutputType:
             return "[-i --image || -p, --package] Output type is missing."
+        case .missingApplicationName:
+            return "[--application-name] macOS Installer output filename is missing or empty."
         case .missingImageName:
             return "[--image-name] macOS Disk Image output filename is missing or empty."
         case .missingImageSigningIdentity:
