@@ -140,7 +140,8 @@ struct List {
         guard let maxSignedLength: Int = firmwares.map({ $0.signedDescription }).max(by: { $0.count < $1.count })?.count,
             let maxNameLength: Int = firmwares.map({ $0.name }).max(by: { $0.count < $1.count })?.count,
             let maxVersionLength: Int = firmwares.map({ $0.version }).max(by: { $0.count < $1.count })?.count,
-            let maxBuildLength: Int = firmwares.map({ $0.build }).max(by: { $0.count < $1.count })?.count else {
+            let maxBuildLength: Int = firmwares.map({ $0.build }).max(by: { $0.count < $1.count })?.count,
+            let maxSizeLength: Int = firmwares.map({ $0.sizeDescription }).max(by: { $0.count < $1.count })?.count else {
             return
         }
 
@@ -148,22 +149,26 @@ struct List {
         let nameHeading: String = "Name"
         let versionHeading: String = "Version"
         let buildHeading: String = "Build"
+        let sizeHeading: String = "Size"
         let dateHeading: String = "Date"
         let signedPadding: Int = max(maxSignedLength - signedHeading.count, 0)
         let namePadding: Int = max(maxNameLength - nameHeading.count, 0)
         let versionPadding: Int = max(maxVersionLength - versionHeading.count, 0)
         let buildPadding: Int = max(maxBuildLength - buildHeading.count, 0)
+        let sizePadding: Int = max(maxSizeLength - sizeHeading.count, 0)
         let datePadding: Int = max(dateFormatter.dateFormat.count - dateHeading.count, 0)
 
         var string: String = signedHeading + [String](repeating: " ", count: signedPadding).joined()
         string += " │ " + nameHeading + [String](repeating: " ", count: namePadding).joined()
         string += " │ " + versionHeading + [String](repeating: " ", count: versionPadding).joined()
         string += " │ " + buildHeading + [String](repeating: " ", count: buildPadding).joined()
+        string += " │ " + sizeHeading + [String](repeating: " ", count: sizePadding).joined()
         string += " │ " + dateHeading + [String](repeating: " ", count: datePadding).joined()
         string += "\n" + [String](repeating: "─", count: signedHeading.count + signedPadding).joined()
         string += "─┼─" + [String](repeating: "─", count: nameHeading.count + namePadding).joined()
         string += "─┼─" + [String](repeating: "─", count: versionHeading.count + versionPadding).joined()
         string += "─┼─" + [String](repeating: "─", count: buildHeading.count + buildPadding).joined()
+        string += "─┼─" + [String](repeating: "─", count: sizeHeading.count + sizePadding).joined()
         string += "─┼─" + [String](repeating: "─", count: dateHeading.count + datePadding).joined()
         string += "\n"
 
@@ -172,12 +177,14 @@ struct List {
             let namePadding: Int = max(maxNameLength - firmware.name.count, 0)
             let versionPadding: Int = max(max(maxVersionLength, versionHeading.count) - firmware.version.count, 0)
             let buildPadding: Int = max(maxBuildLength - firmware.build.count, 0)
+            let sizePadding: Int = max(maxSizeLength - firmware.sizeDescription.count, 0)
             let datePadding: Int = max(dateFormatter.dateFormat.count - firmware.dateDescription.count, 0)
 
             var line: String = firmware.signedDescription + [String](repeating: " ", count: signedPadding).joined()
             line += " │ " + firmware.name + [String](repeating: " ", count: namePadding).joined()
             line += " │ " + firmware.version + [String](repeating: " ", count: versionPadding).joined()
             line += " │ " + firmware.build + [String](repeating: " ", count: buildPadding).joined()
+            line += " │ " + [String](repeating: " ", count: sizePadding).joined() + firmware.sizeDescription
             line += " │ " + firmware.dateDescription + [String](repeating: " ", count: datePadding).joined()
             string += line + "\n"
         }
@@ -190,7 +197,8 @@ struct List {
         guard let maxIdentifierLength: Int = products.map({ $0.identifier }).max(by: { $0.count < $1.count })?.count,
             let maxNameLength: Int = products.map({ $0.name }).max(by: { $0.count < $1.count })?.count,
             let maxVersionLength: Int = products.map({ $0.version }).max(by: { $0.count < $1.count })?.count,
-            let maxBuildLength: Int = products.map({ $0.build }).max(by: { $0.count < $1.count })?.count else {
+            let maxBuildLength: Int = products.map({ $0.build }).max(by: { $0.count < $1.count })?.count,
+            let maxSizeLength: Int = products.map({ $0.sizeDescription }).max(by: { $0.count < $1.count })?.count else {
             return
         }
 
@@ -198,22 +206,26 @@ struct List {
         let nameHeading: String = "Name"
         let versionHeading: String = "Version"
         let buildHeading: String = "Build"
+        let sizeHeading: String = "Size"
         let dateHeading: String = "Date"
         let identifierPadding: Int = max(maxIdentifierLength - identifierHeading.count, 0)
         let namePadding: Int = max(maxNameLength - nameHeading.count, 0)
         let versionPadding: Int = max(maxVersionLength - versionHeading.count, 0)
         let buildPadding: Int = max(maxBuildLength - buildHeading.count, 0)
+        let sizePadding: Int = max(maxSizeLength - sizeHeading.count, 0)
         let datePadding: Int = max(dateFormatter.dateFormat.count - dateHeading.count, 0)
 
         var string: String = identifierHeading + [String](repeating: " ", count: identifierPadding).joined()
         string += " │ " + nameHeading + [String](repeating: " ", count: namePadding).joined()
         string += " │ " + versionHeading + [String](repeating: " ", count: versionPadding).joined()
         string += " │ " + buildHeading + [String](repeating: " ", count: buildPadding).joined()
+        string += " │ " + sizeHeading + [String](repeating: " ", count: sizePadding).joined()
         string += " │ " + dateHeading + [String](repeating: " ", count: datePadding).joined()
         string += "\n" + [String](repeating: "─", count: identifierHeading.count + identifierPadding).joined()
         string += "─┼─" + [String](repeating: "─", count: nameHeading.count + namePadding).joined()
         string += "─┼─" + [String](repeating: "─", count: versionHeading.count + versionPadding).joined()
         string += "─┼─" + [String](repeating: "─", count: buildHeading.count + buildPadding).joined()
+        string += "─┼─" + [String](repeating: "─", count: sizeHeading.count + sizePadding).joined()
         string += "─┼─" + [String](repeating: "─", count: dateHeading.count + datePadding).joined()
         string += "\n"
 
@@ -222,12 +234,14 @@ struct List {
             let namePadding: Int = max(maxNameLength - product.name.count, 0)
             let versionPadding: Int = max(max(maxVersionLength, versionHeading.count) - product.version.count, 0)
             let buildPadding: Int = max(maxBuildLength - product.build.count, 0)
+            let sizePadding: Int = max(maxSizeLength - product.sizeDescription.count, 0)
             let datePadding: Int = max(dateFormatter.dateFormat.count - product.date.count, 0)
 
             var line: String = product.identifier + [String](repeating: " ", count: identifierPadding).joined()
             line += " │ " + product.name + [String](repeating: " ", count: namePadding).joined()
             line += " │ " + product.version + [String](repeating: " ", count: versionPadding).joined()
             line += " │ " + product.build + [String](repeating: " ", count: buildPadding).joined()
+            line += " │ " + [String](repeating: " ", count: sizePadding).joined() + product.sizeDescription
             line += " │ " + product.date + [String](repeating: " ", count: datePadding).joined()
             string += line + "\n"
         }

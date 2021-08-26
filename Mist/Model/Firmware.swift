@@ -37,6 +37,9 @@ struct Firmware: Decodable {
     let build: String
     let sha1sum: String
     let size: Int64
+    var sizeDescription: String {
+        String(format: "%.2f GB", size.toGigabytes())
+    }
     let url: String
     let date: String
     var dateDescription: String {
@@ -52,6 +55,7 @@ struct Firmware: Decodable {
             "name": name,
             "version": version,
             "build": build,
+            "size": size,
             "date": dateDescription
         ]
     }
