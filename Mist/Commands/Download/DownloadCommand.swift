@@ -2,7 +2,7 @@
 //  DownloadCommand.swift
 //  Mist
 //
-//  Created by nindi on 26/8/21.
+//  Created by Nindi Gill on 26/8/21.
 //
 
 import ArgumentParser
