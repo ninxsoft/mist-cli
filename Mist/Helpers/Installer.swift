@@ -9,13 +9,13 @@ import Foundation
 
 struct Installer {
 
-    static func install(_ product: Product, settings: Settings) throws {
+    static func install(_ product: Product, options: DownloadOptions) throws {
 
         guard let url: URL = URL(string: product.distribution) else {
             throw MistError.invalidURL(url: product.distribution)
         }
 
-        let temporaryURL: URL = URL(fileURLWithPath: settings.temporaryDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
         PrettyPrint.printHeader("INSTALL")

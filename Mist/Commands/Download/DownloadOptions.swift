@@ -1,38 +1,30 @@
 //
-//  Mist.swift
+//  DownloadOptions.swift
 //  Mist
 //
-//  Created by Nindi Gill on 10/3/21.
+//  Created by nindi on 26/8/21.
 //
 
 import ArgumentParser
 import Foundation
 
-struct Mist: ParsableCommand {
-    static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion)
+struct DownloadOptions: ParsableArguments {
+
+    @Option(name: .shortAndLong, help: """
+    Specify the platform which defines the download type:
+    * apple (macOS Firmware IPSW File)
+    * intel (macOS Installer Application Bundle)\n
+    """)
+    var platform: PlatformType = .intel
 
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URL.
+    Note: This only applies when the platform is set to 'intel'.
     """)
     var catalogURL: String?
 
-    @Flag(name: .shortAndLong, help: """
-    List all macOS Installers available to download.
-    """)
-    var list: Bool = false
-
-    @Option(name: [.customShort("e"), .customLong("list-export")], help: """
-    Specify the path to export the list to one of the following formats:
-    * /path/to/export.csv (CSV file).
-    * /path/to/export.json (JSON file).
-    * /path/to/export.plist (Property List) file).
-    * /path/to/export.yaml (YAML file).
-    Note: The file extension will determine the output file format.
-    """)
-    var exportPath: String?
-
-    @Option(name: .shortAndLong, help: """
-    Download a macOS Installer, specifying a macOS name, version or build:
+    @Argument(help: """
+    Specifying a macOS name, version or build to download:
     * macOS Monterey
     * macOS Big Sur
     * macOS Catalina
@@ -43,27 +35,36 @@ struct Mist: ParsableCommand {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21A5248p (macOS Monterey Beta 12.0)
-    * 20F71 (macOS Big Sur 11.4)
+    * 21A5304g (macOS Monterey Beta 12.0)
+    * 20G95 (macOS Big Sur 11.5.2)
     * 19H524 (macOS Catalina 10.15.7)
     * 18G8022 (macOS Mojave 10.14.6)
     * 17G14042 (macOS High Sierra 10.13.6)
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
-    var download: String?
+    var download: String
 
     @Option(name: .shortAndLong, help: """
     Specify the output directory. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5248p'
+    * %BUILD% will be replaced with '21A5304g'
     Note: Parent directories will be created automatically.\n
     """)
     var outputDirectory: String = .outputDirectory
 
+    @Option(name: .long, help: """
+    Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5304g'\n
+    """)
+    var firmwareName: String = .filenameTemplate + ".ipsw"
+
     @Flag(name: .shortAndLong, help: """
     Generate a macOS Installer Application Bundle.
+    Note: This only applies when the platform is set to 'intel'.
     """)
     var application: Bool = false
 
@@ -71,12 +72,13 @@ struct Mist: ParsableCommand {
     Specify the macOS Installer output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5248p'\n
+    * %BUILD% will be replaced with '21A5304g'\n
     """)
     var applicationName: String = .filenameTemplate + ".app"
 
     @Flag(name: .shortAndLong, help: """
     Generate a macOS Disk Image.
+    Note: This only applies when the platform is set to 'intel'.
     """)
     var image: Bool = false
 
@@ -84,7 +86,7 @@ struct Mist: ParsableCommand {
     Specify the macOS Disk Image output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5248p'\n
+    * %BUILD% will be replaced with '21A5304g'\n
     """)
     var imageName: String = .filenameTemplate + ".dmg"
 
@@ -96,6 +98,7 @@ struct Mist: ParsableCommand {
 
     @Flag(name: .shortAndLong, help: """
     Generate a macOS Installer Package.
+    Note: This only applies when the platform is set to 'intel'.
     """)
     var package: Bool = false
 
@@ -103,7 +106,7 @@ struct Mist: ParsableCommand {
     Specify the macOS Installer Package output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5248p'\n
+    * %BUILD% will be replaced with '21A5304g'\n
     """)
     var packageName: String = .filenameTemplate + ".pkg"
 
@@ -111,10 +114,10 @@ struct Mist: ParsableCommand {
     Specify the macOS Installer Package identifier. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5248p'
-    * Spaces will be replaced with hyphens -\n
+    * %BUILD% will be replaced with '21A5304g'
+    * Spaces will be replaced with hyphens -
     """)
-    var packageIdentifier: String = "com.mycompany.pkg.install-%NAME%"
+    var packageIdentifier: String?
 
     @Option(name: .long, help: """
     Codesign the exported macOS Installer Package (.pkg).
@@ -125,6 +128,7 @@ struct Mist: ParsableCommand {
     @Option(name: .shortAndLong, help: """
     Specify a keychain path to search for signing identities.
     Note: If no keychain is specified, the default user login keychain will be used.
+    Note: This only applies when the platform is set to 'intel'.
     """)
     var keychain: String?
 
@@ -134,42 +138,54 @@ struct Mist: ParsableCommand {
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
-    @Flag(name: .shortAndLong, help: "Display the version of \(String.appName).")
-    var version: Bool = false
+    func outputDirectory(for firmware: Firmware) -> String {
+        outputDirectory.stringWithSubstitutions(using: firmware)
+    }
 
-    mutating func run() throws {
+    func outputDirectory(for product: Product) -> String {
+        outputDirectory.stringWithSubstitutions(using: product)
+    }
 
-        do {
-            if list {
-                try List.run(catalogURL: catalogURL, exportPath: exportPath)
-            } else if let download: String = download {
-                let settings: Settings = Settings(
-                    outputDirectory: outputDirectory,
-                    application: application,
-                    applicationName: applicationName,
-                    image: image,
-                    imageName: imageName,
-                    imageSigningIdentity: imageSigningIdentity,
-                    package: package,
-                    packageName: packageName,
-                    packageIdentifier: packageIdentifier,
-                    packageSigningIdentity: packageSigningIdentity,
-                    keychain: keychain,
-                    temporaryDirectory: temporaryDirectory
-                )
-                try Download.run(catalogURL: catalogURL, download: download, settings: settings)
-            } else if version {
-                Version.run()
-            } else {
-                print(Mist.helpMessage())
-            }
-        } catch {
-            guard let mistError: MistError = error as? MistError else {
-                throw error
-            }
+    func temporaryDirectory(for firmware: Firmware) -> String {
+        "\(temporaryDirectory)/\(firmware.identifier)"
+            .replacingOccurrences(of: "//", with: "/")
+    }
 
-            PrettyPrint.print(prefix: "└─", mistError.description)
-            Mist.exit(withError: mistError)
+    func temporaryDirectory(for product: Product) -> String {
+        "\(temporaryDirectory)/\(product.identifier)"
+            .replacingOccurrences(of: "//", with: "/")
+    }
+
+    func firmwarePath(for firmware: Firmware) -> String {
+        "\(outputDirectory)/\(firmwareName)".stringWithSubstitutions(using: firmware)
+    }
+
+    func applicationPath(for product: Product) -> String {
+        "\(outputDirectory)/\(applicationName)".stringWithSubstitutions(using: product)
+    }
+
+    func imagePath(for product: Product) -> String {
+        "\(outputDirectory)/\(imageName)".stringWithSubstitutions(using: product)
+    }
+
+    func packagePath(for product: Product) -> String {
+        "\(outputDirectory)/\(packageName)".stringWithSubstitutions(using: product)
+    }
+
+    func packageIdentifier(for product: Product) -> String {
+
+        guard let identifier: String = packageIdentifier else {
+            return ""
         }
+
+        return identifier
+            .stringWithSubstitutions(using: product)
+            .replacingOccurrences(of: " ", with: "-")
+            .lowercased()
+    }
+
+    func temporaryScriptsDirectory(for product: Product) -> String {
+        "\(temporaryDirectory)/\(product.identifier)-Scripts"
+            .replacingOccurrences(of: "//", with: "/")
     }
 }

@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListOptions.swift */; };
+		3967935526D7272100DC2D2D /* ListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935426D7272100DC2D2D /* ListCommand.swift */; };
+		3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935726D7281400DC2D2D /* VersionCommand.swift */; };
+		3967935A26D7293C00DC2D2D /* PlatformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935926D7293C00DC2D2D /* PlatformType.swift */; };
+		3967935C26D7304500DC2D2D /* Firmware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935B26D7304500DC2D2D /* Firmware.swift */; };
+		3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */; };
+		3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadOptions.swift */; };
 		570D5091260034E10066E4C9 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570D5090260034E10066E4C9 /* Catalog.swift */; };
 		5744140025F85EF300DE5540 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574413FF25F85EF300DE5540 /* main.swift */; };
 		5744140925F8603300DE5540 /* Mist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744140825F8603300DE5540 /* Mist.swift */; };
@@ -25,7 +32,6 @@
 		57D1359A25FE1364003467B2 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D1359925FE1364003467B2 /* Shell.swift */; };
 		57D135AB25FED139003467B2 /* MistError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D135AA25FED139003467B2 /* MistError.swift */; };
 		57D135B825FEEE48003467B2 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 57D135B725FEEE48003467B2 /* Yams */; };
-		57D135C025FF07BC003467B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D135BF25FF07BC003467B2 /* Settings.swift */; };
 		57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F0F3CD2600907D00480DEE /* Int64+Extension.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +48,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3967935226D726CE00DC2D2D /* ListOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOptions.swift; sourceTree = "<group>"; };
+		3967935426D7272100DC2D2D /* ListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommand.swift; sourceTree = "<group>"; };
+		3967935726D7281400DC2D2D /* VersionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
+		3967935926D7293C00DC2D2D /* PlatformType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformType.swift; sourceTree = "<group>"; };
+		3967935B26D7304500DC2D2D /* Firmware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firmware.swift; sourceTree = "<group>"; };
+		3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCommand.swift; sourceTree = "<group>"; };
+		3967936026D74C2400DC2D2D /* DownloadOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOptions.swift; sourceTree = "<group>"; };
 		570D5090260034E10066E4C9 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		574413FC25F85EF300DE5540 /* mist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mist; sourceTree = BUILT_PRODUCTS_DIR; };
 		574413FF25F85EF300DE5540 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -59,7 +72,6 @@
 		57D1359625FB1B97003467B2 /* PrettyPrint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrettyPrint.swift; sourceTree = "<group>"; };
 		57D1359925FE1364003467B2 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		57D135AA25FED139003467B2 /* MistError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistError.swift; sourceTree = "<group>"; };
-		57D135BF25FF07BC003467B2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		57F0F3CD2600907D00480DEE /* Int64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +88,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3967935026D7232D00DC2D2D /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				5744140825F8603300DE5540 /* Mist.swift */,
+				3967935126D726C400DC2D2D /* List */,
+				3967935D26D74B9C00DC2D2D /* Download */,
+				3967935626D7280200DC2D2D /* Version */,
+			);
+			path = Commands;
+			sourceTree = "<group>";
+		};
+		3967935126D726C400DC2D2D /* List */ = {
+			isa = PBXGroup;
+			children = (
+				3967935426D7272100DC2D2D /* ListCommand.swift */,
+				3967935226D726CE00DC2D2D /* ListOptions.swift */,
+				5744141625F8659D00DE5540 /* List.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		3967935626D7280200DC2D2D /* Version */ = {
+			isa = PBXGroup;
+			children = (
+				3967935726D7281400DC2D2D /* VersionCommand.swift */,
+				5744141925F865B700DE5540 /* Version.swift */,
+			);
+			path = Version;
+			sourceTree = "<group>";
+		};
+		3967935D26D74B9C00DC2D2D /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */,
+				3967936026D74C2400DC2D2D /* DownloadOptions.swift */,
+				57550FE525FF3D49006C29EE /* Download.swift */,
+			);
+			path = Download;
+			sourceTree = "<group>";
+		};
 		574413F325F85EF300DE5540 = {
 			isa = PBXGroup;
 			children = (
@@ -96,10 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				574413FF25F85EF300DE5540 /* main.swift */,
-				5744140825F8603300DE5540 /* Mist.swift */,
-				5744141625F8659D00DE5540 /* List.swift */,
-				57550FE525FF3D49006C29EE /* Download.swift */,
-				5744141925F865B700DE5540 /* Version.swift */,
+				3967935026D7232D00DC2D2D /* Commands */,
 				5744141425F8607B00DE5540 /* Extensions */,
 				57D1357D25F9F71A003467B2 /* Helpers */,
 				5744142125F8675400DE5540 /* Model */,
@@ -120,10 +169,11 @@
 			isa = PBXGroup;
 			children = (
 				570D5090260034E10066E4C9 /* Catalog.swift */,
+				3967935B26D7304500DC2D2D /* Firmware.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
 				57D1358125F9F8E5003467B2 /* Package.swift */,
+				3967935926D7293C00DC2D2D /* PlatformType.swift */,
 				5744141E25F8675000DE5540 /* Product.swift */,
-				57D135BF25FF07BC003467B2 /* Settings.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -234,16 +284,22 @@
 				5744141A25F865B700DE5540 /* Version.swift in Sources */,
 				5744140025F85EF300DE5540 /* main.swift in Sources */,
 				5744141725F8659D00DE5540 /* List.swift in Sources */,
-				57D135C025FF07BC003467B2 /* Settings.swift in Sources */,
+				3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */,
 				57D1358225F9F8E5003467B2 /* Package.swift in Sources */,
 				57D1359725FB1B97003467B2 /* PrettyPrint.swift in Sources */,
+				3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */,
 				5744141225F8607800DE5540 /* String+Extension.swift in Sources */,
 				5744140925F8603300DE5540 /* Mist.swift in Sources */,
 				57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */,
 				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
+				3967935526D7272100DC2D2D /* ListCommand.swift in Sources */,
 				570D5091260034E10066E4C9 /* Catalog.swift in Sources */,
+				3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */,
+				3967935C26D7304500DC2D2D /* Firmware.swift in Sources */,
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
+				3967935A26D7293C00DC2D2D /* PlatformType.swift in Sources */,
+				3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
 				5744141F25F8675000DE5540 /* Product.swift in Sources */,
 			);

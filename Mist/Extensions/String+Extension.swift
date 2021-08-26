@@ -32,9 +32,9 @@ extension String {
     static let appName: String = "mist"
     static var identifier: String { "com.ninxsoft.\(appName)" }
     static let abstract: String = "macOS Installer Super Tool."
-    static let discussion: String = "Automatically generate macOS Installers."
+    static let discussion: String = "Automatically download macOS Installers / Firmwares."
     static let temporaryDirectory: String = "/private/tmp"
-    static let outputDirectory: String = "/Users/Shared/macOS Installers"
+    static let outputDirectory: String = "/Users/Shared/Mist"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
 
     func wrappedInPropertyList() -> String {
@@ -47,6 +47,13 @@ extension String {
 
     func color(_ color: Color) -> String {
         color.rawValue + self + Color.reset.rawValue
+    }
+
+    func stringWithSubstitutions(using firmware: Firmware) -> String {
+        self.replacingOccurrences(of: "%NAME%", with: firmware.name)
+            .replacingOccurrences(of: "%VERSION%", with: firmware.version)
+            .replacingOccurrences(of: "%BUILD%", with: firmware.build)
+            .replacingOccurrences(of: "//", with: "/")
     }
 
     func stringWithSubstitutions(using product: Product) -> String {
