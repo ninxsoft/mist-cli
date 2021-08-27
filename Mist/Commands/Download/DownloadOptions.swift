@@ -37,22 +37,13 @@ struct DownloadOptions: ParsableArguments {
     * 10.13.x (macOS High Sierra)
     * 21A5304g (macOS Monterey Beta 12.0)
     * 20G95 (macOS Big Sur 11.5.2)
-    * 19H524 (macOS Catalina 10.15.7)
-    * 18G8022 (macOS Mojave 10.14.6)
-    * 17G14042 (macOS High Sierra 10.13.6)
+    * 19H15 (macOS Catalina 10.15.7)
+    * 18G8103 (macOS Mojave 10.14.6)
+    * 17G66 (macOS High Sierra 10.13.6)
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
     var download: String
-
-    @Option(name: .shortAndLong, help: """
-    Specify the output directory. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
-    Note: Parent directories will be created automatically.\n
-    """)
-    var outputDirectory: String = .outputDirectory
 
     @Option(name: .long, help: """
     Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
@@ -131,6 +122,15 @@ struct DownloadOptions: ParsableArguments {
     Note: This only applies when the platform is set to 'intel'.
     """)
     var keychain: String?
+
+    @Option(name: .shortAndLong, help: """
+    Specify the output directory. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5304g'
+    Note: Parent directories will be created automatically.\n
+    """)
+    var outputDirectory: String = .outputDirectory
 
     @Option(name: .shortAndLong, help: """
     Specify the temporary downloads directory.

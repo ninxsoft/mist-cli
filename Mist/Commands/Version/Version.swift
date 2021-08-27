@@ -9,7 +9,7 @@ import Foundation
 
 struct Version {
 
-    static let version: String = "1.3.1"
+    static let version: String = "1.4"
 
     static func run() {
         print(version)
