@@ -13,6 +13,7 @@ enum MistError: Error {
     case invalidExportFileExtension
     case missingDownloadType
     case missingOutputDirectory
+    case missingFirmwareName
     case missingOutputType
     case missingApplicationName
     case missingImageName
@@ -22,23 +23,26 @@ enum MistError: Error {
     case missingPackageSigningIdentity
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case invalidData
-    case invalidURL(url: String)
     case invalidExitStatus(code: Int32, arguments: [String])
+    case invalidShasum(invalid: String, valid: String)
+    case invalidURL(url: String)
 
     var description: String {
         switch self {
         case .invalidUser:
             return "This command requires to be run as 'root'."
         case .missingExportPath:
-            return "[-e, --list-export] Export path is missing or empty."
+            return "[-e, --export] Export path is missing or empty."
         case .invalidExportFileExtension:
-            return "[-e, --list-export] Export file extension is invalid."
+            return "Export file extension is invalid."
         case .missingDownloadType:
-            return "[-d, --download] Download type is missing or empty."
+            return "Download type is missing or empty."
         case .missingOutputDirectory:
-            return "[-d, --output-directory] Output directory is missing or empty."
+            return "[-o, --output-directory] Output directory is missing or empty."
+        case .missingFirmwareName:
+            return "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
         case .missingOutputType:
-            return "[-i --image || -p, --package] Output type is missing."
+            return "[-a, --application || -i, --image || -p, --package] Output type is missing."
         case .missingApplicationName:
             return "[--application-name] macOS Installer output filename is missing or empty."
         case .missingImageName:
@@ -57,11 +61,14 @@ enum MistError: Error {
         case .invalidData:
             return "Invalid data."
         // swiftlint:disable:next explicit_type_interface
-        case .invalidURL(let url):
-            return "Invalid URL: '\(url)'"
-        // swiftlint:disable:next explicit_type_interface
         case .invalidExitStatus(let code, let arguments):
             return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
+        // swiftlint:disable:next explicit_type_interface
+        case .invalidShasum(let invalid, let valid):
+            return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
+        // swiftlint:disable:next explicit_type_interface
+        case .invalidURL(let url):
+            return "Invalid URL: '\(url)'"
         }
     }
 }
