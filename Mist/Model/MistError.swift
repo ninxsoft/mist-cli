@@ -23,8 +23,9 @@ enum MistError: Error {
     case missingPackageSigningIdentity
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case invalidData
-    case invalidURL(url: String)
     case invalidExitStatus(code: Int32, arguments: [String])
+    case invalidShasum(invalid: String, valid: String)
+    case invalidURL(url: String)
 
     var description: String {
         switch self {
@@ -60,11 +61,14 @@ enum MistError: Error {
         case .invalidData:
             return "Invalid data."
         // swiftlint:disable:next explicit_type_interface
-        case .invalidURL(let url):
-            return "Invalid URL: '\(url)'"
-        // swiftlint:disable:next explicit_type_interface
         case .invalidExitStatus(let code, let arguments):
             return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
+        // swiftlint:disable:next explicit_type_interface
+        case .invalidShasum(let invalid, let valid):
+            return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
+        // swiftlint:disable:next explicit_type_interface
+        case .invalidURL(let url):
+            return "Invalid URL: '\(url)'"
         }
     }
 }

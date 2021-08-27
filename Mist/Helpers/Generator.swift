@@ -25,6 +25,17 @@ struct Generator {
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
         let destinationURL: URL = URL(fileURLWithPath: options.firmwarePath(for: firmware))
 
+        PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...")
+
+        guard let string: String = try Shell.execute(["shasum", temporaryFirmwareURL.path]),
+            let shasum: String = string.split(separator: " ").map({ String($0) }).first else {
+            throw MistError.invalidData
+        }
+
+        if shasum != firmware.shasum {
+            throw MistError.invalidShasum(invalid: shasum, valid: firmware.shasum)
+        }
+
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
@@ -88,7 +99,7 @@ struct Generator {
 
         PrettyPrint.print("Creating image '\(destinationURL.path)'...")
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
-        try Shell.execute(arguments)
+        _ = try Shell.execute(arguments)
 
         if let identity: String = options.imageSigningIdentity,
             !identity.isEmpty {
@@ -103,7 +114,7 @@ struct Generator {
             arguments += [destinationURL.path]
 
             PrettyPrint.print("Codesigning image '\(destinationURL.path)'...")
-            try Shell.execute(arguments)
+            _ = try Shell.execute(arguments)
         }
 
         PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
@@ -146,10 +157,10 @@ struct Generator {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
         PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...")
-        try Shell.execute(zipArguments)
+        _ = try Shell.execute(zipArguments)
 
         PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...")
-        try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
+        _ = try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
 
         PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'")
         try FileManager.default.removeItem(at: zipURL)
@@ -187,7 +198,7 @@ struct Generator {
         }
 
         PrettyPrint.print("Creating package '\(destinationURL.path)'...")
-        try Shell.execute(arguments)
+        _ = try Shell.execute(arguments)
 
         PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
@@ -224,7 +235,7 @@ struct Generator {
         }
 
         PrettyPrint.print("Creating package '\(destinationURL.path)'...")
-        try Shell.execute(arguments)
+        _ = try Shell.execute(arguments)
         PrettyPrint.print("Created package '\(destinationURL.path)'")
     }
 

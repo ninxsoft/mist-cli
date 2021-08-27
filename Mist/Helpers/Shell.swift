@@ -9,11 +9,12 @@ import Foundation
 
 struct Shell {
 
-    static func execute(_ arguments: [String], environment variables: [String: String]? = nil, currentDirectoryPath: String? = nil) throws {
+    static func execute(_ arguments: [String], environment variables: [String: String]? = nil, currentDirectoryPath: String? = nil) throws -> String? {
+        let output: Pipe = Pipe()
         let process: Process = Process()
         process.launchPath = "/usr/bin/env"
         process.arguments = arguments
-        process.standardOutput = Pipe()
+        process.standardOutput = output
 
         if let variables: [String: String] = variables {
             var environment: [String: String] = ProcessInfo.processInfo.environment
@@ -35,5 +36,13 @@ struct Shell {
         guard process.terminationStatus == 0 else {
             throw MistError.invalidExitStatus(code: process.terminationStatus, arguments: arguments)
         }
+
+        let data: Data = output.fileHandleForReading.readDataToEndOfFile()
+
+        guard let string: String = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+
+        return string
     }
 }

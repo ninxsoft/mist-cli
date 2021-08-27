@@ -12,7 +12,7 @@ struct Firmware: Decodable {
     enum CodingKeys: String, CodingKey {
         case version = "version"
         case build = "buildid"
-        case sha1sum = "sha1sum"
+        case shasum = "sha1sum"
         case size = "filesize"
         case url = "url"
         case date = "releasedate"
@@ -35,7 +35,7 @@ struct Firmware: Decodable {
     }
     let version: String
     let build: String
-    let sha1sum: String
+    let shasum: String
     let size: Int64
     var sizeDescription: String {
         String(format: "%.2f GB", size.toGigabytes())
@@ -73,7 +73,7 @@ extension Firmware: Equatable {
     static func == (lhs: Firmware, rhs: Firmware) -> Bool {
         lhs.version == rhs.version &&
         lhs.build == rhs.build &&
-        lhs.sha1sum == rhs.sha1sum &&
+        lhs.shasum == rhs.shasum &&
         lhs.size == rhs.size &&
         lhs.url == rhs.url &&
         lhs.signed == rhs.signed

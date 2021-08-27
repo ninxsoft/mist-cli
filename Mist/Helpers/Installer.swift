@@ -28,7 +28,7 @@ struct Installer {
         PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...")
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
-        try Shell.execute(arguments, environment: variables)
+        _ = try Shell.execute(arguments, environment: variables)
         PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
         try FileManager.default.removeItem(at: temporaryURL)
         PrettyPrint.print("Created new installer '\(product.installerURL.path)'")
