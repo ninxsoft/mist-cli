@@ -62,7 +62,7 @@ struct DownloadOptions: ParsableArguments {
     """)
     var firmwareName: String = .filenameTemplate + ".ipsw"
 
-    @Flag(name: .shortAndLong, help: """
+    @Flag(name: .long, help: """
     Generate a macOS Installer Application Bundle.
     Note: This only applies when the platform is set to 'intel'.
     """)
@@ -76,7 +76,7 @@ struct DownloadOptions: ParsableArguments {
     """)
     var applicationName: String = .filenameTemplate + ".app"
 
-    @Flag(name: .shortAndLong, help: """
+    @Flag(name: .long, help: """
     Generate a macOS Disk Image.
     Note: This only applies when the platform is set to 'intel'.
     """)
@@ -96,7 +96,7 @@ struct DownloadOptions: ParsableArguments {
     """)
     var imageSigningIdentity: String?
 
-    @Flag(name: .shortAndLong, help: """
+    @Flag(name: .long, help: """
     Generate a macOS Installer Package.
     Note: This only applies when the platform is set to 'intel'.
     """)
