@@ -1,24 +1,30 @@
 # MIST - macOS Installer Super Tool
 
-A Mac command-line tool that automatically generates **macOS Installers**:
+A Mac command-line tool that automatically downloads **macOS Installers** / **Firmwares**:
 
-![Example](Readme%20Resources/Example.png)
+![Intel](Readme%20Resources/Intel.png)
+
+![Apple](Readme%20Resources/Apple.png)
 
 ## Features
 
-* [x] List all available macOS Installers available for download:
-  * Display product identifiers, names, versions, builds and release dates
+* [x] List all available macOS Installers / Firmwares available for download:
+  * Display names, versions, builds, sizes and release dates
   * Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
-* [x] Download an available macOS Installer:
-  * Generate a Disk Image (.dmg)
-  * Generate a macOS Installer Package (.pkg)
-    * Supports **macOS Big Sur** packages - with a massive 12GB+ payload!
-  * Optionally codesign Disk Images and macOS Installer Packages
-  * Check for free space before attempting any downloads or installations
-* [x] Optionally specify a custom catalog URL, allowing you to list and download macOS Installers from the following:
-  * **Customer Seed** - AppleSeed Program
-  * **Developer Seed** - Apple Developer Program
-  * **Public Seed** - Apple Beta Software Program
+* [x] Download an available macOS Installer / Firmware:
+  * For Intel based Macs:
+    * Generate an Application Bundle (.app)
+    * Generate a Disk Image (.dmg)
+    * Generate a macOS Installer Package (.pkg)
+      * Supports **macOS Big Sur** packages with a massive 12GB+ payload!
+    * Optionally codesign Disk Images and macOS Installer Packages
+    * Check for free space before attempting any downloads or installations
+    * Optionally specify a custom catalog URL, allowing you to list and download macOS Installers from the following:
+      * **Customer Seed** - AppleSeed Program
+      * **Developer Seed** - Apple Developer Program
+      * **Public Seed** - Apple Beta Software Program
+  * For Apple Silicon Macs:
+    * Download a Firmware Restore file (.ipsw)
 
 ## Usage
 
