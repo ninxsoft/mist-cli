@@ -22,7 +22,9 @@ struct Firmware: Decodable {
     static let devicesURL: String = "https://api.ipsw.me/v4/devices"
     static let deviceURL: String = "https://api.ipsw.me/v4/device"
 
-    let identifier: String = UUID().uuidString
+    var identifier: String {
+        "\(String.identifier).\(version)-\(build)"
+    }
     var name: String {
 
         if version.range(of: "^12", options: .regularExpression) != nil {

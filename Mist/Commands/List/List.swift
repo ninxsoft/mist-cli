@@ -65,7 +65,7 @@ struct List {
                 throw MistError.missingExportPath
             }
 
-            PrettyPrint.print("Export path is '\(path)'...")
+            PrettyPrint.print("Export path will be '\(path)'...")
 
             let url: URL = URL(fileURLWithPath: path)
 
