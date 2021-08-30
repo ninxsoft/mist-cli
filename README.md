@@ -100,7 +100,7 @@ mist download "Big Sur" \
      --application \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
      --image \
-     --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+     --image-name "Install %NAME% %VERSION%-%BUILD%.dmg" \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --package \
      --package-name "Install %NAME% %VERSION%-%BUILD%.pkg" \
