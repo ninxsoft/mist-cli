@@ -83,7 +83,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Option(name: .long, help: """
     Codesign the exported macOS Disk Image (.dmg).
-    Specify a signing identity name, eg. "Developer ID Application: Nindi Gill (Team ID)".
+    Specify a signing identity name, eg. "Developer ID Application: Name (Team ID)".
     """)
     var imageSigningIdentity: String?
 
@@ -112,7 +112,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Option(name: .long, help: """
     Codesign the exported macOS Installer Package (.pkg).
-    Specify a signing identity name, eg. "Developer ID Installer: Nindi Gill (Team ID)".
+    Specify a signing identity name, eg. "Developer ID Installer: Name (Team ID)".
     """)
     var packageSigningIdentity: String?
 

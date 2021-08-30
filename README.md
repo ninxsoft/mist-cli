@@ -89,7 +89,7 @@ mist download "11.4" --image --image-name "Install %NAME %VERSION%-%BUILD%.dmg"
 # a codesigned Disk Image output to a custom directory:
 mist download "19H15" \
      --image \
-     --image-signing-identity "Developer ID Application: First Last (Team ID)" \
+     --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
 # Download the latest macOS Big Sur Installer and generate
