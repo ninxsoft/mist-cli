@@ -29,7 +29,7 @@ struct List {
                 }
             }
 
-            PrettyPrint.print(prefix: "  └─", "Found \(firmwares.count) macOS Firmwares available for download\n")
+            PrettyPrint.print("Found \(firmwares.count) macOS Firmwares available for download\n", prefix: "  └─")
             let dateFormatter: DateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             list(firmwares, using: dateFormatter)
@@ -48,7 +48,7 @@ struct List {
                 }
             }
 
-            PrettyPrint.print(prefix: "  └─", "Found \(products.count) macOS Installers available for download\n")
+            PrettyPrint.print("Found \(products.count) macOS Installers available for download\n", prefix: "  └─")
             let dateFormatter: DateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             list(products, using: dateFormatter)

@@ -17,7 +17,7 @@ struct Download {
         switch options.platform {
         case .apple:
             guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(), download: options.download) else {
-                PrettyPrint.print(prefix: "  └─", "No macOS Firmware found with '\(options.download)', exiting...")
+                PrettyPrint.print("No macOS Firmware found with '\(options.download)', exiting...", prefix: "  └─")
                 return
             }
 
@@ -31,7 +31,7 @@ struct Download {
             let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
 
             guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: options.download) else {
-                PrettyPrint.print(prefix: "  └─", "No macOS Installer found with '\(options.download)', exiting...")
+                PrettyPrint.print("No macOS Installer found with '\(options.download)', exiting...", prefix: "  └─")
                 return
             }
 
@@ -280,14 +280,14 @@ struct Download {
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.printHeader("TEARDOWN")
-            PrettyPrint.print(prefix: "  └─", "Deleting temporary directory '\(temporaryURL.path)'...")
+            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: "  └─")
             try FileManager.default.removeItem(at: temporaryURL)
         }
     }
 
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
         PrettyPrint.printHeader("TEARDOWN")
-        PrettyPrint.print(prefix: "  └─", "Deleting installer '\(product.installerURL.path)'...")
+        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: "  └─")
         try FileManager.default.removeItem(at: product.installerURL)
     }
 }

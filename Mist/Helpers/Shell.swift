@@ -9,22 +9,20 @@ import Foundation
 
 struct Shell {
 
-    static func execute(_ arguments: [String], environment variables: [String: String]? = nil, currentDirectoryPath: String? = nil) throws -> String? {
+    static func execute(_ arguments: [String], environment variables: [String: String] = [:], currentDirectoryPath: String? = nil) throws -> String? {
         let output: Pipe = Pipe()
         let process: Process = Process()
         process.launchPath = "/usr/bin/env"
         process.arguments = arguments
         process.standardOutput = output
 
-        if let variables: [String: String] = variables {
-            var environment: [String: String] = ProcessInfo.processInfo.environment
+        var environment: [String: String] = ProcessInfo.processInfo.environment
 
-            for (key, value) in variables {
-                environment[key] = value
-            }
-
-            process.environment = environment
+        for (key, value) in variables {
+            environment[key] = value
         }
+
+        process.environment = environment
 
         if let currentDirectoryPath: String = currentDirectoryPath {
             process.currentDirectoryPath = currentDirectoryPath

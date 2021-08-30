@@ -1,6 +1,6 @@
 //
 //  VersionCommand.swift
-//  Vist
+//  Mist
 //
 //  Created by Nindi Gill on 26/8/21.
 //

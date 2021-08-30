@@ -79,7 +79,7 @@ struct HTTP {
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
         let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version == download }
         let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased() == download }
-        return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first ?? nil
+        return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
     }
 
     static func retrieveProducts(catalogURL: String) -> [Product] {
@@ -198,6 +198,6 @@ struct HTTP {
         let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
         let filteredProductsByVersion: [Product] = products.filter { $0.version == download }
         let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased() == download }
-        return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first ?? nil
+        return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first
     }
 }
