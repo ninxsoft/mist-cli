@@ -11,12 +11,11 @@ line_length:
 
 missing_docs:
   warning:
-    - open
-    - public
-    - internal
-    - fileprivate
     - private
-
+    - fileprivate
+    - internal
+    - public
+    - open
 opt_in_rules:
   - attributes
   - balanced_xctest_lifecycle
