@@ -13,9 +13,12 @@ struct Shell {
     /// Executes custom shell commands.
     ///
     /// - Parameters:
-    ///   - arguments: An array of arguments to execute.
-    ///   - variables: Optionally set custom environment variables.
+    ///   - arguments:            An array of arguments to execute.
+    ///   - variables:            Optionally set custom environment variables.
     ///   - currentDirectoryPath: Optionally set the current directory path
+    ///
+    /// - Throws: A `MistError` if the exit code is not zero.
+    ///
     /// - Returns: The contents of standard output, if any, otherwise `nil`.
     static func execute(_ arguments: [String], environment variables: [String: String] = [:], currentDirectoryPath: String? = nil) throws -> String? {
         let output: Pipe = Pipe()

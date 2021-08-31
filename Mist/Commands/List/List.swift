@@ -14,11 +14,9 @@ struct List {
     /// Searches and lists the macOS versions available for download, optionally exporting to a file.
     ///
     /// - Parameters:
-    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
-    ///     * CSV
-    ///     * JSON
-    ///     * Property List
-    ///     * YAML
+    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///
+    /// - Throws: A `MistError` if macOS versions fail to be retreived or exported.
     static func run(options: ListOptions) throws {
         try sanityChecks(options)
 
@@ -45,11 +43,9 @@ struct List {
     /// Perform a series of sanity checks on input data, throwing an error if the input data is invalid.
     ///
     /// - Parameters:
-    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
-    ///     * CSV
-    ///     * JSON
-    ///     * Property List
-    ///     * YAML
+    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecks(_ options: ListOptions) throws {
 
         if let path: String = options.exportPath {
@@ -76,11 +72,9 @@ struct List {
     ///
     /// - Parameters:
     ///   - dictionaries: The array of dictionaries to be written to disk.
-    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
-    ///     * CSV
-    ///     * JSON
-    ///     * Property List
-    ///     * YAML
+    ///   - options:      List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///
+    /// - Throws: An `Error` if the dictionaries are unable to be written to disk.
     private static func export(_ dictionaries: [[String: Any]], options: ListOptions) throws {
 
         guard let path: String = options.exportPath else {
@@ -122,8 +116,10 @@ struct List {
     /// Export the macOS downloads list as a CSV file.
     ///
     /// - Parameters:
-    ///   - path: Path to write the file to disk.
+    ///   - path:   Path to write the file to disk.
     ///   - string: The string to be written to disk.
+    ///
+    /// - Throws: An `Error` if the CSV is unable to be written to disk.
     private static func exportCSV(_ path: String, using string: String) throws {
         try string.write(toFile: path, atomically: true, encoding: .utf8)
         PrettyPrint.print("Exported list as CSV: '\(path)'")
@@ -132,8 +128,10 @@ struct List {
     /// Export the macOS downloads list as a JSON file.
     ///
     /// - Parameters:
-    ///   - path: Path to write the file to disk.
+    ///   - path:         Path to write the file to disk.
     ///   - dictionaries: The array of dictionaries to be written to disk.
+    ///
+    /// - Throws: An `Error` if the JSON is unable to be written to disk.
     private static func exportJSON(_ path: String, using dictionaries: [[String: Any]]) throws {
         let data: Data = try JSONSerialization.data(withJSONObject: dictionaries, options: .prettyPrinted)
 
@@ -148,8 +146,10 @@ struct List {
     /// Export the macOS downloads list as a Propery List file.
     ///
     /// - Parameters:
-    ///   - path: Path to write the file to disk.
+    ///   - path:         Path to write the file to disk.
     ///   - dictionaries: The array of dictionaries to be written to disk.
+    ///
+    /// - Throws: An `Error` if the Property List is unable to be written to disk.
     private static func exportPropertyList(_ path: String, using dictionaries: [[String: Any]]) throws {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: dictionaries, format: .xml, options: .bitWidth)
 
@@ -164,8 +164,10 @@ struct List {
     /// Export the macOS downloads list as a YAML file.
     ///
     /// - Parameters:
-    ///   - path: Path to write the file to disk.
+    ///   - path:         Path to write the file to disk.
     ///   - dictionaries: The array of dictionaries to be written to disk.
+    ///
+    /// - Throws: An `Error` if the YAML is unable to be written to disk.
     private static func exportYAML(_ path: String, using dictionaries: [[String: Any]]) throws {
         let string: String = try Yams.dump(object: dictionaries)
         try string.write(toFile: path, atomically: true, encoding: .utf8)

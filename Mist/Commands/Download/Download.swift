@@ -14,6 +14,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadOptions) throws {
         try sanityChecks(options)
         PrettyPrint.printHeader("SEARCH")
@@ -54,6 +56,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecks(_ options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("SANITY CHECKS")
@@ -97,6 +101,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecksFirmware(_ options: DownloadOptions) throws {
 
         guard !options.firmwareName.isEmpty else {
@@ -110,6 +116,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecksApplication(_ options: DownloadOptions) throws {
 
         if options.application {
@@ -126,6 +134,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecksImage(_ options: DownloadOptions) throws {
 
         if options.image {
@@ -151,6 +161,8 @@ struct Download {
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the sanity checks fail.
     private static func sanityChecksPackage(_ options: DownloadOptions) throws {
 
         if options.package {
@@ -179,11 +191,13 @@ struct Download {
         }
     }
 
-    /// Sets up folder structure for macOS Firmware downloads.
+    /// Sets up directory structure for macOS Firmware downloads.
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
@@ -205,11 +219,13 @@ struct Download {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
-    /// Sets up folder structure for macOS Installer downloads.
+    /// Sets up directory structure for macOS Installer downloads.
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer to be downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ product: Product, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
@@ -235,7 +251,9 @@ struct Download {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
@@ -262,6 +280,8 @@ struct Download {
     /// - Parameters:
     ///   - product: The selected macOS Installer to be downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ product: Product, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
@@ -318,11 +338,13 @@ struct Download {
         }
     }
 
-    /// Tears down temporary folder structure for macOS Firmware downloads.
+    /// Tears down temporary directory structure for macOS Firmware downloads.
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
@@ -334,11 +356,13 @@ struct Download {
         }
     }
 
-    /// Tears down temporary folder structure for macOS Installer downloads.
+    /// Tears down temporary directory structure for macOS Installer downloads.
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
         PrettyPrint.printHeader("TEARDOWN")
         PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: "  └─")

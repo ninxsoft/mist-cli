@@ -14,7 +14,9 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Firmware options fail to generate.
     static func generate(_ firmware: Firmware, options: DownloadOptions) throws {
         try generateFirmware(firmware: firmware, options: options)
     }
@@ -23,7 +25,9 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("FIRMWARE")
@@ -61,6 +65,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Installer options fail to generate.
     static func generate(_ product: Product, options: DownloadOptions) throws {
 
         if options.application {
@@ -81,6 +87,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("APPLICATION")
@@ -100,6 +108,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("DISK IMAGE")
@@ -154,6 +164,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generatePackage(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("PACKAGE")
@@ -170,6 +182,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generateBigPackage(product: Product, options: DownloadOptions) throws {
 
         let identifier: String = options.packageIdentifier(for: product)
@@ -250,6 +264,8 @@ struct Generator {
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generateSmallPackage(product: Product, options: DownloadOptions) throws {
 
         let identifier: String = options.packageIdentifier(for: product)
@@ -284,6 +300,8 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
+    ///
+    /// - Returns: The contents of the custom postinstall script.
     private static func postInstall(for product: Product) -> String {
         """
         #!/usr/bin/env bash

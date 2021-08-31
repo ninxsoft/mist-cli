@@ -205,6 +205,7 @@
 				574413F925F85EF300DE5540 /* Frameworks */,
 				574413FA25F85EF300DE5540 /* CopyFiles */,
 				5744142525F868B300DE5540 /* Run SwiftLint */,
+				393C236926DDC995004755BF /* Run DrString */,
 			);
 			buildRules = (
 			);
@@ -256,6 +257,24 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		393C236926DDC995004755BF /* Run DrString */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run DrString";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "if which drstring > /dev/null ; then\n  drstring check --config-file \"$SRCROOT/.drstring.toml\" || true\nelse\n  echo \"warning: DrString not installed, download from https://github.com/dduan/DrString\"\nfi\n\nexit 0\n";
+		};
 		5744142525F868B300DE5540 /* Run SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -272,7 +291,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null ; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nexit 0\n";
+			shellScript = "if which swiftlint > /dev/null ; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nexit 0\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
