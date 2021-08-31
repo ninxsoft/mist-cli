@@ -99,7 +99,7 @@ struct HTTP {
     static func retrieveProducts(catalogURL: String) -> [Product] {
         var products: [Product] = []
 
-        for catalog in Catalog.CatalogType.allCases {
+        for catalog in Catalog.allCases {
 
             let catalogURL: String = catalog.url(for: catalogURL)
 
