@@ -21,8 +21,8 @@ struct DownloadCommand: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(mistError.description, prefix: "  └─")
-            Mist.exit(withError: mistError)
+            PrettyPrint.print(mistError.description, prefix: "  └─", prefixColor: .red)
+            throw mistError
         }
     }
 }

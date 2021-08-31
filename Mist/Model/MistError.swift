@@ -8,6 +8,7 @@
 import Foundation
 
 enum MistError: Error {
+    case generalError(_ string: String)
     case invalidUser
     case missingExportPath
     case invalidExportFileExtension
@@ -29,6 +30,9 @@ enum MistError: Error {
 
     var description: String {
         switch self {
+        // swiftlint:disable:next explicit_type_interface
+        case .generalError(let string):
+            return "Error: \(string)"
         case .invalidUser:
             return "This command requires to be run as 'root'."
         case .missingExportPath:

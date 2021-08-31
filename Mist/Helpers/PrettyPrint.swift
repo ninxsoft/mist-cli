@@ -23,11 +23,11 @@ struct PrettyPrint {
     /// Prints a string with an optional custom prefix.
     ///
     /// - Parameters:
-    static func print(_ string: String, prefix: String = "  ├─") {
-        let string: String = "\(prefix.color(.green)) \(string)"
     ///   - string:      The string to print.
     ///   - prefix:      The optional prefix.
     ///   - prefixColor: The optional prefix color.
+    static func print(_ string: String, prefix: String = "  ├─", prefixColor: String.Color = .green) {
+        let string: String = "\(prefix.color(prefixColor)) \(string)"
         Swift.print(string)
     }
 }
