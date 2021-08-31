@@ -12,7 +12,6 @@ enum MistError: Error {
     case missingExportPath
     case invalidExportFileExtension
     case missingDownloadType
-    case missingOutputDirectory
     case missingFirmwareName
     case missingOutputType
     case missingApplicationName
@@ -21,6 +20,7 @@ enum MistError: Error {
     case missingPackageName
     case missingPackageIdentifier
     case missingPackageSigningIdentity
+    case missingOutputDirectory
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case invalidData
     case invalidExitStatus(code: Int32, arguments: [String])
@@ -37,12 +37,10 @@ enum MistError: Error {
             return "Export file extension is invalid."
         case .missingDownloadType:
             return "Download type is missing or empty."
-        case .missingOutputDirectory:
-            return "[-o, --output-directory] Output directory is missing or empty."
         case .missingFirmwareName:
             return "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
         case .missingOutputType:
-            return "[-a, --application || -i, --image || -p, --package] Output type is missing."
+            return "[--application || --image || --package] Output type is missing."
         case .missingApplicationName:
             return "[--application-name] macOS Installer output filename is missing or empty."
         case .missingImageName:
@@ -55,6 +53,8 @@ enum MistError: Error {
             return "[--package-identifier] macOS Installer Package identifier is missing or empty."
         case .missingPackageSigningIdentity:
             return "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
+        case .missingOutputDirectory:
+            return "[-o, --output-directory] Output directory is missing or empty."
         // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
             return String(format: "Not enough free space on volume '\(volume)': %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
