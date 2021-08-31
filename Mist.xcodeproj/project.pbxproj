@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236726DDA494004755BF /* Dictionary+Extension.swift */; };
 		3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListOptions.swift */; };
 		3967935526D7272100DC2D2D /* ListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935426D7272100DC2D2D /* ListCommand.swift */; };
 		3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935726D7281400DC2D2D /* VersionCommand.swift */; };
@@ -48,6 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		393C236726DDA494004755BF /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
 		3967935226D726CE00DC2D2D /* ListOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOptions.swift; sourceTree = "<group>"; };
 		3967935426D7272100DC2D2D /* ListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommand.swift; sourceTree = "<group>"; };
 		3967935726D7281400DC2D2D /* VersionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 		5744141425F8607B00DE5540 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				393C236726DDA494004755BF /* Dictionary+Extension.swift */,
 				57F0F3CD2600907D00480DEE /* Int64+Extension.swift */,
 				5744141125F8607800DE5540 /* String+Extension.swift */,
 			);
@@ -300,6 +303,7 @@
 				3967935A26D7293C00DC2D2D /* PlatformType.swift in Sources */,
 				3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
+				393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */,
 				3967936426D7757800DC2D2D /* Version.swift in Sources */,
 				5744141F25F8675000DE5540 /* Product.swift in Sources */,
 			);

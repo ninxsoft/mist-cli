@@ -45,9 +45,6 @@ struct Product: Decodable {
             "date": date
         ]
     }
-    var csvLine: String {
-        "\"=\"\"\(identifier)\"\"\",\"=\"\"\(name)\"\"\",\"=\"\"\(version)\"\"\",\"=\"\"\(build)\"\"\",\(date)\n"
-    }
     var isTooBigForPackagePayload: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }

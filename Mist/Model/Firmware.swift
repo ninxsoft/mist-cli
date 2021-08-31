@@ -61,9 +61,6 @@ struct Firmware: Decodable {
             "date": dateDescription
         ]
     }
-    var csvLine: String {
-        "\"=\"\"\(signed)\"\"\",\"=\"\"\(name)\"\"\",\"=\"\"\(version)\"\"\",\"=\"\"\(build)\"\"\",\(date)\n"
-    }
 
     static func deviceURL(for identifier: String) -> String {
         "\(deviceURL)/\(identifier)"
