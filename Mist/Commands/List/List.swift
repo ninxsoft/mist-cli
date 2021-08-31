@@ -20,7 +20,7 @@ struct List {
     ///     * Property List
     ///     * YAML
     static func run(options: ListOptions) throws {
-        try sanityChecks(options.exportPath)
+        try sanityChecks(options)
 
         PrettyPrint.printHeader("SEARCH")
 
@@ -28,45 +28,31 @@ struct List {
         case .apple:
             PrettyPrint.print("Searching for macOS Firmware versions...")
             let firmwares: [Firmware] = HTTP.retrieveFirmwares()
-
-            if let path: String = options.exportPath {
-                if path.hasSuffix(".csv") {
-                    let string: String = "Signed,Name,Version,Build,Date\n" + firmwares.map { $0.csvLine }.joined()
-                    try export(path, dictionaries: firmwares.map { $0.dictionary }, csv: string)
-                } else {
-                    try export(path, dictionaries: firmwares.map { $0.dictionary })
-                }
-            }
-
+            try export(firmwares.map { $0.dictionary }, options: options)
             PrettyPrint.print("Found \(firmwares.count) macOS Firmwares available for download\n", prefix: "  └─")
-            let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            list(firmwares, using: dateFormatter)
+            list(firmwares)
 
         case .intel:
             PrettyPrint.print("Searching for macOS Installer versions...")
             let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
             let products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL)
-
-            if let path: String = options.exportPath {
-                if path.hasSuffix(".csv") {
-                    let string: String? = "Identifier,Name,Version,Build,Date\n" + products.map { $0.csvLine }.joined()
-                    try export(path, dictionaries: products.map { $0.dictionary }, csv: string)
-                } else {
-                    try export(path, dictionaries: products.map { $0.dictionary })
-                }
-            }
-
+            try export(products.map { $0.dictionary }, options: options)
             PrettyPrint.print("Found \(products.count) macOS Installers available for download\n", prefix: "  └─")
-            let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            list(products, using: dateFormatter)
+            list(products)
         }
     }
 
-    private static func sanityChecks(_ exportPath: String?) throws {
+    /// Perform a series of sanity checks on input data, throwing an error if the input data is invalid.
+    ///
+    /// - Parameters:
+    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
+    ///     * CSV
+    ///     * JSON
+    ///     * Property List
+    ///     * YAML
+    private static func sanityChecks(_ options: ListOptions) throws {
 
-        if let path: String = exportPath {
+        if let path: String = options.exportPath {
 
             PrettyPrint.printHeader("SANITY CHECKS")
 
@@ -86,7 +72,21 @@ struct List {
         }
     }
 
-    private static func export(_ path: String, dictionaries: [[String: Any]], csv: String? = nil) throws {
+    /// Export the macOS downloads list.
+    ///
+    /// - Parameters:
+    ///   - dictionaries: The array of dictionaries to be written to disk.
+    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
+    ///     * CSV
+    ///     * JSON
+    ///     * Property List
+    ///     * YAML
+    private static func export(_ dictionaries: [[String: Any]], options: ListOptions) throws {
+
+        guard let path: String = options.exportPath else {
+            return
+        }
+
         let url: URL = URL(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
 
@@ -97,9 +97,17 @@ struct List {
 
         switch url.pathExtension {
         case "csv":
-            if let string: String = csv {
-                try exportCSV(path, using: string)
+
+            var string: String
+
+            switch options.platform {
+            case .apple:
+                string = "Signed,Name,Version,Build,Size,Date\n" + dictionaries.map { $0.firmwareCSVString() }.joined()
+            case .intel:
+                string = "Identifier,Name,Version,Build,Size,Date\n" + dictionaries.map { $0.productCSVString() }.joined()
             }
+
+            try exportCSV(path, using: string)
         case "json":
             try exportJSON(path, using: dictionaries)
         case "plist":
@@ -164,7 +172,11 @@ struct List {
         PrettyPrint.print("Exported list as YAML: '\(path)'")
     }
 
-    private static func list(_ firmwares: [Firmware], using dateFormatter: DateFormatter) {
+    /// List the macOS firmware downloads in an ASCII-formatted table.
+    ///
+    /// - Parameters:
+    ///   - firmwares: The array of macOS firmwares to list.
+    private static func list(_ firmwares: [Firmware]) {
 
         guard let maxSignedLength: Int = firmwares.map({ $0.signedDescription }).max(by: { $0.count < $1.count })?.count,
             let maxNameLength: Int = firmwares.map({ $0.name }).max(by: { $0.count < $1.count })?.count,
@@ -174,6 +186,8 @@ struct List {
             return
         }
 
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         let signedHeading: String = "Signed"
         let nameHeading: String = "Name"
         let versionHeading: String = "Version"
@@ -221,7 +235,11 @@ struct List {
         print(string)
     }
 
-    private static func list(_ products: [Product], using dateFormatter: DateFormatter) {
+    /// List the macOS installer downloads in an ASCII-formatted table.
+    ///
+    /// - Parameters:
+    ///   - products: The array of macOS installers to list.
+    private static func list(_ products: [Product]) {
 
         guard let maxIdentifierLength: Int = products.map({ $0.identifier }).max(by: { $0.count < $1.count })?.count,
             let maxNameLength: Int = products.map({ $0.name }).max(by: { $0.count < $1.count })?.count,
@@ -231,6 +249,8 @@ struct List {
             return
         }
 
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
         let identifierHeading: String = "Identifier"
         let nameHeading: String = "Name"
         let versionHeading: String = "Version"
