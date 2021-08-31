@@ -7,8 +7,14 @@
 
 import Foundation
 
+/// Helper Struct used to download macOS Firmwares and Installers.
 struct Downloader {
 
+    /// Downloads a macOS Firmware.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func download(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
@@ -59,6 +65,11 @@ struct Downloader {
         semaphore.wait()
     }
 
+    /// Downloads a macOS Installer.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func download(_ product: Product, options: DownloadOptions) throws {
 
         let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)

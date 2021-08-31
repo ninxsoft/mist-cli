@@ -3,6 +3,7 @@
 
 import PackageDescription
 
+/// Package configuration
 let package = Package(
     name: "MIST",
     platforms: [

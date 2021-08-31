@@ -7,8 +7,13 @@
 
 import Foundation
 
+/// Struct used to perform **Download** operations.
 struct Download {
 
+    /// Searches for and downloads a particular macOS version.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func run(options: DownloadOptions) throws {
         try sanityChecks(options)
         PrettyPrint.printHeader("SEARCH")
@@ -45,6 +50,10 @@ struct Download {
         }
     }
 
+    /// Performs a series of sanity checks on input data, throwing an error if the input data is invalid.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func sanityChecks(_ options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("SANITY CHECKS")
@@ -78,13 +87,16 @@ struct Download {
             }
 
             PrettyPrint.print("Valid download type(s) specified...")
-
             try sanityChecksApplication(options)
             try sanityChecksImage(options)
             try sanityChecksPackage(options)
         }
     }
 
+    /// Performs a series of sanity checks specific to macOS Firmware output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func sanityChecksFirmware(_ options: DownloadOptions) throws {
 
         guard !options.firmwareName.isEmpty else {
@@ -94,6 +106,10 @@ struct Download {
         PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...")
     }
 
+    /// Performs a series of sanity checks specific to macOS Application output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func sanityChecksApplication(_ options: DownloadOptions) throws {
 
         if options.application {
@@ -106,6 +122,10 @@ struct Download {
         }
     }
 
+    /// Performs a series of sanity checks specific to macOS Disk Image output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func sanityChecksImage(_ options: DownloadOptions) throws {
 
         if options.image {
@@ -127,6 +147,10 @@ struct Download {
         }
     }
 
+    /// Performs a series of sanity checks specific to macOS Installer Package output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func sanityChecksPackage(_ options: DownloadOptions) throws {
 
         if options.package {
@@ -155,6 +179,11 @@ struct Download {
         }
     }
 
+    /// Sets up folder structure for macOS Firmware downloads.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func setup(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
@@ -176,6 +205,11 @@ struct Download {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
+    /// Sets up folder structure for macOS Installer downloads.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func setup(_ product: Product, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
@@ -197,6 +231,11 @@ struct Download {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
+    /// Verifies free space for macOS Firmware downloads.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func verifyFreeSpace(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
@@ -218,6 +257,11 @@ struct Download {
         }
     }
 
+    /// Verifies free space for macOS Installer downloads.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func verifyFreeSpace(_ product: Product, options: DownloadOptions) throws {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
@@ -274,6 +318,11 @@ struct Download {
         }
     }
 
+    /// Tears down temporary folder structure for macOS Firmware downloads.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func teardown(_ firmware: Firmware, options: DownloadOptions) throws {
 
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
@@ -285,6 +334,11 @@ struct Download {
         }
     }
 
+    /// Tears down temporary folder structure for macOS Installer downloads.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
         PrettyPrint.printHeader("TEARDOWN")
         PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: "  └─")

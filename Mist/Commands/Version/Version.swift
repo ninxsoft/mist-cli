@@ -7,10 +7,13 @@
 
 import Foundation
 
+/// Struct used to perform **Version** operations.
 struct Version {
 
+    /// Current version.
     static let version: String = "1.4"
 
+    /// Prints the current version.
     static func run() {
         print(version)
     }

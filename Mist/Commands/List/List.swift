@@ -8,8 +8,17 @@
 import Foundation
 import Yams
 
+/// Struct used to perform **List** operations.
 struct List {
 
+    /// Searches and lists the macOS versions available for download, optionally exporting to a file.
+    ///
+    /// - Parameters:
+    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options:
+    ///     * CSV
+    ///     * JSON
+    ///     * Property List
+    ///     * YAML
     static func run(options: ListOptions) throws {
         try sanityChecks(options.exportPath)
 
@@ -102,11 +111,21 @@ struct List {
         }
     }
 
+    /// Export the macOS downloads list as a CSV file.
+    ///
+    /// - Parameters:
+    ///   - path: Path to write the file to disk.
+    ///   - string: The string to be written to disk.
     private static func exportCSV(_ path: String, using string: String) throws {
         try string.write(toFile: path, atomically: true, encoding: .utf8)
         PrettyPrint.print("Exported list as CSV: '\(path)'")
     }
 
+    /// Export the macOS downloads list as a JSON file.
+    ///
+    /// - Parameters:
+    ///   - path: Path to write the file to disk.
+    ///   - dictionaries: The array of dictionaries to be written to disk.
     private static func exportJSON(_ path: String, using dictionaries: [[String: Any]]) throws {
         let data: Data = try JSONSerialization.data(withJSONObject: dictionaries, options: .prettyPrinted)
 
@@ -118,6 +137,11 @@ struct List {
         PrettyPrint.print("Exported list as JSON: '\(path)'")
     }
 
+    /// Export the macOS downloads list as a Propery List file.
+    ///
+    /// - Parameters:
+    ///   - path: Path to write the file to disk.
+    ///   - dictionaries: The array of dictionaries to be written to disk.
     private static func exportPropertyList(_ path: String, using dictionaries: [[String: Any]]) throws {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: dictionaries, format: .xml, options: .bitWidth)
 
@@ -129,6 +153,11 @@ struct List {
         PrettyPrint.print("Exported list as Property List: '\(path)'")
     }
 
+    /// Export the macOS downloads list as a YAML file.
+    ///
+    /// - Parameters:
+    ///   - path: Path to write the file to disk.
+    ///   - dictionaries: The array of dictionaries to be written to disk.
     private static func exportYAML(_ path: String, using dictionaries: [[String: Any]]) throws {
         let string: String = try Yams.dump(object: dictionaries)
         try string.write(toFile: path, atomically: true, encoding: .utf8)

@@ -7,8 +7,11 @@
 
 import Foundation
 
+/// Helper Struct used to perform HTTP queries.
 struct HTTP {
 
+    /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
+    /// - Returns: An array of macOS Firmwares.
     static func retrieveFirmwares() -> [Firmware] {
         var firmwares: [Firmware] = []
 
@@ -74,6 +77,12 @@ struct HTTP {
         return firmwares
     }
 
+    /// Retrieves the first macOS Firmware download match for the provided search string.
+    ///
+    /// - Parameters:
+    ///   - firmwares: The array of possible macOS Firmwares that can be downloaded.
+    ///   - download: The download search string.
+    /// - Returns: The first match of a macOS Firmware, otherwise nil.
     static func firmware(from firmwares: [Firmware], download: String) -> Firmware? {
         let download: String = download.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
@@ -82,6 +91,11 @@ struct HTTP {
         return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
     }
 
+    /// Searches and retrieves a list of all macOS Installers that can be downloaded.
+    ///
+    /// - Parameters:
+    ///   - catalogURL: The Apple Software Update catalog URL to base the search queriest against.
+    /// - Returns: An array of macOS Installers.
     static func retrieveProducts(catalogURL: String) -> [Product] {
         var products: [Product] = []
 
@@ -122,6 +136,11 @@ struct HTTP {
         return products
     }
 
+    /// Filters and extracts a list of macOS Installers from the Apple Software Update Catalog Property List.
+    ///
+    /// - Parameters:
+    ///   - dictionary: The dictionary values obtained from the Apple Software Update Catalog Property List.
+    /// - Returns: The filtered list of macOS Installers.
     private static func getProducts(from dictionary: [String: Any]) -> [Product] {
 
         var products: [Product] = []
@@ -178,6 +197,11 @@ struct HTTP {
         return products
     }
 
+    /// Converts the contents of a macOS Installer distribution URL into a workable Property List format.
+    ///
+    /// - Parameters:
+    ///   - url: The macOS Installer distribution URL.
+    /// - Returns: A macOS Installer Property List.
     private static func productPropertyList(from url: URL) throws -> String {
         let distributionString: String = try String(contentsOf: url, encoding: .utf8)
 
@@ -193,6 +217,12 @@ struct HTTP {
         return string
     }
 
+    /// Retrieves the first macOS Installer download match for the provided search string.
+    ///
+    /// - Parameters:
+    ///   - products: The array of possible macOS Installers that can be downloaded.
+    ///   - download: The download search string.
+    /// - Returns: The first match of a macOS Installer, otherwise `nil`.
     static func product(from products: [Product], download: String) -> Product? {
         let download: String = download.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }

@@ -7,8 +7,14 @@
 
 import Foundation
 
+/// Helper Struct used to install macOS Installers.
 struct Installer {
 
+    /// Installs a recently downloaded macOS Installer.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func install(_ product: Product, options: DownloadOptions) throws {
 
         guard let url: URL = URL(string: product.distribution) else {

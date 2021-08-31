@@ -7,12 +7,23 @@
 
 import Foundation
 
+/// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 struct Generator {
 
+    /// Generates a macOS Firmware.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func generate(_ firmware: Firmware, options: DownloadOptions) throws {
         try generateFirmware(firmware: firmware, options: options)
     }
 
+    /// Valides a macOS Firmware shasum and moves it from the temporary directory to the output directory.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("FIRMWARE")
@@ -45,6 +56,11 @@ struct Generator {
         try FileManager.default.moveItem(at: temporaryFirmwareURL, to: destinationURL)
     }
 
+    /// Generates a macOS Installer.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     static func generate(_ product: Product, options: DownloadOptions) throws {
 
         if options.application {
@@ -60,6 +76,11 @@ struct Generator {
         }
     }
 
+    /// Generates a macOS Installer Application Bundle.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generateApplication(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("APPLICATION")
@@ -74,6 +95,11 @@ struct Generator {
         try FileManager.default.copyItem(at: product.installerURL, to: destinationURL)
     }
 
+    /// Generates a macOS Installer Disk Image, optionally codesigning.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generateImage(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("DISK IMAGE")
@@ -123,6 +149,11 @@ struct Generator {
         PrettyPrint.print("Created image '\(destinationURL.path)'")
     }
 
+    /// Generates a macOS Installer Package, optionally codesigning.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generatePackage(product: Product, options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("PACKAGE")
@@ -134,6 +165,11 @@ struct Generator {
         }
     }
 
+    /// Generates a macOS Installer Package for payloads larger than 8GB (ie. **macOS Big Sur** and above).
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generateBigPackage(product: Product, options: DownloadOptions) throws {
 
         let identifier: String = options.packageIdentifier(for: product)
@@ -209,6 +245,11 @@ struct Generator {
         PrettyPrint.print("Created package '\(destinationURL.path)'")
     }
 
+    /// Generates a macOS Installer Package for payloads smaller than 8GB (ie. **macOS Catalina** and below).
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     private static func generateSmallPackage(product: Product, options: DownloadOptions) throws {
 
         let identifier: String = options.packageIdentifier(for: product)
@@ -239,6 +280,10 @@ struct Generator {
         PrettyPrint.print("Created package '\(destinationURL.path)'")
     }
 
+    /// Creates a custom postinstall script for the macOS Installer Package, used to re-join large payloads (ie. **macOS Big Sur** and above).
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
     private static func postInstall(for product: Product) -> String {
         """
         #!/usr/bin/env bash
