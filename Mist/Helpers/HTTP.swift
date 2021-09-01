@@ -22,11 +22,7 @@ struct HTTP {
         let firmwaresURLString: String = Firmware.firmwaresURL
 
         guard let firmwaresURL: URL = URL(string: firmwaresURLString) else {
-
-            if !quiet {
-                PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
-            }
-
+            !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
             return []
         }
 
@@ -36,11 +32,7 @@ struct HTTP {
             guard let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
-
-                if !quiet {
-                    PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
-                }
-
+                !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
                 return []
             }
 
@@ -62,9 +54,7 @@ struct HTTP {
                 }
             }
         } catch {
-            if !quiet {
-                PrettyPrint.print(error.localizedDescription)
-            }
+            !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
         }
 
         firmwares.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
@@ -114,17 +104,10 @@ struct HTTP {
         for catalog in Catalog.allCases {
 
             let catalogURL: String = catalog.url(for: catalogURL)
-
-            if !quiet {
-                PrettyPrint.print("Searching \(catalog.description) catalog...")
-            }
+            !quiet ? PrettyPrint.print("Searching \(catalog.description) catalog...") : Mist.noop()
 
             guard let url: URL = URL(string: catalogURL) else {
-
-                if !quiet {
-                    PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...")
-                }
-
+                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
                 continue
             }
 
@@ -132,10 +115,7 @@ struct HTTP {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
                 guard let data: Data = string.data(using: .utf8) else {
-
-                    if !quiet {
-                        PrettyPrint.print("Unable to get data from catalog, skipping...")
-                    }
+                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...") : Mist.noop()
                     continue
                 }
 
@@ -143,19 +123,13 @@ struct HTTP {
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-
-                    if !quiet {
-                        PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...")
-                    }
-
+                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...") : Mist.noop()
                     continue
                 }
 
                 products.append(contentsOf: getProducts(from: productsDictionary, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
             } catch {
-                if !quiet {
-                    PrettyPrint.print(error.localizedDescription)
-                }
+                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
             }
         }
 
@@ -189,11 +163,7 @@ struct HTTP {
             guard let distributions: [String: Any] = value["Distributions"] as? [String: Any],
                 let distributionURL: String = distributions["English"] as? String,
                 let url: URL = URL(string: distributionURL) else {
-
-                if !quiet {
-                    PrettyPrint.print("No English distribution found, skipping...")
-                }
-
+                !quiet ? PrettyPrint.print("No English distribution found, skipping...") : Mist.noop()
                 continue
             }
 
@@ -205,11 +175,7 @@ struct HTTP {
                     let name: String = distribution["NAME"] as? String,
                     let version: String = distribution["VERSION"] as? String,
                     let build: String = distribution["BUILD"] as? String else {
-
-                    if !quiet {
-                        PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...")
-                    }
-
+                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...") : Mist.noop()
                     continue
                 }
 
@@ -227,9 +193,7 @@ struct HTTP {
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
             } catch {
-                if !quiet {
-                    PrettyPrint.print(error.localizedDescription)
-                }
+                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
             }
         }
 
