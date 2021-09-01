@@ -26,8 +26,10 @@ struct PrettyPrint {
     ///   - string:      The string to print.
     ///   - prefix:      The optional prefix.
     ///   - prefixColor: The optional prefix color.
-    static func print(_ string: String, prefix: String = "  ├─", prefixColor: String.Color = .green) {
-        let string: String = "\(prefix.color(prefixColor)) \(string)"
+    ///   - replacing:   Optionally set to `true` to replace the previous line.
+    static func print(_ string: String, prefix: String = "  ├─", prefixColor: String.Color = .green, replacing: Bool = false) {
+        let replacing: String = replacing ? "\u{1B}[1A\u{1B}[K" : ""
+        let string: String = "\(replacing)\(prefix.color(prefixColor)) \(string)"
         Swift.print(string)
     }
 }
