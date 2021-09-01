@@ -9,10 +9,11 @@ import Foundation
 
 enum MistError: Error {
     case generalError(_ string: String)
-    case invalidUser
+    case missingListSearchString
     case missingExportPath
     case invalidExportFileExtension
-    case missingDownloadType
+    case invalidUser
+    case missingDownloadSearchString
     case missingFirmwareName
     case missingOutputType
     case missingApplicationName
@@ -33,14 +34,16 @@ enum MistError: Error {
         // swiftlint:disable:next explicit_type_interface
         case .generalError(let string):
             return "Error: \(string)"
-        case .invalidUser:
-            return "This command requires to be run as 'root'."
+        case .missingListSearchString:
+            return "List <search-string> is missing or empty."
         case .missingExportPath:
             return "[-e, --export] Export path is missing or empty."
         case .invalidExportFileExtension:
             return "Export file extension is invalid."
-        case .missingDownloadType:
-            return "Download type is missing or empty."
+        case .invalidUser:
+            return "This command requires to be run as 'root'."
+        case .missingDownloadSearchString:
+            return "Download <search-string> is missing or empty."
         case .missingFirmwareName:
             return "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
         case .missingOutputType:
