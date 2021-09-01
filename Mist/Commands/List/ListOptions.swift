@@ -27,7 +27,7 @@ struct ListOptions: ParsableArguments {
     Specify the path to export the list to one of the following formats:
     * /path/to/export.csv (CSV file).
     * /path/to/export.json (JSON file).
-    * /path/to/export.plist (Property List) file).
+    * /path/to/export.plist (Property List file).
     * /path/to/export.yaml (YAML file).
     Note: The file extension will determine the output file format.
     """)
