@@ -13,14 +13,13 @@ struct Firmware: Decodable {
         case version = "version"
         case build = "buildid"
         case shasum = "sha1sum"
-        case size = "filesize"
+        case size = "size"
         case url = "url"
         case date = "releasedate"
         case signed = "signed"
     }
 
-    static let devicesURL: String = "https://api.ipsw.me/v4/devices"
-    static let deviceURL: String = "https://api.ipsw.me/v4/device"
+    static let firmwaresURL: String = "https://api.ipsw.me/v3/firmwares.json/condensed"
 
     var identifier: String {
         "\(String.identifier).\(version)-\(build)"
@@ -60,10 +59,6 @@ struct Firmware: Decodable {
             "size": size,
             "date": dateDescription
         ]
-    }
-
-    static func deviceURL(for identifier: String) -> String {
-        "\(deviceURL)/\(identifier)"
     }
 }
 
