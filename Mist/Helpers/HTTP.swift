@@ -16,48 +16,28 @@ struct HTTP {
     static func retrieveFirmwares() -> [Firmware] {
         var firmwares: [Firmware] = []
 
-        let devicesURLString: String = Firmware.devicesURL
+        let firmwaresURLString: String = Firmware.firmwaresURL
 
-        PrettyPrint.print("Retrieving list of compatible devices...")
-
-        guard let devicesURL: URL = URL(string: devicesURLString) else {
-            PrettyPrint.print("There was an error retrieving devices from \(devicesURLString)...")
+        guard let firmwaresURL: URL = URL(string: firmwaresURLString) else {
+            PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
             return []
         }
 
         do {
-            let string: String = try String(contentsOf: devicesURL, encoding: .utf8)
+            let string: String = try String(contentsOf: firmwaresURL, encoding: .utf8)
 
             guard let data: Data = string.data(using: .utf8),
-                let devices: [[String: Any]] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [[String: Any]] else {
-                PrettyPrint.print("There was an error retrieving devices from \(devicesURLString)...")
+                let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+                let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
+                PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
                 return []
             }
 
-            for device in devices {
-                guard let name: String = device["name"] as? String,
-                    let identifier: String = device["identifier"] as? String,
-                    identifier.contains("Mac") else {
-                    continue
-                }
+            for (identifier, device) in devices {
 
-                PrettyPrint.print("Retrieving firmware versions for '\(name)'...")
-                let deviceURLString: String = Firmware.deviceURL(for: identifier)
-
-                guard let deviceURL: URL = URL(string: deviceURLString) else {
-                    PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
-                    continue
-                }
-
-                let string: String = try String(contentsOf: deviceURL, encoding: .utf8)
-
-                guard let data: Data = string.data(using: .utf8) else {
-                    PrettyPrint.print("There was an error retrieving firmware versions for '\(name)'...")
-                    continue
-                }
-
-                guard let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-                    let firmwaresArray: [[String: Any]] = dictionary["firmwares"] as? [[String: Any]] else {
+                guard identifier.contains("Mac"),
+                    let device: [String: Any] = device as? [String: Any],
+                    let firmwaresArray: [[String: Any]] = device["firmwares"] as? [[String: Any]] else {
                     continue
                 }
 
