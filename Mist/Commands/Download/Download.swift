@@ -17,7 +17,7 @@ struct Download {
     ///
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadOptions) throws {
-        try sanityChecks(options)
+        try inputValidation(options)
         PrettyPrint.printHeader("SEARCH")
         PrettyPrint.print("Searching for macOS download '\(options.searchString)'...")
 
@@ -52,15 +52,15 @@ struct Download {
         }
     }
 
-    /// Performs a series of sanity checks on input data, throwing an error if the input data is invalid.
+    /// Performs a series of validations on input data, throwing an error if the input data is invalid.
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecks(_ options: DownloadOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidation(_ options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("SANITY CHECKS")
+        PrettyPrint.printHeader("INPUT VALIDATION")
 
         guard NSUserName() == "root" else {
             throw MistError.invalidUser
@@ -78,12 +78,13 @@ struct Download {
             throw MistError.missingOutputDirectory
         }
 
+        PrettyPrint.print("Platform will be '\(options.platform)'...")
         PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...")
         PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...")
 
         switch options.platform {
         case .apple:
-            try sanityChecksFirmware(options)
+            try inputValidationFirmware(options)
         case .intel:
 
             guard options.application || options.image || options.package else {
@@ -91,19 +92,19 @@ struct Download {
             }
 
             PrettyPrint.print("Valid download type(s) specified...")
-            try sanityChecksApplication(options)
-            try sanityChecksImage(options)
-            try sanityChecksPackage(options)
+            try inputValidationApplication(options)
+            try inputValidationImage(options)
+            try inputValidationPackage(options)
         }
     }
 
-    /// Performs a series of sanity checks specific to macOS Firmware output.
+    /// Performs a series of input validations specific to macOS Firmware output.
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecksFirmware(_ options: DownloadOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationFirmware(_ options: DownloadOptions) throws {
 
         guard !options.firmwareName.isEmpty else {
             throw MistError.missingFirmwareName
@@ -112,13 +113,13 @@ struct Download {
         PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...")
     }
 
-    /// Performs a series of sanity checks specific to macOS Application output.
+    /// Performs a series of input validations specific to macOS Application output.
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecksApplication(_ options: DownloadOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationApplication(_ options: DownloadOptions) throws {
 
         if options.application {
 
@@ -130,13 +131,13 @@ struct Download {
         }
     }
 
-    /// Performs a series of sanity checks specific to macOS Disk Image output.
+    /// Performs a series of input validations specific to macOS Disk Image output.
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecksImage(_ options: DownloadOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationImage(_ options: DownloadOptions) throws {
 
         if options.image {
 
@@ -157,13 +158,13 @@ struct Download {
         }
     }
 
-    /// Performs a series of sanity checks specific to macOS Installer Package output.
+    /// Performs a series of input validations specific to macOS Installer Package output.
     ///
     /// - Parameters:
     ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecksPackage(_ options: DownloadOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationPackage(_ options: DownloadOptions) throws {
 
         if options.package {
 

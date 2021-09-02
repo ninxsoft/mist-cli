@@ -18,7 +18,7 @@ struct List {
     ///
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListOptions) throws {
-        try sanityChecks(options)
+        try inputValidation(options)
 
         !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
 
@@ -64,31 +64,16 @@ struct List {
         }
     }
 
-    /// Perform a series of sanity checks on input data, throwing an error if the input data is invalid.
+    /// Perform a series of validations on input data, throwing an error if the input data is invalid.
     ///
     /// - Parameters:
     ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
     ///
-    /// - Throws: A `MistError` if any of the sanity checks fail.
-    private static func sanityChecks(_ options: ListOptions) throws {
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidation(_ options: ListOptions) throws {
 
-        var sanityChecks: Bool = false
-
-        if let _: String = options.searchString {
-            sanityChecks = true
-        }
-
-        if options.latest {
-            sanityChecks = true
-        }
-
-        if let _: String = options.exportPath {
-            sanityChecks = true
-        }
-
-        if sanityChecks {
-            !options.quiet ? PrettyPrint.printHeader("SANITY CHECKS") : Mist.noop()
-        }
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Platform will be '\(options.platform)'...") : Mist.noop()
 
         if let string: String = options.searchString {
 
@@ -119,6 +104,8 @@ struct List {
 
             !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
         }
+
+        !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...") : Mist.noop()
     }
 
     /// Export the macOS downloads list.

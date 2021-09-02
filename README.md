@@ -142,7 +142,7 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
     * Removed `-i` for `--image`
     * Removed `-p` for `--package`
   * Lists now display / export total size
-  * More verbose output for sanity checks
+  * More verbose output for input validation
 
 * 1.3.1
   * Fixed bug where SUCatalog files were not being parsed correctly
@@ -158,7 +158,7 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
   * Support for building hardware specific installers on all Macs
   * macOS name is now determined from the distribution files, no longer hardcoded
   * CSV cells with spaces now display correctly
-  * Better sanity checks before downloads are initiated
+  * Better input validation before downloads are initiated
   * Cleanup of standard output messaging (less verbose)
   * Removed download progress output
   * General code refactoring
