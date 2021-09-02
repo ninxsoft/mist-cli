@@ -38,9 +38,6 @@ struct Firmware: Decodable {
     let build: String
     let shasum: String
     let size: Int64
-    var sizeDescription: String {
-        String(format: "%.2f GB", size.toGigabytes())
-    }
     let url: String
     let date: String
     var dateDescription: String {

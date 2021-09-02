@@ -24,28 +24,28 @@ struct Download {
         switch options.platform {
         case .apple:
             guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(), searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: "  └─")
+                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending)
                 return
             }
 
             PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]")
             try setup(firmware, options: options)
             try verifyFreeSpace(firmware, options: options)
-            try Downloader.download(firmware, options: options)
+            try Downloader().download(firmware, options: options)
             try Generator.generate(firmware, options: options)
             try teardown(firmware, options: options)
         case .intel:
             let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
 
             guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: "  └─")
+                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending)
                 return
             }
 
             PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
             try setup(product, options: options)
             try verifyFreeSpace(product, options: options)
-            try Downloader.download(product, options: options)
+            try Downloader().download(product, options: options)
             try Installer.install(product, options: options)
             try Generator.generate(product, options: options)
             try teardown(product, options: options)
@@ -352,7 +352,7 @@ struct Download {
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             PrettyPrint.printHeader("TEARDOWN")
-            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: "  └─")
+            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending)
             try FileManager.default.removeItem(at: temporaryURL)
         }
     }
@@ -366,7 +366,7 @@ struct Download {
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
         PrettyPrint.printHeader("TEARDOWN")
-        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: "  └─")
+        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending)
         try FileManager.default.removeItem(at: product.installerURL)
     }
 }
