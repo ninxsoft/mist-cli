@@ -19,12 +19,12 @@ struct Download {
     static func run(options: DownloadOptions) throws {
         try sanityChecks(options)
         PrettyPrint.printHeader("SEARCH")
-        PrettyPrint.print("Searching for macOS download '\(options.download)'...")
+        PrettyPrint.print("Searching for macOS download '\(options.searchString)'...")
 
         switch options.platform {
         case .apple:
-            guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(), download: options.download) else {
-                PrettyPrint.print("No macOS Firmware found with '\(options.download)', exiting...", prefix: "  └─")
+            guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(), searchString: options.searchString) else {
+                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: "  └─")
                 return
             }
 
@@ -37,8 +37,8 @@ struct Download {
         case .intel:
             let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
 
-            guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), download: options.download) else {
-                PrettyPrint.print("No macOS Installer found with '\(options.download)', exiting...", prefix: "  └─")
+            guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), searchString: options.searchString) else {
+                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: "  └─")
                 return
             }
 
@@ -68,11 +68,11 @@ struct Download {
 
         PrettyPrint.print("User is 'root'...")
 
-        guard !options.download.isEmpty else {
-            throw MistError.missingDownloadType
+        guard !options.searchString.isEmpty else {
+            throw MistError.missingDownloadSearchString
         }
 
-        PrettyPrint.print("Download type will be '\(options.download)'...")
+        PrettyPrint.print("Download search string will be '\(options.searchString)'...")
 
         guard !options.outputDirectory.isEmpty else {
             throw MistError.missingOutputDirectory

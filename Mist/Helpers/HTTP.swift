@@ -12,14 +12,17 @@ struct HTTP {
 
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
     ///
+    /// - Parameters:
+    ///   - quiet: Set to `true` to suppress verbose output.
+    ///
     /// - Returns: An array of macOS Firmwares.
-    static func retrieveFirmwares() -> [Firmware] {
+    static func retrieveFirmwares(quiet: Bool = false) -> [Firmware] {
         var firmwares: [Firmware] = []
 
         let firmwaresURLString: String = Firmware.firmwaresURL
 
         guard let firmwaresURL: URL = URL(string: firmwaresURLString) else {
-            PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
+            !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
             return []
         }
 
@@ -29,7 +32,7 @@ struct HTTP {
             guard let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
-                PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...")
+                !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
                 return []
             }
 
@@ -51,7 +54,7 @@ struct HTTP {
                 }
             }
         } catch {
-            PrettyPrint.print(error.localizedDescription)
+            !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
         }
 
         firmwares.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
@@ -61,35 +64,50 @@ struct HTTP {
     /// Retrieves the first macOS Firmware download match for the provided search string.
     ///
     /// - Parameters:
-    ///   - firmwares: The array of possible macOS Firmwares that can be downloaded.
-    ///   - download:  The download search string.
+    ///   - firmwares:    The array of possible macOS Firmwares that can be downloaded.
+    ///   - searchString: The download search string.
     ///
     /// - Returns: The first match of a macOS Firmware, otherwise nil.
-    static func firmware(from firmwares: [Firmware], download: String) -> Firmware? {
-        let download: String = download.lowercased().replacingOccurrences(of: "macos ", with: "")
-        let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
-        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version == download }
-        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased() == download }
+    static func firmware(from firmwares: [Firmware], searchString: String) -> Firmware? {
+        let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased().contains(searchString) }
+        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().contains(searchString) }
         return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
+    }
+
+    /// Retrieves macOS Firmware downloads matching the provided search string.
+    ///
+    /// - Parameters:
+    ///   - firmwares:    The array of possible macOS Firmwares that can be downloaded.
+    ///   - searchString: The download search string.
+    ///
+    /// - Returns: An array of macOS Firmware matches.
+    static func firmwares(from firmwares: [Firmware], searchString: String) -> [Firmware] {
+        let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased().contains(searchString) }
+        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().contains(searchString) }
+        return filteredFirmwaresByName + filteredFirmwaresByVersion + filteredFirmwaresByBuild
     }
 
     /// Searches and retrieves a list of all macOS Installers that can be downloaded.
     ///
     /// - Parameters:
     ///   - catalogURL: The Apple Software Update catalog URL to base the search queriest against.
+    ///   - quiet:      Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(catalogURL: String) -> [Product] {
+    static func retrieveProducts(catalogURL: String, quiet: Bool = false) -> [Product] {
         var products: [Product] = []
 
         for catalog in Catalog.allCases {
 
             let catalogURL: String = catalog.url(for: catalogURL)
-
-            PrettyPrint.print("Searching \(catalog.description) catalog...")
+            !quiet ? PrettyPrint.print("Searching \(catalog.description) catalog...") : Mist.noop()
 
             guard let url: URL = URL(string: catalogURL) else {
-                PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...")
+                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
                 continue
             }
 
@@ -97,7 +115,7 @@ struct HTTP {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
                 guard let data: Data = string.data(using: .utf8) else {
-                    PrettyPrint.print("Unable to get data from catalog, skipping...")
+                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...") : Mist.noop()
                     continue
                 }
 
@@ -105,13 +123,13 @@ struct HTTP {
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-                    PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...")
+                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...") : Mist.noop()
                     continue
                 }
 
-                products.append(contentsOf: getProducts(from: productsDictionary).filter { !products.map { $0.identifier }.contains($0.identifier) })
+                products.append(contentsOf: getProducts(from: productsDictionary, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
             } catch {
-                PrettyPrint.print(error.localizedDescription)
+                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
             }
         }
 
@@ -123,9 +141,10 @@ struct HTTP {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary values obtained from the Apple Software Update Catalog Property List.
+    ///   - quiet:      Set to `true` to suppress verbose output.
     ///
     /// - Returns: The filtered list of macOS Installers.
-    private static func getProducts(from dictionary: [String: Any]) -> [Product] {
+    private static func getProducts(from dictionary: [String: Any], quiet: Bool) -> [Product] {
 
         var products: [Product] = []
         let dateFormatter: DateFormatter = DateFormatter()
@@ -144,7 +163,7 @@ struct HTTP {
             guard let distributions: [String: Any] = value["Distributions"] as? [String: Any],
                 let distributionURL: String = distributions["English"] as? String,
                 let url: URL = URL(string: distributionURL) else {
-                PrettyPrint.print("No English distribution found, skipping...")
+                !quiet ? PrettyPrint.print("No English distribution found, skipping...") : Mist.noop()
                 continue
             }
 
@@ -156,7 +175,7 @@ struct HTTP {
                     let name: String = distribution["NAME"] as? String,
                     let version: String = distribution["VERSION"] as? String,
                     let build: String = distribution["BUILD"] as? String else {
-                    PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...")
+                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...") : Mist.noop()
                     continue
                 }
 
@@ -174,7 +193,7 @@ struct HTTP {
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
             } catch {
-                PrettyPrint.print(error.localizedDescription)
+                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
             }
         }
 
@@ -207,15 +226,30 @@ struct HTTP {
     /// Retrieves the first macOS Installer download match for the provided search string.
     ///
     /// - Parameters:
-    ///   - products: The array of possible macOS Installers that can be downloaded.
-    ///   - download: The download search string.
+    ///   - products:     The array of possible macOS Installers that can be downloaded.
+    ///   - searchString: The download search string.
     ///
     /// - Returns: The first match of a macOS Installer, otherwise `nil`.
-    static func product(from products: [Product], download: String) -> Product? {
-        let download: String = download.lowercased().replacingOccurrences(of: "macos ", with: "")
-        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "") == download }
-        let filteredProductsByVersion: [Product] = products.filter { $0.version == download }
-        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased() == download }
+    static func product(from products: [Product], searchString: String) -> Product? {
+        let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredProductsByVersion: [Product] = products.filter { $0.version.lowercased().contains(searchString) }
+        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased().contains(searchString) }
         return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first
+    }
+
+    /// Retrieves macOS Installer downloads matching the provided search string.
+    ///
+    /// - Parameters:
+    ///   - products:     The array of possible macOS Installers that can be downloaded.
+    ///   - searchString: The download search string.
+    ///
+    /// - Returns: An array of macOS Installer matches.
+    static func products(from products: [Product], searchString: String) -> [Product] {
+        let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
+        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredProductsByVersion: [Product] = products.filter { $0.version.lowercased().contains(searchString) }
+        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased().contains(searchString) }
+        return filteredProductsByName + filteredProductsByVersion + filteredProductsByBuild
     }
 }

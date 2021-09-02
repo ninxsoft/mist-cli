@@ -10,21 +10,8 @@ import Foundation
 
 struct DownloadOptions: ParsableArguments {
 
-    @Option(name: .shortAndLong, help: """
-    Specify the platform which defines the download type:
-    * apple (macOS Firmware IPSW File)
-    * intel (macOS Installer Application Bundle)\n
-    """)
-    var platform: PlatformType = .intel
-
-    @Option(name: .shortAndLong, help: """
-    Override the default Software Update Catalog URL.
-    Note: This only applies when the platform is set to 'intel'.
-    """)
-    var catalogURL: String?
-
     @Argument(help: """
-    Specifying a macOS name, version or build to download:
+    Specify a macOS name, version or build to download:
     * macOS Monterey
     * macOS Big Sur
     * macOS Catalina
@@ -43,7 +30,20 @@ struct DownloadOptions: ParsableArguments {
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
-    var download: String
+    var searchString: String
+
+    @Option(name: .shortAndLong, help: """
+    Specify the platform which defines the download type:
+    * apple (macOS Firmware IPSW File)
+    * intel (macOS Installer Application Bundle)\n
+    """)
+    var platform: PlatformType = .intel
+
+    @Option(name: .shortAndLong, help: """
+    Override the default Software Update Catalog URL.
+    Note: This only applies when the platform is set to 'intel'.
+    """)
+    var catalogURL: String?
 
     @Option(name: .long, help: """
     Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
