@@ -62,9 +62,6 @@ struct List {
             !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: "  └─") : Mist.noop()
             try list(products.map { $0.dictionary }, options: options)
         }
-
-        let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-        semaphore.wait()
     }
 
     /// Perform a series of sanity checks on input data, throwing an error if the input data is invalid.
