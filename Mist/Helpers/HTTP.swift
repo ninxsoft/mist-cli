@@ -104,7 +104,6 @@ struct HTTP {
         for catalog in Catalog.allCases {
 
             let catalogURL: String = catalog.url(for: catalogURL)
-            !quiet ? PrettyPrint.print("Searching \(catalog.description) catalog...") : Mist.noop()
 
             guard let url: URL = URL(string: catalogURL) else {
                 !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
