@@ -19,7 +19,7 @@ extension Sequence where Iterator.Element == [String: Any] {
         let sizeHeading: String = "Size"
         let dateHeading: String = "Date"
 
-        let maximumSignedLength: Int = self.compactMap { $0["signed"] as? Bool }.map { $0 ? "Yes" : "No" }.maximumStringLength(comparing: signedHeading)
+        let maximumSignedLength: Int = self.compactMap { $0["signed"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: signedHeading)
         let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
         let maximumVersionLength: Int = self.compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
         let maximumBuildLength: Int = self.compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
@@ -42,7 +42,7 @@ extension Sequence where Iterator.Element == [String: Any] {
 
         for item in self {
 
-            let signed: String = (item["signed"] as? Bool ?? false) ? "Yes": "No"
+            let signed: String = (item["signed"] as? Bool ?? false) ? "True": "False"
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
             let build: String = item["build"] as? String ?? ""
