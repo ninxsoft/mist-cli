@@ -14,7 +14,7 @@ enum Catalog: String, CaseIterable {
     case developer = "developer"
     case `public` = "public"
 
-    static let defaultURL: String = "https://swscan.apple.com/content/catalogs/others/index-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
+    static let defaultURL: String = "https://swscan.apple.com/content/catalogs/others/index-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
 
     var identifier: String {
         switch self {
