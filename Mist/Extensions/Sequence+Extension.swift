@@ -158,7 +158,14 @@ extension Sequence where Iterator.Element == [String: Any] {
         var string: String = ""
 
         for (index, column) in columns.enumerated() {
-            string += column.string + [String](repeating: " ", count: column.padding).joined()
+
+            // size column should be right-aligned
+            if column.string.lowercased().contains("gb") {
+                string += [String](repeating: " ", count: column.padding).joined() + column.string
+            } else {
+                string += column.string + [String](repeating: " ", count: column.padding).joined()
+            }
+
             string += index < columns.count - 1 ? " │ " : "\n"
         }
 
