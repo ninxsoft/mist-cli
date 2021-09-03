@@ -64,7 +64,7 @@ enum MistError: Error {
             return "[-o, --output-directory] Output directory is missing or empty."
         // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
-            return String(format: "Not enough free space on volume '\(volume)': %0.1fGB free, %0.1fGB required", free.toGigabytes(), required.toGigabytes())
+            return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
         case .invalidData:
             return "Invalid data."
         // swiftlint:disable:next explicit_type_interface

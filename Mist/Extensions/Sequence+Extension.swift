@@ -23,7 +23,7 @@ extension Sequence where Iterator.Element == [String: Any] {
         let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
         let maximumVersionLength: Int = self.compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
         let maximumBuildLength: Int = self.compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
-        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { String(format: "%.2f GB", $0.toGigabytes()) }.maximumStringLength(comparing: sizeHeading)
+        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
         let maximumDateLength: Int = self.compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
 
         let signedPadding: Int = Swift.max(maximumSignedLength - signedHeading.count, 0)
@@ -46,7 +46,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
             let build: String = item["build"] as? String ?? ""
-            let size: String = String(format: "%.2f GB", (item["size"] as? Int64 ?? 0).toGigabytes())
+            let size: String = (item["size"] as? Int64 ?? 0).bytesString()
             let date: String = item["date"] as? String ?? ""
 
             let signedPadding: Int = Swift.max(maximumSignedLength - signed.count, 0)
@@ -80,7 +80,7 @@ extension Sequence where Iterator.Element == [String: Any] {
         let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
         let maximumVersionLength: Int = self.compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
         let maximumBuildLength: Int = self.compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
-        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { String(format: "%.2f GB", $0.toGigabytes()) }.maximumStringLength(comparing: sizeHeading)
+        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
         let maximumDateLength: Int = self.compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
 
         let identifierPadding: Int = Swift.max(maximumIdentifierLength - identifierHeading.count, 0)
@@ -103,7 +103,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
             let build: String = item["build"] as? String ?? ""
-            let size: String = String(format: "%.2f GB", (item["size"] as? Int64 ?? 0).toGigabytes())
+            let size: String = (item["size"] as? Int64 ?? 0).bytesString()
             let date: String = item["date"] as? String ?? ""
 
             let identifierPadding: Int = Swift.max(maximumIdentifierLength - identifier.count, 0)

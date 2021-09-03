@@ -39,7 +39,7 @@ struct List {
             }
 
             try export(firmwares.map { $0.dictionary }, options: options)
-            !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: "  └─") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: .ending) : Mist.noop()
             try list(firmwares.map { $0.dictionary }, options: options)
 
         case .intel:
@@ -59,7 +59,7 @@ struct List {
             }
 
             try export(products.map { $0.dictionary }, options: options)
-            !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: "  └─") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending) : Mist.noop()
             try list(products.map { $0.dictionary }, options: options)
         }
     }

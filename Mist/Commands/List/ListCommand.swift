@@ -21,7 +21,7 @@ struct ListCommand: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(mistError.description, prefix: "  └─", prefixColor: .red)
+            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
             throw mistError
         }
     }

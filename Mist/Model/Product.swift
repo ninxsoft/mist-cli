@@ -51,7 +51,4 @@ struct Product: Decodable {
     var size: Int64 {
         Int64(packages.map { $0.size }.reduce(0, +))
     }
-    var sizeDescription: String {
-        String(format: "%.2f GB", size.toGigabytes())
-    }
 }
