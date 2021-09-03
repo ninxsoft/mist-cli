@@ -10,9 +10,12 @@ import Foundation
 /// Helper Class used to download macOS Firmwares and Installers.
 class Downloader: NSObject {
 
+    private static let maximumWidth: Int = 80
     private var temporaryURL: URL?
     private var sourceURL: URL?
+    private var current: Int64 = 0
     private var total: Int64 = 0
+    private var prefixString: String = ""
     private var mistError: MistError?
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
 
@@ -35,8 +38,8 @@ class Downloader: NSObject {
         sourceURL = source
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         let task: URLSessionDownloadTask = session.downloadTask(with: source)
-        PrettyPrint.print("Downloading file - \(source.lastPathComponent)...", prefix: .parent)
-        PrettyPrint.print("\(Int64(0).bytesString()) of \(Int64(0).bytesString()) [ 00.00 % ]", prefix: .child)
+        prefixString = source.lastPathComponent
+        updateProgress(replacing: false)
         task.resume()
         semaphore.wait()
 
@@ -44,8 +47,7 @@ class Downloader: NSObject {
             throw mistError
         }
 
-        let totalString: String = total.bytesString()
-        PrettyPrint.print("\(totalString) of \(totalString) [ 100.00 % ]", prefix: .child, replacing: true)
+        updateProgress()
     }
 
     /// Downloads a macOS Installer.
@@ -69,11 +71,11 @@ class Downloader: NSObject {
             }
 
             sourceURL = source
+            let task: URLSessionDownloadTask = session.downloadTask(with: source)
             let current: Int = index + 1
             let currentString: String = "\(current < 10 && product.totalFiles >= 10 ? "0" : "")\(current)"
-            let task: URLSessionDownloadTask = session.downloadTask(with: source)
-            PrettyPrint.print("Downloading file \(currentString) of \(product.totalFiles) - \(source.lastPathComponent)...", prefix: .parent)
-            PrettyPrint.print("00.00 GB of 00.00 GB [ 00.00 % ]", prefix: .child)
+            prefixString = "[ \(currentString) / \(product.totalFiles) ] \(source.lastPathComponent)"
+            updateProgress(replacing: false)
             task.resume()
             semaphore.wait()
 
@@ -81,24 +83,35 @@ class Downloader: NSObject {
                 throw mistError
             }
 
-            let totalString: String = total.bytesString()
-            PrettyPrint.print("\(totalString) of \(totalString) [ 100.00 % ]", prefix: .child, replacing: true)
+            updateProgress()
         }
+    }
+
+    private func updateProgress(replacing: Bool = true) {
+        let currentString: String = current.bytesString()
+        let totalString: String = total.bytesString()
+        let percentage: Double = total > 0 ? Double(current) / Double(total) * 100 : 0
+        let format: String = percentage == 100 ? "%05.1f%%" : "%05.2f%%"
+        let percentageString: String = String(format: format, percentage)
+        let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
+        let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
+        let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
+        PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing)
     }
 }
 
 extension Downloader: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        let currentString: String = totalBytesWritten.bytesString()
-        let totalString: String = totalBytesExpectedToWrite.bytesString()
-        let percentageString: String = String(format: "%05.2f %%", Double(totalBytesWritten) / Double(totalBytesExpectedToWrite) * 100)
-        PrettyPrint.print("\(currentString) of \(totalString) [ \(percentageString) ]", prefix: .child, replacing: true)
+        current = totalBytesWritten
+        total = totalBytesExpectedToWrite
+        updateProgress()
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
 
         if let expectedContentLength: Int64 = downloadTask.response?.expectedContentLength {
+            current = expectedContentLength
             total = expectedContentLength
         }
 
