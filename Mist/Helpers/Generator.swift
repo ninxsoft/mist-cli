@@ -51,6 +51,13 @@ struct Generator {
             throw MistError.invalidShasum(invalid: shasum, valid: firmware.shasum)
         }
 
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
+
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
@@ -94,6 +101,13 @@ struct Generator {
         PrettyPrint.printHeader("APPLICATION")
         let destinationURL: URL = URL(fileURLWithPath: options.applicationPath(for: product))
 
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
+
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old application '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
@@ -127,6 +141,13 @@ struct Generator {
 
         PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...")
         try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
+
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old image '\(destinationURL.path)'...")
@@ -242,6 +263,13 @@ struct Generator {
 
         arguments += [destinationURL.path]
 
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
+
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")
             try FileManager.default.removeItem(at: destinationURL)
@@ -285,6 +313,13 @@ struct Generator {
         }
 
         arguments += [destinationURL.path]
+
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")

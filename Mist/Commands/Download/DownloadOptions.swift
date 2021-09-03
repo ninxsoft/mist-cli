@@ -45,6 +45,12 @@ struct DownloadOptions: ParsableArguments {
     """)
     var catalogURL: String?
 
+    @Flag(name: .shortAndLong, help: """
+    Force overwriting existing macOS Downloads matching the provided filename(s).
+    Note: Downloads will fail if an existing file is found and this flag is not provided.
+    """)
+    var force: Bool = false
+
     @Option(name: .long, help: """
     Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'

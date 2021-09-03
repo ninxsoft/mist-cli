@@ -24,6 +24,7 @@ enum MistError: Error {
     case missingPackageSigningIdentity
     case missingOutputDirectory
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
+    case existingFile(path: String)
     case invalidData
     case invalidExitStatus(code: Int32, arguments: [String])
     case invalidShasum(invalid: String, valid: String)
@@ -65,6 +66,9 @@ enum MistError: Error {
         // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
             return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
+        // swiftlint:disable:next explicit_type_interface
+        case .existingFile(let path):
+            return "Existing file: '\(path)'. Use [--force] to overwrite."
         case .invalidData:
             return "Invalid data."
         // swiftlint:disable:next explicit_type_interface
