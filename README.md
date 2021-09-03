@@ -2,9 +2,10 @@
 
 A Mac command-line tool that automatically downloads **macOS Installers** / **Firmwares**:
 
-![Intel](Readme%20Resources/Intel.png)
 
 ![Apple](Readme%20Resources/Apple.png)
+
+![Intel](Readme%20Resources/Intel.png)
 
 ## Features
 
@@ -55,6 +56,12 @@ mist list --platform "apple"
 
 # List all available macOS Installers for Intel Macs:
 mist list --platform "intel"
+
+# List only macOS Big Sur Installers for Intel Macs:
+mist list "macOS Big Sur" --platform "intel"
+
+# List only the latest macOS Big Sur Installer for Intel Macs:
+mist list "macOS Big Sur" --platform "intel" --latest
 
 # List + Export macOS Installers to a CSV file:
 mist list --export "/path/to/export.csv"
@@ -127,6 +134,23 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
 * Callum Jones ([cj123](https://github.com/cj123)) for [IPSW Downloads API](https://ipswdownloads.docs.apiary.io), used to determine macOS Firmware metadata.
 
 ## Version History
+
+* 1.5
+  * Added List search support
+    * `mist list <search-string>` to filter on results
+    * `--latest` to filter the latest (first) match found
+    * `--quiet` to suppress verbose output
+    * `--output-type` to specify a custom output type
+  * Added progress indicators
+    * Displays current and total download amounts
+    * Displays overal percentage downloaded
+  * macOS Firmwares and Installers will fail to download if they already exist
+    * Use `--force` to overwrite this behaviour
+  * Faster macOS Firmwares list retrieval time
+  * Faster macOS Installers list retrieval time
+  * Replaced **SANITY CHECKS** headers with more inclusive **INPUT VALIDATION**
+  * Fixed a bug with partial string matching when searching for downloads
+  * Improved error handling and messaging
 
 * 1.4
   * Support for downloading macOS Firmware (IPSW) files
