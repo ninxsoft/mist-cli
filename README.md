@@ -25,6 +25,7 @@ A Mac command-line tool that automatically downloads **macOS Installers** / **Fi
       * **Public Seed** - Apple Beta Software Program
   * For Apple Silicon Macs:
     * Download a Firmware Restore file (.ipsw)
+    * Validates the SHA-1 checksum upon download
 
 ## Usage
 

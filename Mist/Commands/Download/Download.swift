@@ -29,6 +29,7 @@ struct Download {
             }
 
             PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]")
+            try verifyExistingFiles(firmware, options: options)
             try setup(firmware, options: options)
             try verifyFreeSpace(firmware, options: options)
             try Downloader().download(firmware, options: options)
@@ -43,6 +44,7 @@ struct Download {
             }
 
             PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
+            try verifyExistingFiles(product, options: options)
             try setup(product, options: options)
             try verifyFreeSpace(product, options: options)
             try Downloader().download(product, options: options)
@@ -81,6 +83,12 @@ struct Download {
         PrettyPrint.print("Platform will be '\(options.platform)'...")
         PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...")
         PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...")
+
+        if options.force {
+            PrettyPrint.print("Force flag set, existing files will be overwritten...")
+        } else {
+            PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...")
+        }
 
         switch options.platform {
         case .apple:
@@ -188,6 +196,64 @@ struct Download {
                 }
 
                 PrettyPrint.print("Package signing identity will be '\(identity)'...")
+            }
+        }
+    }
+
+    /// Verifies if macOS Firmware files already exist.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware to be downloaded.
+    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if an existing file is found.
+    private static func verifyExistingFiles(_ firmware: Firmware, options: DownloadOptions) throws {
+
+        guard !options.force else {
+            return
+        }
+
+        let path: String = options.firmwarePath(for: firmware)
+
+        guard !FileManager.default.fileExists(atPath: path) else {
+            throw MistError.existingFile(path: path)
+        }
+    }
+
+    /// Verifies if macOS Installer files already exist.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer to be downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if an existing file is found.
+    private static func verifyExistingFiles(_ product: Product, options: DownloadOptions) throws {
+
+        guard !options.force else {
+            return
+        }
+
+        if options.application {
+            let path: String = options.applicationPath(for: product)
+
+            guard !FileManager.default.fileExists(atPath: path) else {
+                throw MistError.existingFile(path: path)
+            }
+        }
+
+        if options.image {
+            let path: String = options.imagePath(for: product)
+
+            guard !FileManager.default.fileExists(atPath: path) else {
+                throw MistError.existingFile(path: path)
+            }
+        }
+
+        if options.package {
+            let path: String = options.packagePath(for: product)
+
+            guard !FileManager.default.fileExists(atPath: path) else {
+                throw MistError.existingFile(path: path)
             }
         }
     }
