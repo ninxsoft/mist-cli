@@ -36,6 +36,8 @@ extension String {
     static let temporaryDirectory: String = "/private/tmp"
     static let outputDirectory: String = "/Users/Shared/Mist"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
+    static let repositoryURL: String = "https://github.com/ninxsoft/\(appName)"
+    static let latestReleaseURL: String = "https://api.github.com/repos/ninxsoft/\(appName)/releases/latest"
 
     func wrappedInPropertyList() -> String {
         "<?xml version=\"1.0\"?>" +
