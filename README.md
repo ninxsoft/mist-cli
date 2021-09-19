@@ -77,10 +77,10 @@ mist list --export "/path/to/export.yaml"
 
 # Download the latest macOS Big Sur Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download "Big Sur" --plaform "apple" --firmware-name "Install %NAME %VERSION%-%BUILD%.ipsw"
+mist download "Big Sur" --platform "apple" --firmware-name "Install %NAME %VERSION%-%BUILD%.ipsw"
 
 # Download the latest macOS Big Sur Installer for Intel Macs:
-mist download "Big Sur" --plaform "intel" --application
+mist download "Big Sur" --platform "intel" --application
 
 # Download a specific macOS Installer version for Intel Macs:
 mist download "11.4" --application
