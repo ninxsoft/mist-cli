@@ -45,8 +45,13 @@ struct List {
         case .intel:
             !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...") : Mist.noop()
 
-            let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
-            var products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL, quiet: options.quiet)
+            var catalogURLs: [String] = Catalog.urls
+
+            if let catalogURL: String = options.catalogURL {
+                catalogURLs = [catalogURL]
+            }
+
+            var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, quiet: options.quiet)
 
             if let searchString: String = options.searchString {
                 products = HTTP.products(from: products, searchString: searchString)

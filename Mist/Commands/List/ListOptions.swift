@@ -22,8 +22,8 @@ struct ListOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21A (macOS Monterey Beta 12.0)
-    * 20G (macOS Big Sur 11.5)
+    * 21A (macOS Monterey 12.0.1)
+    * 20G (macOS Big Sur 11.6.1)
     * 19H (macOS Catalina 10.15.7)
     * 18G (macOS Mojave 10.14.6)
     * 17G (macOS High Sierra 10.13.6)
@@ -48,7 +48,7 @@ struct ListOptions: ParsableArguments {
     var includeBetas: Bool = false
 
     @Option(name: .shortAndLong, help: """
-    Override the default Software Update Catalog URL.
+    Override the default Software Update Catalog URLs.
     Note: This only applies when the platform is set to 'intel'.
     """)
     var catalogURL: String?

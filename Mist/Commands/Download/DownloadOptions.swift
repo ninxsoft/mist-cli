@@ -45,7 +45,7 @@ struct DownloadOptions: ParsableArguments {
     var includeBetas: Bool = false
 
     @Option(name: .shortAndLong, help: """
-    Override the default Software Update Catalog URL.
+    Override the default Software Update Catalog URLs.
     Note: This only applies when the platform is set to 'intel'.
     """)
     var catalogURL: String?

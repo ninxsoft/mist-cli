@@ -36,9 +36,15 @@ struct Download {
             try Generator.generate(firmware, options: options)
             try teardown(firmware, options: options)
         case .intel:
-            let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
+            var catalogURLs: [String] = Catalog.urls
 
-            guard let product: Product = HTTP.product(from: HTTP.retrieveProducts(catalogURL: catalogURL), searchString: options.searchString) else {
+            if let catalogURL: String = options.catalogURL {
+                catalogURLs = [catalogURL]
+            }
+
+            let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas)
+
+            guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
                 PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending)
                 return
             }

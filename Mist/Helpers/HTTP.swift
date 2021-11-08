@@ -107,9 +107,7 @@ struct HTTP {
     static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, quiet: Bool = false) -> [Product] {
         var products: [Product] = []
 
-        for catalog in Catalog.allCases {
-
-            let catalogURL: String = catalog.url(for: catalogURL)
+        for catalogURL in catalogURLs {
 
             guard let url: URL = URL(string: catalogURL) else {
                 !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
