@@ -11,7 +11,7 @@ import Foundation
 struct Version {
 
     /// Current version.
-    static let version: String = "1.5"
+    static let version: String = "1.6"
 
     /// Prints the current version and checks for the latest version.
     static func run() {

@@ -32,7 +32,6 @@ enum MistError: Error {
 
     var description: String {
         switch self {
-        // swiftlint:disable:next explicit_type_interface
         case .generalError(let string):
             return "Error: \(string)"
         case .missingListSearchString:
@@ -63,21 +62,16 @@ enum MistError: Error {
             return "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
         case .missingOutputDirectory:
             return "[-o, --output-directory] Output directory is missing or empty."
-        // swiftlint:disable:next explicit_type_interface
         case .notEnoughFreeSpace(let volume, let free, let required):
             return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
-        // swiftlint:disable:next explicit_type_interface
         case .existingFile(let path):
             return "Existing file: '\(path)'. Use [--force] to overwrite."
         case .invalidData:
             return "Invalid data."
-        // swiftlint:disable:next explicit_type_interface
         case .invalidExitStatus(let code, let arguments):
             return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
-        // swiftlint:disable:next explicit_type_interface
         case .invalidShasum(let invalid, let valid):
             return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
-        // swiftlint:disable:next explicit_type_interface
         case .invalidURL(let url):
             return "Invalid URL: '\(url)'"
         }
