@@ -11,6 +11,7 @@ A Mac command-line tool that automatically downloads **macOS Installers** / **Fi
 
 * [x] List all available macOS Installers / Firmwares available for download:
   * Display names, versions, builds, sizes and release dates
+  * Additionally list beta versions of macOS in search results
   * Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
 * [x] Download an available macOS Installer / Firmware:
   * For Intel based Macs:
@@ -56,6 +57,9 @@ mist list --platform "apple"
 
 # List all available macOS Installers for Intel Macs:
 mist list --platform "intel"
+
+# List all available macOS Installers for Intel Macs, including betas:
+mist list --platform "intel" --include-betas
 
 # List only macOS Big Sur Installers for Intel Macs:
 mist list "macOS Big Sur" --platform "intel"
@@ -134,6 +138,13 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
 * Callum Jones ([cj123](https://github.com/cj123)) for [IPSW Downloads API](https://ipswdownloads.docs.apiary.io), used to determine macOS Firmware metadata.
 
 ## Version History
+
+* 1.6
+  * SUCatalog URLs have been updated to point to **macOS Monterey (12)** URLs
+  * Beta versions of macOS are now excluded by default in search results
+    * Use `--include-betas` to include betas in search results
+  * `mist version` now informs you if a new version is available for download
+  * Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.0.1**
 
 * 1.5
   * Added List search support
