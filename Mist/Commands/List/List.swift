@@ -26,7 +26,7 @@ struct List {
         case .apple:
             !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...") : Mist.noop()
 
-            var firmwares: [Firmware] = HTTP.retrieveFirmwares(quiet: options.quiet)
+            var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, quiet: options.quiet)
 
             if let searchString: String = options.searchString {
                 firmwares = HTTP.firmwares(from: firmwares, searchString: searchString)
@@ -45,8 +45,13 @@ struct List {
         case .intel:
             !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...") : Mist.noop()
 
-            let catalogURL: String = options.catalogURL ?? Catalog.defaultURL
-            var products: [Product] = HTTP.retrieveProducts(catalogURL: catalogURL, quiet: options.quiet)
+            var catalogURLs: [String] = Catalog.urls
+
+            if let catalogURL: String = options.catalogURL {
+                catalogURLs = [catalogURL]
+            }
+
+            var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, quiet: options.quiet)
 
             if let searchString: String = options.searchString {
                 products = HTTP.products(from: products, searchString: searchString)
@@ -87,6 +92,8 @@ struct List {
         if options.latest {
             !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...") : Mist.noop()
         }
+
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
 
         if let path: String = options.exportPath {
 

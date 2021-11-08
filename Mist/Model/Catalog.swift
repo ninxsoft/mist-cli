@@ -14,18 +14,20 @@ enum Catalog: String, CaseIterable {
     case developer = "developer"
     case `public` = "public"
 
-    static let defaultURL: String = "https://swscan.apple.com/content/catalogs/others/index-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
+    static var urls: [String] {
+        self.allCases.map { $0.url }
+    }
 
-    var identifier: String {
+    var url: String {
         switch self {
         case .standard:
-            return ""
+            return "https://swscan.apple.com/content/catalogs/others/index-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
         case .customer:
-            return "customerseed-"
+            return "https://swscan.apple.com/content/catalogs/others/index-12customerseed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
         case .developer:
-            return "seed-"
+            return "https://swscan.apple.com/content/catalogs/others/index-12seed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
         case .`public`:
-            return "beta-"
+            return "https://swscan.apple.com/content/catalogs/others/index-12beta-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
         }
     }
 
@@ -40,12 +42,5 @@ enum Catalog: String, CaseIterable {
         case .`public`:
             return "Public Seed"
         }
-    }
-
-    func url(for catalogURL: String) -> String {
-        let prefix: String = "https://swscan.apple.com/content/catalogs/others/index-"
-        let slug: String = catalogURL.replacingOccurrences(of: prefix, with: "")
-        let string: String = self == .standard ? "" : "\(slug.prefix(slug.firstIndex(of: "-")?.utf16Offset(in: slug) ?? 2))"
-        return "\(prefix)\(string)\(self.identifier)\(slug)"
     }
 }

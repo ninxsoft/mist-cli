@@ -39,8 +39,13 @@ struct DownloadOptions: ParsableArguments {
     """)
     var platform: PlatformType = .intel
 
+    @Flag(name: [.customShort("b"), .long], help: """
+    Include beta macOS Firmwares / Installers in search results.
+    """)
+    var includeBetas: Bool = false
+
     @Option(name: .shortAndLong, help: """
-    Override the default Software Update Catalog URL.
+    Override the default Software Update Catalog URLs.
     Note: This only applies when the platform is set to 'intel'.
     """)
     var catalogURL: String?
