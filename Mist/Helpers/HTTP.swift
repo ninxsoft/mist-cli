@@ -13,10 +13,11 @@ struct HTTP {
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
     ///
     /// - Parameters:
-    ///   - quiet: Set to `true` to suppress verbose output.
+    ///   - includeBetas: Set to `true` to prevent skipping of macOS Firmwares in search results.
+    ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Firmwares.
-    static func retrieveFirmwares(quiet: Bool = false) -> [Firmware] {
+    static func retrieveFirmwares(includeBetas: Bool, quiet: Bool = false) -> [Firmware] {
         var firmwares: [Firmware] = []
 
         let firmwaresURLString: String = Firmware.firmwaresURL
@@ -57,6 +58,10 @@ struct HTTP {
             !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
         }
 
+        if !includeBetas {
+            firmwares = firmwares.filter { !$0.isBeta }
+        }
+
         firmwares.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
         return firmwares
     }
@@ -94,11 +99,12 @@ struct HTTP {
     /// Searches and retrieves a list of all macOS Installers that can be downloaded.
     ///
     /// - Parameters:
-    ///   - catalogURL: The Apple Software Update catalog URL to base the search queriest against.
-    ///   - quiet:      Set to `true` to suppress verbose output.
+    ///   - catalogURLs:  The Apple Software Update catalog URLs to base the search queries against.
+    ///   - includeBetas: Set to `true` to prevent skipping of macOS Installers in search results.
+    ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(catalogURL: String, quiet: Bool = false) -> [Product] {
+    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, quiet: Bool = false) -> [Product] {
         var products: [Product] = []
 
         for catalog in Catalog.allCases {
@@ -130,6 +136,10 @@ struct HTTP {
             } catch {
                 !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
             }
+        }
+
+        if !includeBetas {
+            products = products.filter { !$0.isBeta }
         }
 
         products.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }

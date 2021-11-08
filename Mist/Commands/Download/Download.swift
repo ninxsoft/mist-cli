@@ -23,7 +23,7 @@ struct Download {
 
         switch options.platform {
         case .apple:
-            guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(), searchString: options.searchString) else {
+            guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas), searchString: options.searchString) else {
                 PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending)
                 return
             }
@@ -81,6 +81,7 @@ struct Download {
         }
 
         PrettyPrint.print("Platform will be '\(options.platform)'...")
+        PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...")
         PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...")
         PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...")
 

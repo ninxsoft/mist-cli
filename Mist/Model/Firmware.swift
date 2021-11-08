@@ -47,6 +47,9 @@ struct Firmware: Decodable {
     var signedDescription: String {
         signed ? "Yes": "No"
     }
+    var isBeta: Bool {
+        build.range(of: "[a-z]$", options: .regularExpression) != nil
+    }
     var dictionary: [String: Any] {
         [
             "signed": signed,

@@ -42,6 +42,11 @@ struct ListOptions: ParsableArguments {
     """)
     var latest: Bool = false
 
+    @Flag(name: [.customShort("b"), .long], help: """
+    Include beta macOS Firmwares / Installers in search results.
+    """)
+    var includeBetas: Bool = false
+
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URL.
     Note: This only applies when the platform is set to 'intel'.
