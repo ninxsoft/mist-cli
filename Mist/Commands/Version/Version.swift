@@ -11,13 +11,17 @@ import Foundation
 struct Version {
 
     /// Current version.
-    static let version: String = "1.6"
+    static let version: String = "1.6.1"
+    /// Current version with error message when unable to lookup latest version.
+    static var versionWithErrorMessage: String {
+        "\(version) (Unable to check for latest version)"
+    }
 
     /// Prints the current version and checks for the latest version.
     static func run() {
 
         guard let url: URL = URL(string: .latestReleaseURL) else {
-            print(version)
+            print(versionWithErrorMessage)
             return
         }
 
@@ -27,12 +31,12 @@ struct Version {
             guard let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let tag: String = dictionary["tag_name"] as? String else {
-                print(version)
+                print(versionWithErrorMessage)
                 return
             }
 
             let latestVersion: String = tag.replacingOccurrences(of: "v", with: "")
-            print("\(version) (latest: \(latestVersion))")
+            print("\(version) (Latest: \(latestVersion))")
 
             guard version.compare(latestVersion, options: .numeric) == .orderedAscending else {
                 return
@@ -40,7 +44,7 @@ struct Version {
 
             print("Visit \(String.repositoryURL) to grab the latest release of \(String.appName)")
         } catch {
-            print("Unable to check for latest version.")
+            print(versionWithErrorMessage)
         }
     }
 }
