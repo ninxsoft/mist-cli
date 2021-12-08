@@ -1,0 +1,14 @@
+name: swift_build_test_lint
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+jobs:
+  swift_build_test_lint:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: swift build -v
+    - run: swift test -v
+    - run: swiftlint
