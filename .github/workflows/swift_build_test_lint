@@ -1,9 +1,5 @@
 name: swift_build_test_lint
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: [ push, pull_request ]
 jobs:
   swift_build_test_lint:
     runs-on: macos-latest
