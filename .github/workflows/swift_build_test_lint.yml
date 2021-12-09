@@ -4,7 +4,10 @@ jobs:
   swift_build_test_lint:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - run: swift build -v
-    - run: swift test -v
-    - run: swiftlint
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.5"
+      - uses: actions/checkout@v2
+      - run: swift build -v
+      - run: swift test -v
+      - run: swiftlint
