@@ -11,8 +11,7 @@ jobs:
       - run: swift build -v
       - run: swift test -v || true
       - run: swiftlint
-      - run: uname -m
-      - run: mist version
+      - run: mist version || true
       - run: mist list || true
       - run: mist list --platform "intel" || true
       - run: mist list --platform "apple" || true
