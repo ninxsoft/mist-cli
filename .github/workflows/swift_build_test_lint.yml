@@ -1,0 +1,17 @@
+name: swift_build_test_lint
+on: [ push, pull_request ]
+jobs:
+  swift_build_test_lint:
+    runs-on: macos-latest
+    steps:
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.5"
+      - uses: actions/checkout@v2
+      - run: swift build -v
+      - run: swift test -v || true
+      - run: swiftlint
+      - run: mist version || true
+      - run: mist list || true
+      - run: mist list --platform "intel" || true
+      - run: mist list --platform "apple" || true
