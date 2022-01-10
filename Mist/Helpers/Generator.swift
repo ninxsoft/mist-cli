@@ -30,7 +30,7 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("FIRMWARE")
+        PrettyPrint.printHeader("FIRMWARE",parsable: options.jsonOutput)
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         guard let firmwareURL: URL = URL(string: firmware.url) else {
@@ -40,7 +40,7 @@ struct Generator {
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
         let destinationURL: URL = URL(fileURLWithPath: options.firmwarePath(for: firmware))
 
-        PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...")
+        PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...", parsable: options.jsonOutput)
 
         guard let string: String = try Shell.execute(["shasum", temporaryFirmwareURL.path]),
             let shasum: String = string.split(separator: " ").map({ String($0) }).first else {
@@ -59,11 +59,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...")
+            PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Moving '\(temporaryFirmwareURL.path)' to '\(destinationURL.path)'...")
+        PrettyPrint.print("Moving '\(temporaryFirmwareURL.path)' to '\(destinationURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.moveItem(at: temporaryFirmwareURL, to: destinationURL)
     }
 
@@ -98,7 +98,7 @@ struct Generator {
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("APPLICATION")
+        PrettyPrint.printHeader("APPLICATION",parsable: options.jsonOutput)
         let destinationURL: URL = URL(fileURLWithPath: options.applicationPath(for: product))
 
         if !options.force {
@@ -109,11 +109,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old application '\(destinationURL.path)'...")
+            PrettyPrint.print("Deleting old application '\(destinationURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...")
+        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.copyItem(at: product.installerURL, to: destinationURL)
     }
 
@@ -126,20 +126,20 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("DISK IMAGE")
+        PrettyPrint.printHeader("DISK IMAGE",parsable: options.jsonOutput)
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: options.imagePath(for: product))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...")
+        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
 
         if !options.force {
@@ -150,11 +150,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old image '\(destinationURL.path)'...")
+            PrettyPrint.print("Deleting old image '\(destinationURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating image '\(destinationURL.path)'...")
+        PrettyPrint.print("Creating image '\(destinationURL.path)'...", parsable: options.jsonOutput)
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
         _ = try Shell.execute(arguments)
 
@@ -170,14 +170,14 @@ struct Generator {
 
             arguments += [destinationURL.path]
 
-            PrettyPrint.print("Codesigning image '\(destinationURL.path)'...")
+            PrettyPrint.print("Codesigning image '\(destinationURL.path)'...", parsable: options.jsonOutput)
             _ = try Shell.execute(arguments)
         }
 
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print("Created image '\(destinationURL.path)'")
+        PrettyPrint.print("Created image '\(destinationURL.path)'", parsable: options.jsonOutput)
     }
 
     /// Generates a macOS Installer Package, optionally codesigning.
@@ -189,7 +189,7 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generatePackage(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("PACKAGE")
+        PrettyPrint.printHeader("PACKAGE",parsable: options.jsonOutput)
 
         if product.isTooBigForPackagePayload {
             try generateBigPackage(product: product, options: options)
@@ -220,34 +220,34 @@ struct Generator {
         var arguments: [String] = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", scriptsURL.path, "--root", temporaryURL.path, "--version", version]
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...")
+        PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...", parsable: options.jsonOutput)
         _ = try Shell.execute(zipArguments)
 
-        PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...")
+        PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...", parsable: options.jsonOutput)
         _ = try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
 
-        PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'")
+        PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'", parsable: options.jsonOutput)
         try FileManager.default.removeItem(at: zipURL)
 
         if FileManager.default.fileExists(atPath: scriptsURL.path) {
-            PrettyPrint.print("Deleting old temporary scripts directory '\(scriptsURL.path)'...")
+            PrettyPrint.print("Deleting old temporary scripts directory '\(scriptsURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: scriptsURL)
         }
 
-        PrettyPrint.print("Creating new temporary scripts directory '\(scriptsURL.path)'...")
+        PrettyPrint.print("Creating new temporary scripts directory '\(scriptsURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.createDirectory(at: scriptsURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Creating temporary post install script '\(postInstallURL.path)'...")
+        PrettyPrint.print("Creating temporary post install script '\(postInstallURL.path)'...", parsable: options.jsonOutput)
         try postInstall(for: product).write(to: postInstallURL, atomically: true, encoding: .utf8)
 
-        PrettyPrint.print("Setting executable permissions on temporary post install script '\(postInstallURL.path)'...")
+        PrettyPrint.print("Setting executable permissions on temporary post install script '\(postInstallURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: postInstallURL.path)
 
         if let identity: String = options.packageSigningIdentity,
@@ -271,20 +271,20 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")
+            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating package '\(destinationURL.path)'...")
+        PrettyPrint.print("Creating package '\(destinationURL.path)'...", parsable: options.jsonOutput)
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print("Deleting temporary scripts directory '\(scriptsURL.path)'...")
+        PrettyPrint.print("Deleting temporary scripts directory '\(scriptsURL.path)'...", parsable: options.jsonOutput)
         try FileManager.default.removeItem(at: scriptsURL)
 
-        PrettyPrint.print("Created package '\(destinationURL.path)'")
+        PrettyPrint.print("Created package '\(destinationURL.path)'", parsable: options.jsonOutput)
     }
 
     /// Generates a macOS Installer Package for payloads smaller than 8GB (ie. **macOS Catalina** and below).
@@ -322,13 +322,13 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")
+            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...", parsable: options.jsonOutput)
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating package '\(destinationURL.path)'...")
+        PrettyPrint.print("Creating package '\(destinationURL.path)'...", parsable: options.jsonOutput)
         _ = try Shell.execute(arguments)
-        PrettyPrint.print("Created package '\(destinationURL.path)'")
+        PrettyPrint.print("Created package '\(destinationURL.path)'", parsable: options.jsonOutput)
     }
 
     /// Creates a custom postinstall script for the macOS Installer Package, used to re-join large payloads (ie. **macOS Big Sur** and above).

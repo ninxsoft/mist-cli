@@ -36,6 +36,7 @@
 		57D135AB25FED139003467B2 /* MistError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D135AA25FED139003467B2 /* MistError.swift */; };
 		57D135B825FEEE48003467B2 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 57D135B725FEEE48003467B2 /* Yams */; };
 		57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F0F3CD2600907D00480DEE /* Int64+Extension.swift */; };
+		7621FE00278A7AB100C38FAF /* DownloadInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7621FDFF278A7AB100C38FAF /* DownloadInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,6 +80,7 @@
 		57D1359925FE1364003467B2 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		57D135AA25FED139003467B2 /* MistError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistError.swift; sourceTree = "<group>"; };
 		57F0F3CD2600907D00480DEE /* Int64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int64+Extension.swift"; sourceTree = "<group>"; };
+		7621FDFF278A7AB100C38FAF /* DownloadInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,6 +178,7 @@
 		5744142125F8675400DE5540 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				7621FDFF278A7AB100C38FAF /* DownloadInfo.swift */,
 				570D5090260034E10066E4C9 /* Catalog.swift */,
 				3967935B26D7304500DC2D2D /* Firmware.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
@@ -319,6 +322,7 @@
 				5744140925F8603300DE5540 /* Mist.swift in Sources */,
 				57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */,
 				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
+				7621FE00278A7AB100C38FAF /* DownloadInfo.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
 				3967935526D7272100DC2D2D /* ListCommand.swift in Sources */,
 				570D5091260034E10066E4C9 /* Catalog.swift in Sources */,
@@ -459,7 +463,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
+				DEVELOPMENT_TEAM = UXP6YEHSPW;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist;
@@ -474,7 +478,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
+				DEVELOPMENT_TEAM = UXP6YEHSPW;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist;

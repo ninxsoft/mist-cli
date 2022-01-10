@@ -13,10 +13,13 @@ class Downloader: NSObject {
     private static let maximumWidth: Int = 80
     private var temporaryURL: URL?
     private var sourceURL: URL?
-    private var current: Int64 = 0
-    private var total: Int64 = 0
+    private var currentBytes: Int64 = 0
+    private var currentIndex: Int = 0
+    private var totalBytes: Int64 = 0
     private var prefixString: String = ""
     private var mistError: MistError?
+    private var downloadInfo:DownloadInfo?
+    private var jsonOutput:Bool = false
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
 
     /// Downloads a macOS Firmware.
@@ -28,7 +31,10 @@ class Downloader: NSObject {
     /// - Throws: A `MistError` if the macOS Firmware fails to download.
     func download(_ firmware: Firmware, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("DOWNLOAD")
+        self.downloadInfo=try? DownloadInfo(from: firmware)
+
+        jsonOutput=options.jsonOutput
+        PrettyPrint.printHeader("DOWNLOAD",parsable: options.jsonOutput)
         temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         guard let source: URL = URL(string: firmware.url) else {
@@ -39,7 +45,7 @@ class Downloader: NSObject {
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         let task: URLSessionDownloadTask = session.downloadTask(with: source)
         prefixString = source.lastPathComponent
-        updateProgress(replacing: false)
+        updateProgress(replacing: false, parsable: options.jsonOutput)
         task.resume()
         semaphore.wait()
 
@@ -47,7 +53,8 @@ class Downloader: NSObject {
             throw mistError
         }
 
-        updateProgress()
+        updateProgress(parsable: options.jsonOutput)
+
     }
 
     /// Downloads a macOS Installer.
@@ -58,12 +65,13 @@ class Downloader: NSObject {
     ///
     /// - Throws: A `MistError` if the macOS Installer fails to download.
     func download(_ product: Product, options: DownloadOptions) throws {
+        jsonOutput=options.jsonOutput
 
-        PrettyPrint.printHeader("DOWNLOAD")
+        PrettyPrint.printHeader("DOWNLOAD",parsable: options.jsonOutput)
         temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
-
+        self.downloadInfo = try? DownloadInfo(from: product)
         for (index, url) in urls.enumerated() {
 
             guard let source: URL = URL(string: url) else {
@@ -72,10 +80,12 @@ class Downloader: NSObject {
 
             sourceURL = source
             let task: URLSessionDownloadTask = session.downloadTask(with: source)
-            let current: Int = index + 1
-            let currentString: String = "\(current < 10 && product.totalFiles >= 10 ? "0" : "")\(current)"
+            currentIndex = index + 1
+            currentBytes=0;
+            totalBytes=0;
+            let currentString: String = "\(currentIndex < 10 && product.totalFiles >= 10 ? "0" : "")\(currentIndex)"
             prefixString = "[ \(currentString) / \(product.totalFiles) ] \(source.lastPathComponent)"
-            updateProgress(replacing: false)
+            updateProgress(replacing: false, parsable: options.jsonOutput)
             task.resume()
             semaphore.wait()
 
@@ -83,36 +93,54 @@ class Downloader: NSObject {
                 throw mistError
             }
 
-            updateProgress()
+            updateProgress(parsable: options.jsonOutput)
         }
     }
 
-    private func updateProgress(replacing: Bool = true) {
-        let currentString: String = current.bytesString()
-        let totalString: String = total.bytesString()
-        let percentage: Double = total > 0 ? Double(current) / Double(total) * 100 : 0
-        let format: String = percentage == 100 ? "%05.1f%%" : "%05.2f%%"
-        let percentageString: String = String(format: format, percentage)
-        let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
-        let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
-        let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
-        PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing)
+    private func updateProgress(replacing: Bool = true, parsable: Bool = false ) {
+        let currentString: String = currentBytes.bytesString()
+        let totalString: String = totalBytes.bytesString()
+        let percentage: Double = totalBytes > 0 ? Double(currentBytes) / Double(totalBytes) * 100 : 0
+        if (parsable==true){
+            let outputDict = [
+                                                "currentStep":currentIndex,
+                                                "totalSteps":downloadInfo?.totalFiles ?? 0,
+                                                "currentBytes":currentBytes,
+                                                "totalBytes":totalBytes,
+                                                "currentFilename":downloadInfo?.name ?? "" ,
+                                                "version":downloadInfo?.version ?? "",
+                                                "build":downloadInfo?.build ?? "",
+                                                "date":downloadInfo?.date ?? ""
+
+            ] as [String : Any]
+            do {
+                PrettyPrint.print("", parsable: true, messagetype: "Progress", messageObject: outputDict)
+            }
+        }
+        else {
+            let format: String = percentage == 100 ? "%05.1f%%" : "%05.2f%%"
+            let percentageString: String = String(format: format, percentage)
+            let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
+            let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
+            let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
+            PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing, parsable: false)
+        }
     }
 }
 
 extension Downloader: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        current = totalBytesWritten
-        total = totalBytesExpectedToWrite
-        updateProgress()
+        currentBytes = totalBytesWritten
+        totalBytes = totalBytesExpectedToWrite
+        updateProgress(parsable: jsonOutput)
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
 
         if let expectedContentLength: Int64 = downloadTask.response?.expectedContentLength {
-            current = expectedContentLength
-            total = expectedContentLength
+            currentBytes = expectedContentLength
+            totalBytes = expectedContentLength
         }
 
         guard let temporaryURL: URL = temporaryURL else {

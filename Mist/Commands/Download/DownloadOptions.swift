@@ -44,6 +44,11 @@ struct DownloadOptions: ParsableArguments {
     """)
     var includeBetas: Bool = false
 
+    @Flag(name: [.customShort("j"), .long], help: """
+    Output status in json format for easy parsing.
+    """)
+    var jsonOutput: Bool = false
+
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.
     Note: This only applies when the platform is set to 'intel'.
