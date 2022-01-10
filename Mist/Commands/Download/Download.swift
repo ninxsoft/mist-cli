@@ -18,17 +18,17 @@ struct Download {
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadOptions) throws {
         try inputValidation(options)
-        PrettyPrint.printHeader("SEARCH", parsable: options.jsonOutput)
-        PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", parsable: options.jsonOutput)
+        PrettyPrint.printHeader("SEARCH", structuredOutput: options.structuredOutput)
+        PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", structuredOutput: options.structuredOutput)
 
         switch options.platform {
         case .apple:
             guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas), searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending, parsable: options.jsonOutput)
+                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending, structuredOutput: options.structuredOutput)
                 exit(-1)
             }
 
-            PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]", parsable: options.jsonOutput)
+            PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]", structuredOutput: options.structuredOutput)
             try verifyExistingFiles(firmware, options: options)
             try setup(firmware, options: options)
             try verifyFreeSpace(firmware, options: options)
@@ -45,11 +45,11 @@ struct Download {
             let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas)
 
             guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending, parsable: options.jsonOutput)
+                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending, structuredOutput: options.structuredOutput)
                 exit(-1)
             }
 
-            PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]", parsable: options.jsonOutput)
+            PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]", structuredOutput: options.structuredOutput)
             try verifyExistingFiles(product, options: options)
             try setup(product, options: options)
             try verifyFreeSpace(product, options: options)
@@ -68,33 +68,33 @@ struct Download {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("INPUT VALIDATION",parsable: options.jsonOutput)
+        PrettyPrint.printHeader("INPUT VALIDATION",structuredOutput: options.structuredOutput)
 
         guard NSUserName() == "root" else {
             throw MistError.invalidUser
         }
 
-        PrettyPrint.print("User is 'root'...", parsable: options.jsonOutput)
+        PrettyPrint.print("User is 'root'...", structuredOutput: options.structuredOutput)
 
         guard !options.searchString.isEmpty else {
             throw MistError.missingDownloadSearchString
         }
 
-        PrettyPrint.print("Download search string will be '\(options.searchString)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Download search string will be '\(options.searchString)'...", structuredOutput: options.structuredOutput)
 
         guard !options.outputDirectory.isEmpty else {
             throw MistError.missingOutputDirectory
         }
 
-        PrettyPrint.print("Platform will be '\(options.platform)'...", parsable: options.jsonOutput)
-        PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", parsable: options.jsonOutput)
-        PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...", parsable: options.jsonOutput)
-        PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Platform will be '\(options.platform)'...", structuredOutput: options.structuredOutput)
+        PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", structuredOutput: options.structuredOutput)
+        PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...", structuredOutput: options.structuredOutput)
+        PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", structuredOutput: options.structuredOutput)
 
         if options.force {
-            PrettyPrint.print("Force flag set, existing files will be overwritten...", parsable: options.jsonOutput)
+            PrettyPrint.print("Force flag set, existing files will be overwritten...", structuredOutput: options.structuredOutput)
         } else {
-            PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...", parsable: options.jsonOutput)
+            PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...", structuredOutput: options.structuredOutput)
         }
 
         switch options.platform {
@@ -106,7 +106,7 @@ struct Download {
                 throw MistError.missingOutputType
             }
 
-            PrettyPrint.print("Valid download type(s) specified...", parsable: options.jsonOutput)
+            PrettyPrint.print("Valid download type(s) specified...", structuredOutput: options.structuredOutput)
             try inputValidationApplication(options)
             try inputValidationImage(options)
             try inputValidationPackage(options)
@@ -125,7 +125,7 @@ struct Download {
             throw MistError.missingFirmwareName
         }
 
-        PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...", structuredOutput: options.structuredOutput)
     }
 
     /// Performs a series of input validations specific to macOS Application output.
@@ -142,7 +142,7 @@ struct Download {
                 throw MistError.missingApplicationName
             }
 
-            PrettyPrint.print("Application name will be '\(options.applicationName)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Application name will be '\(options.applicationName)'...", structuredOutput: options.structuredOutput)
         }
     }
 
@@ -160,7 +160,7 @@ struct Download {
                 throw MistError.missingImageName
             }
 
-            PrettyPrint.print("Disk Image name will be '\(options.imageName)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Disk Image name will be '\(options.imageName)'...", structuredOutput: options.structuredOutput)
 
             if let identity: String = options.imageSigningIdentity {
 
@@ -168,7 +168,7 @@ struct Download {
                     throw MistError.missingImageSigningIdentity
                 }
 
-                PrettyPrint.print("Disk Image signing identity will be '\(identity)'...", parsable: options.jsonOutput)
+                PrettyPrint.print("Disk Image signing identity will be '\(identity)'...", structuredOutput: options.structuredOutput)
             }
         }
     }
@@ -187,14 +187,14 @@ struct Download {
                 throw MistError.missingPackageName
             }
 
-            PrettyPrint.print("Package name will be '\(options.packageName)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Package name will be '\(options.packageName)'...", structuredOutput: options.structuredOutput)
 
             guard let identifier: String = options.packageIdentifier,
                 !identifier.isEmpty else {
                 throw MistError.missingPackageIdentifier
             }
 
-            PrettyPrint.print("Package identifier will be '\(identifier)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Package identifier will be '\(identifier)'...", structuredOutput: options.structuredOutput)
 
             if let identity: String = options.packageSigningIdentity {
 
@@ -202,7 +202,7 @@ struct Download {
                     throw MistError.missingPackageSigningIdentity
                 }
 
-                PrettyPrint.print("Package signing identity will be '\(identity)'...", parsable: options.jsonOutput)
+                PrettyPrint.print("Package signing identity will be '\(identity)'...", structuredOutput: options.structuredOutput)
             }
         }
     }
@@ -277,19 +277,19 @@ struct Download {
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
-        PrettyPrint.printHeader("SETUP",parsable: options.jsonOutput)
+        PrettyPrint.printHeader("SETUP",structuredOutput: options.structuredOutput)
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print("Creating output directory '\(outputURL.path)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Creating output directory '\(outputURL.path)'...", structuredOutput: options.structuredOutput)
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", structuredOutput: options.structuredOutput)
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", structuredOutput: options.structuredOutput)
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -305,19 +305,19 @@ struct Download {
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
 
-        PrettyPrint.printHeader("SETUP",parsable: options.jsonOutput)
+        PrettyPrint.printHeader("SETUP",structuredOutput: options.structuredOutput)
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print("Creating output directory '\(outputURL.path)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Creating output directory '\(outputURL.path)'...", structuredOutput: options.structuredOutput)
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", structuredOutput: options.structuredOutput)
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", structuredOutput: options.structuredOutput)
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -424,8 +424,8 @@ struct Download {
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.printHeader("TEARDOWN",parsable: options.jsonOutput)
-            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending, parsable: options.jsonOutput)
+            PrettyPrint.printHeader("TEARDOWN",structuredOutput: options.structuredOutput)
+            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending, structuredOutput: options.structuredOutput)
             try FileManager.default.removeItem(at: temporaryURL)
         }
     }
@@ -438,8 +438,8 @@ struct Download {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
-        PrettyPrint.printHeader("TEARDOWN",parsable: options.jsonOutput)
-        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending, parsable: options.jsonOutput)
+        PrettyPrint.printHeader("TEARDOWN",structuredOutput: options.structuredOutput)
+        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending, structuredOutput: options.structuredOutput)
         try FileManager.default.removeItem(at: product.installerURL)
     }
 }

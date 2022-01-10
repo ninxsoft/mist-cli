@@ -20,11 +20,11 @@ struct List {
     static func run(options: ListOptions) throws {
         try inputValidation(options)
 
-        !options.quiet ? PrettyPrint.printHeader("SEARCH", parsable: false) : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SEARCH", structuredOutput: false) : Mist.noop()
 
         switch options.platform {
         case .apple:
-            !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...", structuredOutput: false) : Mist.noop()
 
             var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, quiet: options.quiet)
 
@@ -39,11 +39,11 @@ struct List {
             }
 
             try export(firmwares.map { $0.dictionary }, options: options)
-            !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: .ending, parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: .ending, structuredOutput: false) : Mist.noop()
             try list(firmwares.map { $0.dictionary }, options: options)
 
         case .intel:
-            !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...", structuredOutput: false) : Mist.noop()
 
             var catalogURLs: [String] = Catalog.urls
 
@@ -64,7 +64,7 @@ struct List {
             }
 
             try export(products.map { $0.dictionary }, options: options)
-            !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending, parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending, structuredOutput: false) : Mist.noop()
             try list(products.map { $0.dictionary }, options: options)
         }
     }
@@ -77,8 +77,8 @@ struct List {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: ListOptions) throws {
 
-        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", parsable: false) : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Platform will be '\(options.platform)'...", parsable: false) : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", structuredOutput: false) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Platform will be '\(options.platform)'...", structuredOutput: false) : Mist.noop()
 
         if let string: String = options.searchString {
 
@@ -86,14 +86,14 @@ struct List {
                 throw MistError.missingListSearchString
             }
 
-            !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...", structuredOutput: false) : Mist.noop()
         }
 
         if options.latest {
-            !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...", structuredOutput: false) : Mist.noop()
         }
 
-        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", parsable: false) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", structuredOutput: false) : Mist.noop()
 
         if let path: String = options.exportPath {
 
@@ -101,7 +101,7 @@ struct List {
                 throw MistError.missingExportPath
             }
 
-            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", structuredOutput: false) : Mist.noop()
 
             let url: URL = URL(fileURLWithPath: path)
 
@@ -109,10 +109,10 @@ struct List {
                 throw MistError.invalidExportFileExtension
             }
 
-            !options.quiet ? PrettyPrint.print("Export path file extension is valid...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...", structuredOutput: false) : Mist.noop()
         }
 
-        !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...", parsable: false) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...", structuredOutput: false) : Mist.noop()
     }
 
     /// Export the macOS downloads list.
@@ -132,7 +132,7 @@ struct List {
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
-            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", structuredOutput: false) : Mist.noop()
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
 
@@ -145,16 +145,16 @@ struct List {
                 try dictionaries.productsCSVString().write(toFile: path, atomically: true, encoding: .utf8)
             }
 
-            !options.quiet ? PrettyPrint.print("Exported list as CSV: '\(path)'", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as CSV: '\(path)'", structuredOutput: false) : Mist.noop()
         case "json":
             try dictionaries.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as JSON: '\(path)'", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as JSON: '\(path)'", structuredOutput: false) : Mist.noop()
         case "plist":
             try dictionaries.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as Property List: '\(path)'", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as Property List: '\(path)'", structuredOutput: false) : Mist.noop()
         case "yaml":
             try dictionaries.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as YAML: '\(path)'", parsable: false) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as YAML: '\(path)'", structuredOutput: false) : Mist.noop()
         default:
             break
         }

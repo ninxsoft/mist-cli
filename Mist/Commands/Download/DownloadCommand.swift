@@ -21,7 +21,7 @@ struct DownloadCommand: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red, parsable: options.jsonOutput)
+            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red, structuredOutput: options.structuredOutput)
             throw mistError
         }
     }

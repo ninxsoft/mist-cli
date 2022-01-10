@@ -26,19 +26,19 @@ struct Installer {
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
-        PrettyPrint.printHeader("INSTALL",parsable: options.jsonOutput)
+        PrettyPrint.printHeader("INSTALL",structuredOutput: options.structuredOutput)
 
         if FileManager.default.fileExists(atPath: product.installerURL.path) {
-            PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...", parsable: options.jsonOutput)
+            PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...", structuredOutput: options.structuredOutput)
             try FileManager.default.removeItem(at: product.installerURL)
         }
 
-        PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...", structuredOutput: options.structuredOutput)
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
         _ = try Shell.execute(arguments, environment: variables)
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", parsable: options.jsonOutput)
+        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", structuredOutput: options.structuredOutput)
         try FileManager.default.removeItem(at: temporaryURL)
-        PrettyPrint.print("Created new installer '\(product.installerURL.path)'", parsable: options.jsonOutput)
+        PrettyPrint.print("Created new installer '\(product.installerURL.path)'", structuredOutput: options.structuredOutput)
     }
 }

@@ -51,12 +51,6 @@
             ReferencedContainer = "container:Mist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "download  -j -b -p intel --application  &quot;macOS Monterey&quot; "
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

@@ -47,7 +47,7 @@ struct DownloadOptions: ParsableArguments {
     @Flag(name: [.customShort("j"), .long], help: """
     Output status in json format for easy parsing.
     """)
-    var jsonOutput: Bool = false
+    var structuredOutput: Bool = false
 
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.
