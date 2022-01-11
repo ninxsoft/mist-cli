@@ -149,6 +149,12 @@ struct DownloadOptions: ParsableArguments {
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
+    @Flag(name: [.customLong("no-verify")], help: """
+    Specify to not verify the checksum of the generated firmware
+    """
+    )
+    var shouldntVerify: Bool = false
+    
     func outputDirectory(for firmware: Firmware) -> String {
         outputDirectory.stringWithSubstitutions(using: firmware)
     }

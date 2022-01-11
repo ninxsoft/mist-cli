@@ -33,7 +33,7 @@ struct Download {
             try setup(firmware, options: options)
             try verifyFreeSpace(firmware, options: options)
             try Downloader().download(firmware, options: options)
-            try Generator.generate(firmware, options: options)
+            try Generator.generate(firmware, options: options, verifyChecksum: !options.shouldntVerify)
             try teardown(firmware, options: options)
         case .intel:
             var catalogURLs: [String] = Catalog.urls

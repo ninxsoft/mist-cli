@@ -15,10 +15,11 @@ struct Generator {
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
     ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - verifyChecksum: Verify the checksum of the generated firmware
     ///
     /// - Throws: A `MistError` if the macOS Firmware options fail to generate.
-    static func generate(_ firmware: Firmware, options: DownloadOptions) throws {
-        try generateFirmware(firmware: firmware, options: options)
+    static func generate(_ firmware: Firmware, options: DownloadOptions, verifyChecksum: Bool) throws {
+        try generateFirmware(firmware: firmware, options: options, shouldVerifyChecksum: verifyChecksum)
     }
 
     /// Valides a macOS Firmware shasum and moves it from the temporary directory to the output directory.
@@ -26,9 +27,10 @@ struct Generator {
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
     ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - shouldVerifyChecksum: Specify whether or not to verify the checksum of the macOS Firmware
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
-    private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
+    private static func generateFirmware(firmware: Firmware, options: DownloadOptions, shouldVerifyChecksum: Bool) throws {
 
         PrettyPrint.printHeader("FIRMWARE")
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
@@ -40,17 +42,19 @@ struct Generator {
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
         let destinationURL: URL = URL(fileURLWithPath: options.firmwarePath(for: firmware))
 
-        PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...")
-
-        guard let string: String = try Shell.execute(["shasum", temporaryFirmwareURL.path]),
-            let shasum: String = string.split(separator: " ").map({ String($0) }).first else {
-            throw MistError.invalidData
+        if shouldVerifyChecksum {
+            PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...")
+            
+            guard let string: String = try Shell.execute(["shasum", temporaryFirmwareURL.path]),
+                  let shasum: String = string.split(separator: " ").map({ String($0) }).first else {
+                      throw MistError.invalidData
+                  }
+            
+            if shasum != firmware.shasum {
+                throw MistError.invalidShasum(invalid: shasum, valid: firmware.shasum)
+            }
+            
         }
-
-        if shasum != firmware.shasum {
-            throw MistError.invalidShasum(invalid: shasum, valid: firmware.shasum)
-        }
-
         if !options.force {
 
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {

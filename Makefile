@@ -1,4 +1,4 @@
-identity = Developer ID Application: Nindi Gill (7K3HVCLV7Z)
+identity = 7K3HVCLV7Z
 binary = mist
 source = .build/release/$(binary)
 destination = /usr/local/bin/$(binary)
