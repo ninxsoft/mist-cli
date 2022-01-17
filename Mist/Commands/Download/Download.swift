@@ -7,6 +7,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 /// Struct used to perform **Download** operations.
 struct Download {
 

@@ -1,17 +1,25 @@
-name: swift_build_test_lint
-on: [ push, pull_request ]
+name: swift_setup_lint_build_test
+on: [push, pull_request]
 jobs:
-  swift_build_test_lint:
+  setup_lint_build_test:
+    name: Setup, Lint, Build and Test
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: fwal/setup-swift@v1
         with:
           swift-version: "5.5"
-      - uses: actions/checkout@v2
-      - run: swift build -v
-      - run: swift test -v || true
-      - run: swiftlint
-      - run: mist version || true
-      - run: mist list || true
-      - run: mist list --platform "intel" || true
-      - run: mist list --platform "apple" || true
+      - name: Run SwiftLint
+        run: swiftlint --strict
+      # - name: Run DrString
+      #   run: drstring check --config-file .drstring.toml
+      - name: Build Xcode project
+        run: swift build --verbose
+      - name: Test Xcode project
+        run: swift test --verbose || true
+      - name: Print mist version
+        run: mist version
+      - name: Print mist list for Intel
+        run: mist list --platform "intel" || true
+      - name: Print mist list for Apple Silicon
+        run: mist list --platform "apple" || true

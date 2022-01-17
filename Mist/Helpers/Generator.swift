@@ -198,6 +198,8 @@ struct Generator {
         }
     }
 
+    // swiftlint:disable function_body_length
+
     /// Generates a macOS Installer Package for payloads larger than 8GB (ie. **macOS Big Sur** and above).
     ///
     /// - Parameters:
@@ -286,6 +288,8 @@ struct Generator {
 
         PrettyPrint.print("Created package '\(destinationURL.path)'")
     }
+
+    // swiftlint:enable function_body_length
 
     /// Generates a macOS Installer Package for payloads smaller than 8GB (ie. **macOS Catalina** and below).
     ///
