@@ -9,12 +9,14 @@ jobs:
       - uses: fwal/setup-swift@v1
         with:
           swift-version: "5.5"
+      - name: Update $PATH
+        run: echo "$GITHUB_WORKSPACE/.build/release" >> $GITHUB_PATH
       - name: Run SwiftLint
         run: swiftlint --strict
       # - name: Run DrString
       #   run: drstring check --config-file .drstring.toml
       - name: Build Xcode project
-        run: swift build --verbose
+        run: swift build --configuration release --verbose
       - name: Test Xcode project
         run: swift test --verbose || true
       - name: Print mist version
