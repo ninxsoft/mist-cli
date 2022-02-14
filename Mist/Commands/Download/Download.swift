@@ -72,11 +72,14 @@ struct Download {
 
         PrettyPrint.printHeader("INPUT VALIDATION")
 
-        guard NSUserName() == "root" else {
-            throw MistError.invalidUser
-        }
+        if options.platform == .intel {
 
-        PrettyPrint.print("User is 'root'...")
+            guard NSUserName() == "root" else {
+                throw MistError.invalidUser
+            }
+
+            PrettyPrint.print("User is 'root'...")
+        }
 
         guard !options.searchString.isEmpty else {
             throw MistError.missingDownloadSearchString
