@@ -31,9 +31,14 @@ struct HTTP {
             let string: String = try String(contentsOf: firmwaresURL, encoding: .utf8)
 
             guard let data: Data = string.data(using: .utf8),
-                let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
-                let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
+                let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
                 !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
+                return []
+            }
+
+            guard let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
+                !quiet ? PrettyPrint.print("There was an error retrieving the 'devices' key from \(firmwaresURLString)...") : Mist.noop()
+                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...") : Mist.noop()
                 return []
             }
 
