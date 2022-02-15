@@ -16,6 +16,8 @@ A Mac command-line tool that automatically downloads **macOS Installers** / **Fi
   - For Intel based Macs:
     - Generate an Application Bundle (.app)
     - Generate a Disk Image (.dmg)
+    - Generate a Bootable Disk Image (.iso)
+      - For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox)
     - Generate a macOS Installer Package (.pkg)
       - Supports **macOS Big Sur** packages with a massive 12GB+ payload!
     - Optionally codesign Disk Images and macOS Installer Packages
@@ -104,15 +106,17 @@ mist download "19H15" \
      --output-directory "/path/to/custom/directory"
 
 # Download the latest macOS Big Sur Installer and generate
-# an Installer Application bundle, a Disk Image and
-# macOS Installer Package, both with custom names, codesigned,
-# output to a custom directory:
+# an Installer Application bundle, a Disk Image, a Bootable
+# Disk Image, a macOS Installer Package, all with custom names,
+# codesigned, output to a custom directory:
 mist download "Big Sur" \
      --application \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
      --image \
      --image-name "Install %NAME% %VERSION%-%BUILD%.dmg" \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
+     --iso \
+     --iso-name "Install %NAME% %VERSION%-%BUILD%.iso" \
      --package \
      --package-name "Install %NAME% %VERSION%-%BUILD%.pkg" \
      --package-identifier "com.mycompany.pkg.install-%NAME%" \
@@ -230,7 +234,7 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
 
 ## License
 
-> Copyright © 2021 Nindi Gill
+> Copyright © 2022 Nindi Gill
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
