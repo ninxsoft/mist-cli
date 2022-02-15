@@ -19,6 +19,7 @@ enum MistError: Error {
     case missingApplicationName
     case missingImageName
     case missingImageSigningIdentity
+    case missingIsoName
     case missingPackageName
     case missingPackageIdentifier
     case missingPackageSigningIdentity
@@ -54,6 +55,8 @@ enum MistError: Error {
             return "[--image-name] macOS Disk Image output filename is missing or empty."
         case .missingImageSigningIdentity:
             return "[--image-signing-identity] macOS Disk Image signing identity is missing or empty."
+        case .missingIsoName:
+            return "[--iso-name] Bootable macOS Disk Image output filename is missing or empty."
         case .missingPackageName:
             return "[--package-name] macOS Installer Package output filename is missing or empty."
         case .missingPackageIdentifier:
