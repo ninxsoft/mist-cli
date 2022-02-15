@@ -212,7 +212,7 @@ struct Generator {
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
         PrettyPrint.print("Creating disk image '\(dmgURL.path)'...")
-        var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "16g", dmgURL.path]
+        var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(product.isoSize)g", dmgURL.path]
         _ = try Shell.execute(arguments)
 
         PrettyPrint.print("Mounting disk image at mount point '\(mountPointURL.path)'...")
