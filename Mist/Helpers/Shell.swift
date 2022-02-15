@@ -45,7 +45,9 @@ struct Shell {
         process.waitUntilExit()
 
         guard process.terminationStatus == 0 else {
-            throw MistError.invalidExitStatus(code: process.terminationStatus, arguments: arguments)
+            let data: Data = error.fileHandleForReading.readDataToEndOfFile()
+            let message: String = String(data: data, encoding: .utf8) ?? "[\(arguments.joined(separator: ", "))]"
+            throw MistError.invalidExitStatus(code: process.terminationStatus, message: message)
         }
 
         let data: Data = output.fileHandleForReading.readDataToEndOfFile()
