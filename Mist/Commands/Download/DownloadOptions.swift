@@ -65,7 +65,7 @@ struct DownloadOptions: ParsableArguments {
     var firmwareName: String = .filenameTemplate + ".ipsw"
 
     @Flag(name: .long, help: """
-    Generate a macOS Installer Application Bundle.
+    Generate a macOS Installer Application Bundle (.app).
     Note: This only applies when the platform is set to 'intel'.
     """)
     var application: Bool = false
@@ -79,7 +79,7 @@ struct DownloadOptions: ParsableArguments {
     var applicationName: String = .filenameTemplate + ".app"
 
     @Flag(name: .long, help: """
-    Generate a macOS Disk Image.
+    Generate a macOS Disk Image (.dmg).
     Note: This only applies when the platform is set to 'intel'.
     """)
     var image: Bool = false
@@ -99,7 +99,22 @@ struct DownloadOptions: ParsableArguments {
     var imageSigningIdentity: String?
 
     @Flag(name: .long, help: """
-    Generate a macOS Installer Package.
+    Generate a Bootable macOS Disk Image (.iso).
+    For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox).
+    Note: This only applies when the platform is set to 'intel'.
+    """)
+    var iso: Bool = false
+
+    @Option(name: .long, help: """
+    Specify the Bootable macOS Disk Image output filename. The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5304g'\n
+    """)
+    var isoName: String = .filenameTemplate + ".iso"
+
+    @Flag(name: .long, help: """
+    Generate a macOS Installer Package (.pkg).
     Note: This only applies when the platform is set to 'intel'.
     """)
     var package: Bool = false
@@ -177,6 +192,10 @@ struct DownloadOptions: ParsableArguments {
 
     func imagePath(for product: Product) -> String {
         "\(outputDirectory)/\(imageName)".stringWithSubstitutions(using: product)
+    }
+
+    func isoPath(for product: Product) -> String {
+        "\(outputDirectory)/\(isoName)".stringWithSubstitutions(using: product)
     }
 
     func packagePath(for product: Product) -> String {

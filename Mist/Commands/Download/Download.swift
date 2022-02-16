@@ -8,6 +8,7 @@
 import Foundation
 
 // swiftlint:disable file_length
+// swiftlint:disable type_body_length
 
 /// Struct used to perform **Download** operations.
 struct Download {
@@ -107,13 +108,14 @@ struct Download {
             try inputValidationFirmware(options)
         case .intel:
 
-            guard options.application || options.image || options.package else {
+            guard options.application || options.image || options.iso || options.package else {
                 throw MistError.missingOutputType
             }
 
             PrettyPrint.print("Valid download type(s) specified...")
             try inputValidationApplication(options)
             try inputValidationImage(options)
+            try inputValidationISO(options)
             try inputValidationPackage(options)
         }
     }
@@ -175,6 +177,24 @@ struct Download {
 
                 PrettyPrint.print("Disk Image signing identity will be '\(identity)'...")
             }
+        }
+    }
+
+    /// Performs a series of input validations specific to Bootable macOS Disk Image output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationISO(_ options: DownloadOptions) throws {
+
+        if options.iso {
+
+            guard !options.isoName.isEmpty else {
+                throw MistError.missingIsoName
+            }
+
+            PrettyPrint.print("Bootable Disk Image name will be '\(options.isoName)'...")
         }
     }
 
@@ -255,6 +275,14 @@ struct Download {
 
         if options.image {
             let path: String = options.imagePath(for: product)
+
+            guard !FileManager.default.fileExists(atPath: path) else {
+                throw MistError.existingFile(path: path)
+            }
+        }
+
+        if options.iso {
+            let path: String = options.isoPath(for: product)
 
             guard !FileManager.default.fileExists(atPath: path) else {
                 throw MistError.existingFile(path: path)
@@ -378,15 +406,15 @@ struct Download {
         var outputVolume: (path: String, count: Int64) = (path: outputURL.path, count: 0)
 
         if outputVolumePath == bootVolumePath {
-            for boolean in [options.application, options.image, options.package] where boolean {
+            for boolean in [options.application, options.image, options.iso, options.package] where boolean {
                 bootVolume.count += 1
             }
         } else if outputVolumePath == temporaryVolumePath {
-            for boolean in [options.application, options.image, options.package] where boolean {
+            for boolean in [options.application, options.image, options.iso, options.package] where boolean {
                 temporaryVolume.count += 1
             }
         } else {
-            for boolean in [options.application, options.image, options.package] where boolean {
+            for boolean in [options.application, options.image, options.iso, options.package] where boolean {
                 outputVolume.count += 1
             }
 

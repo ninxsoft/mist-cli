@@ -19,6 +19,7 @@ enum MistError: Error {
     case missingApplicationName
     case missingImageName
     case missingImageSigningIdentity
+    case missingIsoName
     case missingPackageName
     case missingPackageIdentifier
     case missingPackageSigningIdentity
@@ -26,7 +27,7 @@ enum MistError: Error {
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case existingFile(path: String)
     case invalidData
-    case invalidExitStatus(code: Int32, arguments: [String])
+    case invalidExitStatus(code: Int32, message: String)
     case invalidShasum(invalid: String, valid: String)
     case invalidURL(url: String)
 
@@ -54,6 +55,8 @@ enum MistError: Error {
             return "[--image-name] macOS Disk Image output filename is missing or empty."
         case .missingImageSigningIdentity:
             return "[--image-signing-identity] macOS Disk Image signing identity is missing or empty."
+        case .missingIsoName:
+            return "[--iso-name] Bootable macOS Disk Image output filename is missing or empty."
         case .missingPackageName:
             return "[--package-name] macOS Installer Package output filename is missing or empty."
         case .missingPackageIdentifier:
@@ -68,8 +71,8 @@ enum MistError: Error {
             return "Existing file: '\(path)'. Use [--force] to overwrite."
         case .invalidData:
             return "Invalid data."
-        case .invalidExitStatus(let code, let arguments):
-            return "Invalid Exit Status Code: '\(code)', Arguments: \(arguments)"
+        case .invalidExitStatus(let code, let message):
+            return "Invalid Exit Status Code: '\(code)', Message: \(message)"
         case .invalidShasum(let invalid, let valid):
             return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
         case .invalidURL(let url):

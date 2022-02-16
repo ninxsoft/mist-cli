@@ -7,6 +7,9 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+// swiftlint:disable type_body_length
+
 /// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 struct Generator {
 
@@ -82,6 +85,10 @@ struct Generator {
 
         if options.image {
             try generateImage(product: product, options: options)
+        }
+
+        if options.iso {
+            try generateISO(product: product, options: options)
         }
 
         if options.package {
@@ -178,6 +185,71 @@ struct Generator {
         try FileManager.default.removeItem(at: temporaryURL)
 
         PrettyPrint.print("Created image '\(destinationURL.path)'")
+    }
+
+    /// Generates a Bootable macOS Installer Disk Image.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///
+    /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
+    private static func generateISO(product: Product, options: DownloadOptions) throws {
+
+        PrettyPrint.printHeader("BOOTABLE DISK IMAGE")
+        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        let dmgURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).dmg")
+        let cdrURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).cdr")
+        let mountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)")
+        let destinationURL: URL = URL(fileURLWithPath: options.isoPath(for: product))
+
+        if FileManager.default.fileExists(atPath: temporaryURL.path) {
+            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            try FileManager.default.removeItem(at: temporaryURL)
+        }
+
+        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+
+        PrettyPrint.print("Creating disk image '\(dmgURL.path)'...")
+        var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(product.isoSize)g", dmgURL.path]
+        _ = try Shell.execute(arguments)
+
+        PrettyPrint.print("Mounting disk image at mount point '\(mountPointURL.path)'...")
+        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-mountpoint", mountPointURL.path]
+        _ = try Shell.execute(arguments)
+
+        PrettyPrint.print("Creating install media at mount point '\(mountPointURL.path)'...")
+        arguments = ["\(product.installerURL.path)/Contents/Resources/createinstallmedia", "--volume", mountPointURL.path, "--nointeraction"]
+        _ = try Shell.execute(arguments)
+
+        PrettyPrint.print("Unmounting disk image at mount point '\(mountPointURL.path)'...")
+        arguments = ["hdiutil", "detach", mountPointURL.path, "-force"]
+        _ = try Shell.execute(arguments)
+
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
+
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            PrettyPrint.print("Deleting old image '\(destinationURL.path)'...")
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+
+        PrettyPrint.print("Converting disk image '\(cdrURL.path)'...")
+        arguments = ["hdiutil", "convert", dmgURL.path, "-format", "UDTO", "-o", cdrURL.path]
+        _ = try Shell.execute(arguments)
+
+        PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...")
+        try FileManager.default.moveItem(at: cdrURL, to: destinationURL)
+
+        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        try FileManager.default.removeItem(at: temporaryURL)
+
+        PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'")
     }
 
     /// Generates a macOS Installer Package, optionally codesigning.
