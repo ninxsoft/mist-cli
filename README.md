@@ -82,7 +82,7 @@ mist list --export "/path/to/export.yaml"
 
 # Download the latest macOS Big Sur Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download "Big Sur" --platform "apple" --firmware-name "Install %NAME %VERSION%-%BUILD%.ipsw"
+mist download "Big Sur" --platform "apple" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
 # Download the latest macOS Big Sur Installer for Intel Macs:
 mist download "Big Sur" --platform "intel" --application
@@ -92,11 +92,11 @@ mist download "11.4" --application
 
 # Download a specific macOS Installer version for
 # Intel Macs, with a custom name:
-mist download "11.4" --application --application-name "Install %NAME %VERSION%-%BUILD%.app"
+mist download "11.4" --application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version
 # and generate a Disk Image with a custom name:
-mist download "11.4" --image --image-name "Install %NAME %VERSION%-%BUILD%.dmg"
+mist download "11.4" --image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build and generate
 # a codesigned Disk Image output to a custom directory:
