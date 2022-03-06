@@ -16,7 +16,7 @@ struct Download {
     /// Searches for and downloads a particular macOS version.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadOptions) throws {
@@ -24,8 +24,8 @@ struct Download {
         PrettyPrint.printHeader("SEARCH")
         PrettyPrint.print("Searching for macOS download '\(options.searchString)'...")
 
-        switch options.platform {
-        case .apple:
+        switch options.kind {
+        case .firmware, .ipsw:
             guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas), searchString: options.searchString) else {
                 PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending)
                 return
@@ -38,7 +38,7 @@ struct Download {
             try Downloader().download(firmware, options: options)
             try Generator.generate(firmware, options: options)
             try teardown(firmware, options: options)
-        case .intel:
+        case .app, .installer:
             var catalogURLs: [String] = Catalog.urls
 
             if let catalogURL: String = options.catalogURL {
@@ -66,14 +66,14 @@ struct Download {
     /// Performs a series of validations on input data, throwing an error if the input data is invalid.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadOptions) throws {
 
         PrettyPrint.printHeader("INPUT VALIDATION")
 
-        if options.platform == .intel {
+        if [.app, .installer].contains(options.kind) {
 
             guard NSUserName() == "root" else {
                 throw MistError.invalidUser
@@ -92,7 +92,7 @@ struct Download {
             throw MistError.missingOutputDirectory
         }
 
-        PrettyPrint.print("Platform will be '\(options.platform)'...")
+        PrettyPrint.print("Kind will be '\(options.kind)'...")
         PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...")
         PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...")
         PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...")
@@ -103,10 +103,10 @@ struct Download {
             PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...")
         }
 
-        switch options.platform {
-        case .apple:
+        switch options.kind {
+        case .firmware, .ipsw:
             try inputValidationFirmware(options)
-        case .intel:
+        case .app, .installer:
 
             guard options.application || options.image || options.iso || options.package else {
                 throw MistError.missingOutputType
@@ -123,7 +123,7 @@ struct Download {
     /// Performs a series of input validations specific to macOS Firmware output.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationFirmware(_ options: DownloadOptions) throws {
@@ -138,7 +138,7 @@ struct Download {
     /// Performs a series of input validations specific to macOS Application output.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationApplication(_ options: DownloadOptions) throws {
@@ -156,7 +156,7 @@ struct Download {
     /// Performs a series of input validations specific to macOS Disk Image output.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationImage(_ options: DownloadOptions) throws {
@@ -183,7 +183,7 @@ struct Download {
     /// Performs a series of input validations specific to Bootable macOS Disk Image output.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationISO(_ options: DownloadOptions) throws {
@@ -201,7 +201,7 @@ struct Download {
     /// Performs a series of input validations specific to macOS Installer Package output.
     ///
     /// - Parameters:
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**)as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationPackage(_ options: DownloadOptions) throws {
@@ -236,7 +236,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if an existing file is found.
     private static func verifyExistingFiles(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -256,7 +256,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if an existing file is found.
     private static func verifyExistingFiles(_ product: Product, options: DownloadOptions) throws {
@@ -302,7 +302,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -330,7 +330,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ product: Product, options: DownloadOptions) throws {
@@ -358,7 +358,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -386,7 +386,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ product: Product, options: DownloadOptions) throws {
@@ -449,7 +449,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -467,7 +467,7 @@ struct Download {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {

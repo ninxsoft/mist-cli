@@ -13,7 +13,7 @@
 		3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListOptions.swift */; };
 		3967935526D7272100DC2D2D /* ListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935426D7272100DC2D2D /* ListCommand.swift */; };
 		3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935726D7281400DC2D2D /* VersionCommand.swift */; };
-		3967935A26D7293C00DC2D2D /* PlatformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935926D7293C00DC2D2D /* PlatformType.swift */; };
+		3967935A26D7293C00DC2D2D /* Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935926D7293C00DC2D2D /* Kind.swift */; };
 		3967935C26D7304500DC2D2D /* Firmware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935B26D7304500DC2D2D /* Firmware.swift */; };
 		3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */; };
 		3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadOptions.swift */; };
@@ -57,7 +57,7 @@
 		3967935226D726CE00DC2D2D /* ListOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOptions.swift; sourceTree = "<group>"; };
 		3967935426D7272100DC2D2D /* ListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommand.swift; sourceTree = "<group>"; };
 		3967935726D7281400DC2D2D /* VersionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
-		3967935926D7293C00DC2D2D /* PlatformType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformType.swift; sourceTree = "<group>"; };
+		3967935926D7293C00DC2D2D /* Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kind.swift; sourceTree = "<group>"; };
 		3967935B26D7304500DC2D2D /* Firmware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firmware.swift; sourceTree = "<group>"; };
 		3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCommand.swift; sourceTree = "<group>"; };
 		3967936026D74C2400DC2D2D /* DownloadOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOptions.swift; sourceTree = "<group>"; };
@@ -178,10 +178,10 @@
 			children = (
 				570D5090260034E10066E4C9 /* Catalog.swift */,
 				3967935B26D7304500DC2D2D /* Firmware.swift */,
+				3967935926D7293C00DC2D2D /* Kind.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
 				393C236E26DF68BF004755BF /* OutputType.swift */,
 				57D1358125F9F8E5003467B2 /* Package.swift */,
-				3967935926D7293C00DC2D2D /* PlatformType.swift */,
 				5744141E25F8675000DE5540 /* Product.swift */,
 			);
 			path = Model;
@@ -233,7 +233,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					574413FB25F85EF300DE5540 = {
 						CreatedOnToolsVersion = 12.4;
@@ -326,7 +326,7 @@
 				3967935C26D7304500DC2D2D /* Firmware.swift in Sources */,
 				393C236F26DF68BF004755BF /* OutputType.swift in Sources */,
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
-				3967935A26D7293C00DC2D2D /* PlatformType.swift in Sources */,
+				3967935A26D7293C00DC2D2D /* Kind.swift in Sources */,
 				3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
 				393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */,
@@ -457,7 +457,7 @@
 		5744140425F85EF300DE5540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -472,7 +472,7 @@
 		5744140525F85EF300DE5540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -513,7 +513,7 @@
 			repositoryURL = "https://github.com/apple/swift-argument-parser";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.2;
+				minimumVersion = 1.0.3;
 			};
 		};
 		57D135B625FEEE48003467B2 /* XCRemoteSwiftPackageReference "Yams" */ = {
@@ -521,7 +521,7 @@
 			repositoryURL = "https://github.com/jpsim/Yams";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.6;
+				minimumVersion = 5.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

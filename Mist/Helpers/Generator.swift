@@ -17,7 +17,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Firmware options fail to generate.
     static func generate(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -28,7 +28,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
@@ -74,7 +74,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer options fail to generate.
     static func generate(_ product: Product, options: DownloadOptions) throws {
@@ -100,7 +100,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(product: Product, options: DownloadOptions) throws {
@@ -128,7 +128,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(product: Product, options: DownloadOptions) throws {
@@ -191,7 +191,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
     private static func generateISO(product: Product, options: DownloadOptions) throws {
@@ -256,7 +256,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generatePackage(product: Product, options: DownloadOptions) throws {
@@ -276,7 +276,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generateBigPackage(product: Product, options: DownloadOptions) throws {
@@ -367,7 +367,7 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generateSmallPackage(product: Product, options: DownloadOptions) throws {

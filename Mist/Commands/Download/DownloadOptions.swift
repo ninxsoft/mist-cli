@@ -33,11 +33,14 @@ struct DownloadOptions: ParsableArguments {
     var searchString: String
 
     @Option(name: .shortAndLong, help: """
-    Specify the platform which defines the download type:
-    * apple (macOS Firmware IPSW File)
-    * intel (macOS Installer Application Bundle)\n
+    Specify the kind which defines the download type:
+    * firmware or ipsw (macOS Firmware IPSW File)
+    * installer or app (macOS Installer Application Bundle)
+    Note: macOS Firmwares are for Apple Silicon Macs only.
+    Note: macOS Installers for macOS Catalina 10.15 and older are for Intel based Macs only.
+    Note: macOS Installers for macOS Big Sur 11 and newer are Universal - for both Apple Silicon and Intel based Macs.\n
     """)
-    var platform: PlatformType = .intel
+    var kind: Kind = .installer
 
     @Flag(name: [.customShort("b"), .long], help: """
     Include beta macOS Firmwares / Installers in search results.
@@ -46,7 +49,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var catalogURL: String?
 
@@ -66,7 +69,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Flag(name: .long, help: """
     Generate a macOS Installer Application Bundle (.app).
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var application: Bool = false
 
@@ -80,7 +83,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Flag(name: .long, help: """
     Generate a macOS Disk Image (.dmg).
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var image: Bool = false
 
@@ -101,7 +104,7 @@ struct DownloadOptions: ParsableArguments {
     @Flag(name: .long, help: """
     Generate a Bootable macOS Disk Image (.iso).
     For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox).
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var iso: Bool = false
 
@@ -115,7 +118,7 @@ struct DownloadOptions: ParsableArguments {
 
     @Flag(name: .long, help: """
     Generate a macOS Installer Package (.pkg).
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var package: Bool = false
 
@@ -142,10 +145,10 @@ struct DownloadOptions: ParsableArguments {
     """)
     var packageSigningIdentity: String?
 
-    @Option(name: .shortAndLong, help: """
+    @Option(name: .long, help: """
     Specify a keychain path to search for signing identities.
     Note: If no keychain is specified, the default user login keychain will be used.
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var keychain: String?
 
