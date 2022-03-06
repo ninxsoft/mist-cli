@@ -54,19 +54,19 @@ SUBCOMMANDS:
 
 ```bash
 # List all available macOS Firmwares for Apple Silicon Macs:
-mist list --platform "apple"
+mist list --kind "firmware"
 
 # List all available macOS Installers for Intel Macs:
-mist list --platform "intel"
+mist list --kind "installer"
 
 # List all available macOS Installers for Intel Macs, including betas:
-mist list --platform "intel" --include-betas
+mist list --kind "installer" --include-betas
 
 # List only macOS Big Sur Installers for Intel Macs:
-mist list "macOS Big Sur" --platform "intel"
+mist list "macOS Big Sur" --kind "installer"
 
 # List only the latest macOS Big Sur Installer for Intel Macs:
-mist list "macOS Big Sur" --platform "intel" --latest
+mist list "macOS Big Sur" --kind "installer" --latest
 
 # List + Export macOS Installers to a CSV file:
 mist list --export "/path/to/export.csv"
@@ -82,10 +82,10 @@ mist list --export "/path/to/export.yaml"
 
 # Download the latest macOS Big Sur Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download "Big Sur" --platform "apple" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
+mist download "Big Sur" --kind "firmware" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
 # Download the latest macOS Big Sur Installer for Intel Macs:
-mist download "Big Sur" --platform "intel" --application
+mist download "Big Sur" --kind "installer" --application
 
 # Download a specific macOS Installer version for Intel Macs:
 mist download "11.4" --application
@@ -141,6 +141,19 @@ Grab the latest version of **Mist** from the [releases page](https://github.com/
 - Callum Jones ([cj123](https://github.com/cj123)) for [IPSW Downloads API](https://ipswdownloads.docs.apiary.io), used to determine macOS Firmware metadata.
 
 ## Version History
+
+- 1.7.0
+
+  - The `--platform` option has been renamed to `-k, --kind`, to improve readability and reduce confusion
+    - Specify `firmware` or `ipsw` to download a macOS Firmware IPSW file
+    - Specify `installer` or `app` to download a macOS Install Application bundle
+  - Support for generating Bootable Disk Images (.iso)
+    - For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox)
+    - `mist download <search-string> --iso`
+    - Optionally specify `--iso-name` for a custom output file name
+  - Downloading macOS Firmware IPSW files no longer requires escalated `sudo` privileges
+  - Improved error messaging for when things go wrong (no longer outputs just the command that failed)
+  - Granular error messages for when searching for Firmwares fails
 
 - 1.6.1
 
