@@ -10,6 +10,7 @@ import Foundation
 
 struct ListOptions: ParsableArguments {
 
+    // TODO: Bump app versions
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
     * macOS Monterey
@@ -22,8 +23,8 @@ struct ListOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21A (macOS Monterey 12.0.1)
-    * 20G (macOS Big Sur 11.6.1)
+    * 21D (macOS Monterey 12.2.x)
+    * 20G (macOS Big Sur 11.6.x)
     * 19H (macOS Catalina 10.15.7)
     * 18G (macOS Mojave 10.14.6)
     * 17G (macOS High Sierra 10.13.6)

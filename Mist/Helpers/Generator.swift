@@ -33,7 +33,7 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("FIRMWARE")
+        !options.quiet ? PrettyPrint.printHeader("FIRMWARE") : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         guard let firmwareURL: URL = URL(string: firmware.url) else {
@@ -43,7 +43,7 @@ struct Generator {
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
         let destinationURL: URL = URL(fileURLWithPath: options.firmwarePath(for: firmware))
 
-        PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...")
+        !options.quiet ? PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...") : Mist.noop()
 
         guard let string: String = try Shell.execute(["shasum", temporaryFirmwareURL.path]),
             let shasum: String = string.split(separator: " ").map({ String($0) }).first else {
@@ -62,11 +62,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old firmware '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Moving '\(temporaryFirmwareURL.path)' to '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Moving '\(temporaryFirmwareURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
         try FileManager.default.moveItem(at: temporaryFirmwareURL, to: destinationURL)
     }
 
@@ -105,7 +105,7 @@ struct Generator {
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("APPLICATION")
+        !options.quiet ? PrettyPrint.printHeader("APPLICATION") : Mist.noop()
         let destinationURL: URL = URL(fileURLWithPath: options.applicationPath(for: product))
 
         if !options.force {
@@ -116,11 +116,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old application '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old application '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
         try FileManager.default.copyItem(at: product.installerURL, to: destinationURL)
     }
 
@@ -133,20 +133,20 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("DISK IMAGE")
+        !options.quiet ? PrettyPrint.printHeader("DISK IMAGE") : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: options.imagePath(for: product))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...") : Mist.noop()
         try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
 
         if !options.force {
@@ -157,11 +157,11 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old image '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old image '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating image '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating image '\(destinationURL.path)'...") : Mist.noop()
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(product.name)", destinationURL.path]
         _ = try Shell.execute(arguments)
 
@@ -177,14 +177,14 @@ struct Generator {
 
             arguments += [destinationURL.path]
 
-            PrettyPrint.print("Codesigning image '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Codesigning image '\(destinationURL.path)'...") : Mist.noop()
             _ = try Shell.execute(arguments)
         }
 
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print("Created image '\(destinationURL.path)'")
+        !options.quiet ? PrettyPrint.print("Created image '\(destinationURL.path)'") : Mist.noop()
     }
 
     /// Generates a Bootable macOS Installer Disk Image.
@@ -196,7 +196,7 @@ struct Generator {
     /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
     private static func generateISO(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("BOOTABLE DISK IMAGE")
+        !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE") : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).cdr")
@@ -204,26 +204,26 @@ struct Generator {
         let destinationURL: URL = URL(fileURLWithPath: options.isoPath(for: product))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Creating disk image '\(dmgURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating disk image '\(dmgURL.path)'...") : Mist.noop()
         var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(product.isoSize)g", dmgURL.path]
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Mounting disk image at mount point '\(mountPointURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(mountPointURL.path)'...") : Mist.noop()
         arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-mountpoint", mountPointURL.path]
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Creating install media at mount point '\(mountPointURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(mountPointURL.path)'...") : Mist.noop()
         arguments = ["\(product.installerURL.path)/Contents/Resources/createinstallmedia", "--volume", mountPointURL.path, "--nointeraction"]
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Unmounting disk image at mount point '\(mountPointURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(mountPointURL.path)'...") : Mist.noop()
         arguments = ["hdiutil", "detach", mountPointURL.path, "-force"]
         _ = try Shell.execute(arguments)
 
@@ -235,21 +235,21 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old image '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old image '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Converting disk image '\(cdrURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Converting disk image '\(cdrURL.path)'...") : Mist.noop()
         arguments = ["hdiutil", "convert", dmgURL.path, "-format", "UDTO", "-o", cdrURL.path]
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
         try FileManager.default.moveItem(at: cdrURL, to: destinationURL)
 
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'")
+        !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'") : Mist.noop()
     }
 
     /// Generates a macOS Installer Package, optionally codesigning.
@@ -261,7 +261,7 @@ struct Generator {
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generatePackage(product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("PACKAGE")
+        !options.quiet ? PrettyPrint.printHeader("PACKAGE") : Mist.noop()
 
         if product.isTooBigForPackagePayload {
             try generateBigPackage(product: product, options: options)
@@ -294,34 +294,34 @@ struct Generator {
         var arguments: [String] = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", scriptsURL.path, "--root", temporaryURL.path, "--version", version]
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...") : Mist.noop()
         _ = try Shell.execute(zipArguments)
 
-        PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...") : Mist.noop()
         _ = try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
 
-        PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'")
+        !options.quiet ? PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'") : Mist.noop()
         try FileManager.default.removeItem(at: zipURL)
 
         if FileManager.default.fileExists(atPath: scriptsURL.path) {
-            PrettyPrint.print("Deleting old temporary scripts directory '\(scriptsURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: scriptsURL)
         }
 
-        PrettyPrint.print("Creating new temporary scripts directory '\(scriptsURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: scriptsURL, withIntermediateDirectories: true, attributes: nil)
 
-        PrettyPrint.print("Creating temporary post install script '\(postInstallURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating temporary post install script '\(postInstallURL.path)'...") : Mist.noop()
         try postInstall(for: product).write(to: postInstallURL, atomically: true, encoding: .utf8)
 
-        PrettyPrint.print("Setting executable permissions on temporary post install script '\(postInstallURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Setting executable permissions on temporary post install script '\(postInstallURL.path)'...") : Mist.noop()
         try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: postInstallURL.path)
 
         if let identity: String = options.packageSigningIdentity,
@@ -345,20 +345,20 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating package '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating package '\(destinationURL.path)'...") : Mist.noop()
         _ = try Shell.execute(arguments)
 
-        PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.removeItem(at: temporaryURL)
 
-        PrettyPrint.print("Deleting temporary scripts directory '\(scriptsURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Deleting temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
         try FileManager.default.removeItem(at: scriptsURL)
 
-        PrettyPrint.print("Created package '\(destinationURL.path)'")
+        !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'") : Mist.noop()
     }
 
     // swiftlint:enable function_body_length
@@ -398,13 +398,13 @@ struct Generator {
         }
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
-            PrettyPrint.print("Deleting old package '\(destinationURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        PrettyPrint.print("Creating package '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating package '\(destinationURL.path)'...") : Mist.noop()
         _ = try Shell.execute(arguments)
-        PrettyPrint.print("Created package '\(destinationURL.path)'")
+        !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'") : Mist.noop()
     }
 
     /// Creates a custom postinstall script for the macOS Installer Package, used to re-join large payloads (ie. **macOS Big Sur** and above).

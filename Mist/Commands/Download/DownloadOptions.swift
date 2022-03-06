@@ -10,6 +10,7 @@ import Foundation
 
 struct DownloadOptions: ParsableArguments {
 
+    // TODO: Bump app versions
     @Argument(help: """
     Specify a macOS name, version or build to download:
     * macOS Monterey
@@ -22,11 +23,11 @@ struct DownloadOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21A5304g (macOS Monterey Beta 12.0)
-    * 20G95 (macOS Big Sur 11.5.2)
-    * 19H15 (macOS Catalina 10.15.7)
-    * 18G8103 (macOS Mojave 10.14.6)
-    * 17G66 (macOS High Sierra 10.13.6)
+    * 21D (macOS Monterey 12.2.x)
+    * 20G (macOS Big Sur 11.6.x)
+    * 19H (macOS Catalina 10.15.7)
+    * 18G (macOS Mojave 10.14.6)
+    * 17G (macOS High Sierra 10.13.6)
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
@@ -166,6 +167,11 @@ struct DownloadOptions: ParsableArguments {
     Note: Parent directories will be created automatically.\n
     """)
     var temporaryDirectory: String = .temporaryDirectory
+
+    @Flag(name: .shortAndLong, help: """
+    Suppress verbose output.
+    """)
+    var quiet: Bool = false
 
     func outputDirectory(for firmware: Firmware) -> String {
         outputDirectory.stringWithSubstitutions(using: firmware)
