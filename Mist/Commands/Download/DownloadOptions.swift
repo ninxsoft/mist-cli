@@ -10,7 +10,6 @@ import Foundation
 
 struct DownloadOptions: ParsableArguments {
 
-    // TODO: Bump app versions
     @Argument(help: """
     Specify a macOS name, version or build to download:
     * macOS Monterey

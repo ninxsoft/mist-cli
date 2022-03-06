@@ -10,7 +10,6 @@ import Foundation
 
 struct ListOptions: ParsableArguments {
 
-    // TODO: Bump app versions
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
     * macOS Monterey

@@ -2,9 +2,9 @@
 
 A Mac command-line tool that automatically downloads **macOS Installers** / **Firmwares**:
 
-![Intel](Readme%20Resources/Intel.png)
+![Installers](README%20Resources/Installers.png)
 
-![Apple](Readme%20Resources/Apple.png)
+![Firmwares](README%20Resources/Firmwares.png)
 
 ## Features
 
@@ -19,7 +19,7 @@ A Mac command-line tool that automatically downloads **macOS Installers** / **Fi
     - Generate a Bootable Disk Image (.iso)
       - For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox)
     - Generate a macOS Installer Package (.pkg)
-      - Supports **macOS Big Sur** packages with a massive 12GB+ payload!
+      - Supports packages on **macOS Big Sur and newer** with a massive 12GB+ payload!
     - Optionally codesign Disk Images and macOS Installer Packages
     - Check for free space before attempting any downloads or installations
     - Optionally specify a custom catalog URL, allowing you to list and download macOS Installers from the following:
@@ -62,11 +62,11 @@ mist list --kind "installer"
 # List all available macOS Installers for Intel Macs, including betas:
 mist list --kind "installer" --include-betas
 
-# List only macOS Big Sur Installers for Intel Macs:
-mist list "macOS Big Sur" --kind "installer"
+# List only macOS Monterey Installers for Intel Macs:
+mist list "macOS Monterey" --kind "installer"
 
-# List only the latest macOS Big Sur Installer for Intel Macs:
-mist list "macOS Big Sur" --kind "installer" --latest
+# List only the latest macOS Monterey Installer for Intel Macs:
+mist list "macOS Monterey" --kind "installer" --latest
 
 # List + Export macOS Installers to a CSV file:
 mist list --export "/path/to/export.csv"
@@ -80,36 +80,36 @@ mist list --export "/path/to/export.plist"
 # List + Export macOS Installers to a YAML file:
 mist list --export "/path/to/export.yaml"
 
-# Download the latest macOS Big Sur Firmware for
+# Download the latest macOS Monterey Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download "Big Sur" --kind "firmware" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
+mist download "Monterey" --kind "firmware" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
-# Download the latest macOS Big Sur Installer for Intel Macs:
-mist download "Big Sur" --kind "installer" --application
+# Download the latest macOS Monterey Installer for Intel Macs:
+mist download "Monterey" --kind "installer" --application
 
 # Download a specific macOS Installer version for Intel Macs:
-mist download "11.4" --application
+mist download "12.2.1" --application
 
 # Download a specific macOS Installer version for
 # Intel Macs, with a custom name:
-mist download "11.4" --application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
+mist download "12.2.1" --application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version
 # and generate a Disk Image with a custom name:
-mist download "11.4" --image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+mist download "12.2.1" --image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build and generate
 # a codesigned Disk Image output to a custom directory:
-mist download "19H15" \
+mist download "21D62" \
      --image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
-# Download the latest macOS Big Sur Installer and generate
+# Download the latest macOS Monterey Installer and generate
 # an Installer Application bundle, a Disk Image, a Bootable
 # Disk Image, a macOS Installer Package, all with custom names,
 # codesigned, output to a custom directory:
-mist download "Big Sur" \
+mist download "Monterey" \
      --application \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
      --image \
