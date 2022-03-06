@@ -167,6 +167,15 @@ struct DownloadOptions: ParsableArguments {
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
+    @Option(name: [.customShort("e"), .customLong("export")], help: """
+    Specify the path to export the download results to one of the following formats:
+    * /path/to/export.json (JSON file)
+    * /path/to/export.plist (Property List file)
+    * /path/to/export.yaml (YAML file)
+    Note: The file extension will determine the output file format.
+    """)
+    var exportPath: String?
+
     @Flag(name: .shortAndLong, help: """
     Suppress verbose output.
     """)
@@ -225,5 +234,44 @@ struct DownloadOptions: ParsableArguments {
     func temporaryScriptsDirectory(for product: Product) -> String {
         "\(temporaryDirectory)/\(product.identifier)-Scripts"
             .replacingOccurrences(of: "//", with: "/")
+    }
+
+    func exportDictionary(for firmware: Firmware) -> [String: Any] {
+        [
+            "kind": kind.description,
+            "includeBetas": includeBetas,
+            "force": force,
+            "firmwarePath": firmwarePath(for: firmware),
+            "keychain": keychain ?? "",
+            "outputDirectory": outputDirectory(for: firmware),
+            "temporaryDirectory": temporaryDirectory(for: firmware),
+            "exportPath": exportPath ?? "",
+            "quiet": quiet
+        ]
+    }
+
+    func exportDictionary(for product: Product) -> [String: Any] {
+        [
+            "kind": kind.description,
+            "includeBetas": includeBetas,
+            "catalogURL": catalogURL ?? "",
+            "force": force,
+            "application": application,
+            "applicationPath": applicationPath(for: product),
+            "image": image,
+            "imagePath": imagePath(for: product),
+            "imageSigningIdentity": imageSigningIdentity ?? "",
+            "iso": iso,
+            "isoPath": isoPath(for: product),
+            "package": package,
+            "packagePath": packagePath(for: product),
+            "packageIdentifier": packageIdentifier(for: product),
+            "packageSigningIdentity": packageSigningIdentity ?? "",
+            "keychain": keychain ?? "",
+            "outputDirectory": outputDirectory(for: product),
+            "temporaryDirectory": temporaryDirectory(for: product),
+            "exportPath": exportPath ?? "",
+            "quiet": quiet
+        ]
     }
 }

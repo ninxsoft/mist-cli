@@ -38,6 +38,7 @@ struct Download {
             try Downloader().download(firmware, options: options)
             try Generator.generate(firmware, options: options)
             try teardown(firmware, options: options)
+            try export(firmware, options: options)
         case .app, .installer:
             var catalogURLs: [String] = Catalog.urls
 
@@ -60,6 +61,7 @@ struct Download {
             try Installer.install(product, options: options)
             try Generator.generate(product, options: options)
             try teardown(product, options: options)
+            try export(product, options: options)
         }
     }
 
@@ -96,11 +98,23 @@ struct Download {
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...") : Mist.noop()
 
-        if options.force {
-            !options.quiet ? PrettyPrint.print("Force flag set, existing files will be overwritten...") : Mist.noop()
-        } else {
-            !options.quiet ? PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...") : Mist.noop()
+        if let path: String = options.exportPath {
+
+            guard !path.isEmpty else {
+                throw MistError.missingExportPath
+            }
+
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...") : Mist.noop()
+
+            let url: URL = URL(fileURLWithPath: path)
+
+            guard ["json", "plist", "yaml"].contains(url.pathExtension) else {
+                throw MistError.invalidExportFileExtension
+            }
+
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
         }
 
         switch options.kind {
@@ -474,5 +488,87 @@ struct Download {
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending) : Mist.noop()
         try FileManager.default.removeItem(at: product.installerURL)
+    }
+
+    /// Exports the results for macOS Firmware downloads.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware that was downloaded.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
+    private static func export(_ firmware: Firmware, options: DownloadOptions) throws {
+
+        guard let path: String = options.exportPath else {
+            return
+        }
+
+        let url: URL = URL(fileURLWithPath: path)
+        let directory: URL = url.deletingLastPathComponent()
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
+        }
+
+        let dictionary: [String: Any] = [
+            "firmware": firmware.exportDictionary,
+            "options": options.exportDictionary(for: firmware)
+        ]
+
+        switch url.pathExtension {
+        case "json":
+            try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+        case "plist":
+            try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+        case "yaml":
+            try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+        default:
+            break
+        }
+    }
+
+    /// Exports the results for macOS Installer downloads.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
+    private static func export(_ product: Product, options: DownloadOptions) throws {
+
+        guard let path: String = options.exportPath else {
+            return
+        }
+
+        let url: URL = URL(fileURLWithPath: path)
+        let directory: URL = url.deletingLastPathComponent()
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
+        }
+
+        let dictionary: [String: Any] = [
+            "installer": product.exportDictionary,
+            "options": options.exportDictionary(for: product)
+        ]
+
+        switch url.pathExtension {
+        case "json":
+            try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+        case "plist":
+            try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+        case "yaml":
+            try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+        default:
+            break
+        }
     }
 }
