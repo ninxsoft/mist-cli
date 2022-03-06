@@ -131,7 +131,8 @@ mist download "Big Sur" \
 
 ## Download
 
-Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/MIST/releases).
+- Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/MIST/releases).
+- Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist`
 
 ## Credits / Thank You
 
