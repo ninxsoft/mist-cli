@@ -140,6 +140,7 @@ mist download "Big Sur" \
 - Apple ([apple](https://github.com/apple)) for [Swift Argument Parser](https://github.com/apple/swift-argument-parser), used to perform command line argument and flag operations.
 - JP Simard ([jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
 - Callum Jones ([cj123](https://github.com/cj123)) for [IPSW Downloads API](https://ipswdownloads.docs.apiary.io), used to determine macOS Firmware metadata.
+- Timothy Sutton ([timsutton](https://github.com/timsutton)) for the [mist Homebrew Formula](https://formulae.brew.sh/formula/mist).
 
 ## Version History
 
