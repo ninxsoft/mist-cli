@@ -13,8 +13,8 @@ let package = Package(
         .executable(name: "mist", targets: ["MIST"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.2"),
-        .package(url: "https://github.com/jpsim/Yams", from: "4.0.6")
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.3"),
+        .package(url: "https://github.com/jpsim/Yams", from: "5.0.0")
     ],
     targets: [
         .executableTarget(

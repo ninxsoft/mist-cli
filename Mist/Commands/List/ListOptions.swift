@@ -31,11 +31,14 @@ struct ListOptions: ParsableArguments {
     var searchString: String?
 
     @Option(name: .shortAndLong, help: """
-    Specify the platform which defines the list type:
-    * apple (macOS Firmware IPSW File)
-    * intel (macOS Installer Application Bundle)\n
+    Specify the kind which defines the download type:
+    * firmware or ipsw (macOS Firmware IPSW File)
+    * installer or app (macOS Installer Application Bundle)
+    Note: macOS Firmwares are for Apple Silicon Macs only.
+    Note: macOS Installers for macOS Catalina 10.15 and older are for Intel based Macs only.
+    Note: macOS Installers for macOS Big Sur 11 and newer are Universal - for both Apple Silicon and Intel based Macs.\n
     """)
-    var platform: PlatformType = .intel
+    var kind: Kind = .installer
 
     @Flag(name: .shortAndLong, help: """
     Filter only the latest (first) result that is found.
@@ -49,7 +52,7 @@ struct ListOptions: ParsableArguments {
 
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.
-    Note: This only applies when the platform is set to 'intel'.
+    Note: This only applies when the kind is set to 'installer'.
     """)
     var catalogURL: String?
 

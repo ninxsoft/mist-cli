@@ -14,7 +14,7 @@ struct List {
     /// Searches and lists the macOS versions available for download, optionally exporting to a file.
     ///
     /// - Parameters:
-    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///   - options: List options determining kind (ie. **Firmware** or **Installer**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
     ///
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListOptions) throws {
@@ -22,8 +22,8 @@ struct List {
 
         !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
 
-        switch options.platform {
-        case .apple:
+        switch options.kind {
+        case .firmware, .ipsw:
             !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...") : Mist.noop()
 
             var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, quiet: options.quiet)
@@ -42,7 +42,7 @@ struct List {
             !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: .ending) : Mist.noop()
             try list(firmwares.map { $0.dictionary }, options: options)
 
-        case .intel:
+        case .app, .installer:
             !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...") : Mist.noop()
 
             var catalogURLs: [String] = Catalog.urls
@@ -72,13 +72,13 @@ struct List {
     /// Perform a series of validations on input data, throwing an error if the input data is invalid.
     ///
     /// - Parameters:
-    ///   - options: List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///   - options: List options determining kind (ie. **Firmware** or **Installer**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: ListOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Platform will be '\(options.platform)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Kind will be '\(options.kind)'...") : Mist.noop()
 
         if let string: String = options.searchString {
 
@@ -119,7 +119,7 @@ struct List {
     ///
     /// - Parameters:
     ///   - dictionaries: The array of dictionaries to be written to disk.
-    ///   - options:      List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///   - options:      List options determining kind (ie. **Firmware** or **Installer**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
     ///
     /// - Throws: An `Error` if the dictionaries are unable to be written to disk.
     private static func export(_ dictionaries: [[String: Any]], options: ListOptions) throws {
@@ -138,10 +138,10 @@ struct List {
 
         switch url.pathExtension {
         case "csv":
-            switch options.platform {
-            case .apple:
+            switch options.kind {
+            case .firmware, .ipsw:
                 try dictionaries.firmwaresCSVString().write(toFile: path, atomically: true, encoding: .utf8)
-            case .intel:
+            case .app, .installer:
                 try dictionaries.productsCSVString().write(toFile: path, atomically: true, encoding: .utf8)
             }
 
@@ -164,24 +164,24 @@ struct List {
     ///
     /// - Parameters:
     ///   - dictionaries: The array of dictionaries to be printed to standard output.
-    ///   - options:      List options determining platform (ie. **Apple** or **Intel**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
+    ///   - options:      List options determining kind (ie. **Firmware** or **Installer**) as well as export options (ie. **CSV**, **JSON**, **Property List**, **YAML**).
     ///
     /// - Throws: A `MistError` if the list is unable to be printed to standard output.
     private static func list(_ dictionaries: [[String: Any]], options: ListOptions) throws {
 
         switch options.outputType {
         case .ascii:
-            switch options.platform {
-            case .apple:
+            switch options.kind {
+            case .firmware, .ipsw:
                 print(dictionaries.firmwaresASCIIString())
-            case .intel:
+            case .app, .installer:
                 print(dictionaries.productsASCIIString())
             }
         case .csv:
-            switch options.platform {
-            case .apple:
+            switch options.kind {
+            case .firmware, .ipsw:
                 print(dictionaries.firmwaresCSVString())
-            case .intel:
+            case .app, .installer:
                 print(dictionaries.productsCSVString())
             }
         case .json:

@@ -14,7 +14,7 @@ struct Installer {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the downloaded macOS Installer fails to install.
     static func install(_ product: Product, options: DownloadOptions) throws {

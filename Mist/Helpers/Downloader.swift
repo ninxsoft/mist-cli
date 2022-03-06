@@ -23,7 +23,7 @@ class Downloader: NSObject {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options:  Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to download.
     func download(_ firmware: Firmware, options: DownloadOptions) throws {
@@ -54,7 +54,7 @@ class Downloader: NSObject {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining platform (ie. **Apple** or **Intel**) as well as download type, output path etc.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
     ///
     /// - Throws: A `MistError` if the macOS Installer fails to download.
     func download(_ product: Product, options: DownloadOptions) throws {
