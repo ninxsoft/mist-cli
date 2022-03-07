@@ -8,6 +8,7 @@
 import ArgumentParser
 import Foundation
 
+// swiftlint:disable type_body_length
 struct DownloadOptions: ParsableArguments {
 
     @Argument(help: """
