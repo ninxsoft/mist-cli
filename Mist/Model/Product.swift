@@ -45,6 +45,19 @@ struct Product: Decodable {
             "date": date
         ]
     }
+    var exportDictionary: [String: Any] {
+        [
+            "identifier": identifier,
+            "name": name,
+            "version": version,
+            "build": build,
+            "size": size,
+            "date": date,
+            "distribution": distribution,
+            "packages": packages.map { $0.dictionary },
+            "beta": isBeta
+        ]
+    }
     var isTooBigForPackagePayload: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }

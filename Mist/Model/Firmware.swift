@@ -60,6 +60,18 @@ struct Firmware: Decodable {
             "date": dateDescription
         ]
     }
+    var exportDictionary: [String: Any] {
+        [
+            "name": name,
+            "version": version,
+            "build": build,
+            "size": size,
+            "url": url,
+            "date": date,
+            "signed": signed,
+            "beta": isBeta
+        ]
+    }
 }
 
 extension Firmware: Equatable {

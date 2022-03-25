@@ -18,6 +18,7 @@ class Downloader: NSObject {
     private var prefixString: String = ""
     private var mistError: MistError?
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
+    private var quiet: Bool = false
 
     /// Downloads a macOS Firmware.
     ///
@@ -28,7 +29,8 @@ class Downloader: NSObject {
     /// - Throws: A `MistError` if the macOS Firmware fails to download.
     func download(_ firmware: Firmware, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("DOWNLOAD")
+        quiet = options.quiet
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
         temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         guard let source: URL = URL(string: firmware.url) else {
@@ -59,7 +61,8 @@ class Downloader: NSObject {
     /// - Throws: A `MistError` if the macOS Installer fails to download.
     func download(_ product: Product, options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("DOWNLOAD")
+        quiet = options.quiet
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
         temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
         let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
@@ -96,7 +99,7 @@ class Downloader: NSObject {
         let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
         let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
         let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
-        PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing)
+        !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing) : Mist.noop()
     }
 }
 

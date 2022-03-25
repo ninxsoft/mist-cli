@@ -21,23 +21,24 @@ struct Download {
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadOptions) throws {
         try inputValidation(options)
-        PrettyPrint.printHeader("SEARCH")
-        PrettyPrint.print("Searching for macOS download '\(options.searchString)'...")
+        !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...") : Mist.noop()
 
         switch options.kind {
         case .firmware, .ipsw:
             guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas), searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending)
+                !options.quiet ? PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending) : Mist.noop()
                 return
             }
 
-            PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]")
+            !options.quiet ? PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]") : Mist.noop()
             try verifyExistingFiles(firmware, options: options)
             try setup(firmware, options: options)
             try verifyFreeSpace(firmware, options: options)
             try Downloader().download(firmware, options: options)
             try Generator.generate(firmware, options: options)
             try teardown(firmware, options: options)
+            try export(firmware, options: options)
         case .app, .installer:
             var catalogURLs: [String] = Catalog.urls
 
@@ -48,11 +49,11 @@ struct Download {
             let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas)
 
             guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
-                PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending)
+                !options.quiet ? PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending) : Mist.noop()
                 return
             }
 
-            PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]")
+            !options.quiet ? PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]") : Mist.noop()
             try verifyExistingFiles(product, options: options)
             try setup(product, options: options)
             try verifyFreeSpace(product, options: options)
@@ -60,6 +61,7 @@ struct Download {
             try Installer.install(product, options: options)
             try Generator.generate(product, options: options)
             try teardown(product, options: options)
+            try export(product, options: options)
         }
     }
 
@@ -71,7 +73,7 @@ struct Download {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadOptions) throws {
 
-        PrettyPrint.printHeader("INPUT VALIDATION")
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
 
         if [.app, .installer].contains(options.kind) {
 
@@ -79,28 +81,40 @@ struct Download {
                 throw MistError.invalidUser
             }
 
-            PrettyPrint.print("User is 'root'...")
+            !options.quiet ? PrettyPrint.print("User is 'root'...") : Mist.noop()
         }
 
         guard !options.searchString.isEmpty else {
             throw MistError.missingDownloadSearchString
         }
 
-        PrettyPrint.print("Download search string will be '\(options.searchString)'...")
+        !options.quiet ? PrettyPrint.print("Download search string will be '\(options.searchString)'...") : Mist.noop()
 
         guard !options.outputDirectory.isEmpty else {
             throw MistError.missingOutputDirectory
         }
 
-        PrettyPrint.print("Kind will be '\(options.kind)'...")
-        PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...")
-        PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...")
-        PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...")
+        !options.quiet ? PrettyPrint.print("Kind will be '\(options.kind)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...") : Mist.noop()
 
-        if options.force {
-            PrettyPrint.print("Force flag set, existing files will be overwritten...")
-        } else {
-            PrettyPrint.print("Force flag has not been set, existing files will not be overwritten...")
+        if let path: String = options.exportPath {
+
+            guard !path.isEmpty else {
+                throw MistError.missingExportPath
+            }
+
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...") : Mist.noop()
+
+            let url: URL = URL(fileURLWithPath: path)
+
+            guard ["json", "plist", "yaml"].contains(url.pathExtension) else {
+                throw MistError.invalidExportFileExtension
+            }
+
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
         }
 
         switch options.kind {
@@ -112,7 +126,7 @@ struct Download {
                 throw MistError.missingOutputType
             }
 
-            PrettyPrint.print("Valid download type(s) specified...")
+            !options.quiet ? PrettyPrint.print("Valid download type(s) specified...") : Mist.noop()
             try inputValidationApplication(options)
             try inputValidationImage(options)
             try inputValidationISO(options)
@@ -132,7 +146,7 @@ struct Download {
             throw MistError.missingFirmwareName
         }
 
-        PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...")
+        !options.quiet ? PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...") : Mist.noop()
     }
 
     /// Performs a series of input validations specific to macOS Application output.
@@ -149,7 +163,7 @@ struct Download {
                 throw MistError.missingApplicationName
             }
 
-            PrettyPrint.print("Application name will be '\(options.applicationName)'...")
+            !options.quiet ? PrettyPrint.print("Application name will be '\(options.applicationName)'...") : Mist.noop()
         }
     }
 
@@ -167,7 +181,7 @@ struct Download {
                 throw MistError.missingImageName
             }
 
-            PrettyPrint.print("Disk Image name will be '\(options.imageName)'...")
+            !options.quiet ? PrettyPrint.print("Disk Image name will be '\(options.imageName)'...") : Mist.noop()
 
             if let identity: String = options.imageSigningIdentity {
 
@@ -175,7 +189,7 @@ struct Download {
                     throw MistError.missingImageSigningIdentity
                 }
 
-                PrettyPrint.print("Disk Image signing identity will be '\(identity)'...")
+                !options.quiet ? PrettyPrint.print("Disk Image signing identity will be '\(identity)'...") : Mist.noop()
             }
         }
     }
@@ -194,7 +208,7 @@ struct Download {
                 throw MistError.missingIsoName
             }
 
-            PrettyPrint.print("Bootable Disk Image name will be '\(options.isoName)'...")
+            !options.quiet ? PrettyPrint.print("Bootable Disk Image name will be '\(options.isoName)'...") : Mist.noop()
         }
     }
 
@@ -212,14 +226,14 @@ struct Download {
                 throw MistError.missingPackageName
             }
 
-            PrettyPrint.print("Package name will be '\(options.packageName)'...")
+            !options.quiet ? PrettyPrint.print("Package name will be '\(options.packageName)'...") : Mist.noop()
 
             guard let identifier: String = options.packageIdentifier,
                 !identifier.isEmpty else {
                 throw MistError.missingPackageIdentifier
             }
 
-            PrettyPrint.print("Package identifier will be '\(identifier)'...")
+            !options.quiet ? PrettyPrint.print("Package identifier will be '\(identifier)'...") : Mist.noop()
 
             if let identity: String = options.packageSigningIdentity {
 
@@ -227,7 +241,7 @@ struct Download {
                     throw MistError.missingPackageSigningIdentity
                 }
 
-                PrettyPrint.print("Package signing identity will be '\(identity)'...")
+                !options.quiet ? PrettyPrint.print("Package signing identity will be '\(identity)'...") : Mist.noop()
             }
         }
     }
@@ -310,19 +324,19 @@ struct Download {
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: firmware))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
-        PrettyPrint.printHeader("SETUP")
+        !options.quiet ? PrettyPrint.printHeader("SETUP") : Mist.noop()
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print("Creating output directory '\(outputURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...") : Mist.noop()
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -338,19 +352,19 @@ struct Download {
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
 
-        PrettyPrint.printHeader("SETUP")
+        !options.quiet ? PrettyPrint.printHeader("SETUP") : Mist.noop()
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            PrettyPrint.print("Creating output directory '\(outputURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...") : Mist.noop()
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...")
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -457,8 +471,8 @@ struct Download {
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            PrettyPrint.printHeader("TEARDOWN")
-            PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending)
+            !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
     }
@@ -471,8 +485,90 @@ struct Download {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
-        PrettyPrint.printHeader("TEARDOWN")
-        PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending)
+        !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending) : Mist.noop()
         try FileManager.default.removeItem(at: product.installerURL)
+    }
+
+    /// Exports the results for macOS Firmware downloads.
+    ///
+    /// - Parameters:
+    ///   - firmware: The selected macOS Firmware that was downloaded.
+    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
+    private static func export(_ firmware: Firmware, options: DownloadOptions) throws {
+
+        guard let path: String = options.exportPath else {
+            return
+        }
+
+        let url: URL = URL(fileURLWithPath: path)
+        let directory: URL = url.deletingLastPathComponent()
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
+        }
+
+        let dictionary: [String: Any] = [
+            "firmware": firmware.exportDictionary,
+            "options": options.exportDictionary(for: firmware)
+        ]
+
+        switch url.pathExtension {
+        case "json":
+            try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+        case "plist":
+            try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+        case "yaml":
+            try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+        default:
+            break
+        }
+    }
+
+    /// Exports the results for macOS Installer downloads.
+    ///
+    /// - Parameters:
+    ///   - product: The selected macOS Installer that was downloaded.
+    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///
+    /// - Throws: An `Error` if any of the directory operations fail.
+    private static func export(_ product: Product, options: DownloadOptions) throws {
+
+        guard let path: String = options.exportPath else {
+            return
+        }
+
+        let url: URL = URL(fileURLWithPath: path)
+        let directory: URL = url.deletingLastPathComponent()
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
+        }
+
+        let dictionary: [String: Any] = [
+            "installer": product.exportDictionary,
+            "options": options.exportDictionary(for: product)
+        ]
+
+        switch url.pathExtension {
+        case "json":
+            try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+        case "plist":
+            try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+        case "yaml":
+            try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+        default:
+            break
+        }
     }
 }

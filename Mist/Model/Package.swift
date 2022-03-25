@@ -15,4 +15,10 @@ struct Package: Decodable {
 
     let url: String
     let size: Int
+    var dictionary: [String: Any] {
+        [
+            "url": url,
+            "size": size
+        ]
+    }
 }

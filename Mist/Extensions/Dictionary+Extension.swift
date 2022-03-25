@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Yams
 
 extension Dictionary where Key == String {
 
@@ -37,5 +38,36 @@ extension Dictionary where Key == String {
 
         let string: String = "\"\(identifier)\",\"\(name)\",\"=\"\"\(version)\"\"\",\"=\"\"\(build)\"\"\",\(size),\(date)\n"
         return string
+    }
+
+    func jsonString() throws -> String {
+
+        var data: Data
+
+        if #available(macOS 10.13, *) {
+            data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
+        } else {
+            data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+        }
+
+        guard let string: String = String(data: data, encoding: .utf8) else {
+            throw MistError.invalidData
+        }
+
+        return string
+    }
+
+    func propertyListString() throws -> String {
+        let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
+
+        guard let string: String = String(data: data, encoding: .utf8) else {
+            throw MistError.invalidData
+        }
+
+        return string
+    }
+
+    func yamlString() throws -> String {
+        try Yams.dump(object: self)
     }
 }

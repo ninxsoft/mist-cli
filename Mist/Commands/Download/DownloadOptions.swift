@@ -8,6 +8,7 @@
 import ArgumentParser
 import Foundation
 
+// swiftlint:disable type_body_length
 struct DownloadOptions: ParsableArguments {
 
     @Argument(help: """
@@ -22,11 +23,11 @@ struct DownloadOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21A5304g (macOS Monterey Beta 12.0)
-    * 20G95 (macOS Big Sur 11.5.2)
-    * 19H15 (macOS Catalina 10.15.7)
-    * 18G8103 (macOS Mojave 10.14.6)
-    * 17G66 (macOS High Sierra 10.13.6)
+    * 21D (macOS Monterey 12.2.x)
+    * 20G (macOS Big Sur 11.6.x)
+    * 19H (macOS Catalina 10.15.7)
+    * 18G (macOS Mojave 10.14.6)
+    * 17G (macOS High Sierra 10.13.6)
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
@@ -167,6 +168,20 @@ struct DownloadOptions: ParsableArguments {
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
+    @Option(name: [.customShort("e"), .customLong("export")], help: """
+    Specify the path to export the download results to one of the following formats:
+    * /path/to/export.json (JSON file)
+    * /path/to/export.plist (Property List file)
+    * /path/to/export.yaml (YAML file)
+    Note: The file extension will determine the output file format.
+    """)
+    var exportPath: String?
+
+    @Flag(name: .shortAndLong, help: """
+    Suppress verbose output.
+    """)
+    var quiet: Bool = false
+
     func outputDirectory(for firmware: Firmware) -> String {
         outputDirectory.stringWithSubstitutions(using: firmware)
     }
@@ -220,5 +235,44 @@ struct DownloadOptions: ParsableArguments {
     func temporaryScriptsDirectory(for product: Product) -> String {
         "\(temporaryDirectory)/\(product.identifier)-Scripts"
             .replacingOccurrences(of: "//", with: "/")
+    }
+
+    func exportDictionary(for firmware: Firmware) -> [String: Any] {
+        [
+            "kind": kind.description,
+            "includeBetas": includeBetas,
+            "force": force,
+            "firmwarePath": firmwarePath(for: firmware),
+            "keychain": keychain ?? "",
+            "outputDirectory": outputDirectory(for: firmware),
+            "temporaryDirectory": temporaryDirectory(for: firmware),
+            "exportPath": exportPath ?? "",
+            "quiet": quiet
+        ]
+    }
+
+    func exportDictionary(for product: Product) -> [String: Any] {
+        [
+            "kind": kind.description,
+            "includeBetas": includeBetas,
+            "catalogURL": catalogURL ?? "",
+            "force": force,
+            "application": application,
+            "applicationPath": applicationPath(for: product),
+            "image": image,
+            "imagePath": imagePath(for: product),
+            "imageSigningIdentity": imageSigningIdentity ?? "",
+            "iso": iso,
+            "isoPath": isoPath(for: product),
+            "package": package,
+            "packagePath": packagePath(for: product),
+            "packageIdentifier": packageIdentifier(for: product),
+            "packageSigningIdentity": packageSigningIdentity ?? "",
+            "keychain": keychain ?? "",
+            "outputDirectory": outputDirectory(for: product),
+            "temporaryDirectory": temporaryDirectory(for: product),
+            "exportPath": exportPath ?? "",
+            "quiet": quiet
+        ]
     }
 }

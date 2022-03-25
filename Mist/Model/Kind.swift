@@ -14,4 +14,8 @@ enum Kind: String, ExpressibleByArgument {
     case installer = "installer"
     case app = "app"
     case ipsw = "ipsw"
+
+    var description: String {
+        self.rawValue
+    }
 }
