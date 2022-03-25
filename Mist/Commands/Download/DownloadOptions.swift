@@ -106,6 +106,7 @@ struct DownloadOptions: ParsableArguments {
     Generate a Bootable macOS Disk Image (.iso).
     For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox).
     Note: This only applies when the kind is set to 'installer'.
+    Note: This option will fail when targeting macOS Catalina 10.15 and older on Apple Silicon (M1) Macs.
     """)
     var iso: Bool = false
 
