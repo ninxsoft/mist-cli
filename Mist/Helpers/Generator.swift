@@ -68,6 +68,10 @@ struct Generator {
 
         !options.quiet ? PrettyPrint.print("Moving '\(temporaryFirmwareURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
         try FileManager.default.moveItem(at: temporaryFirmwareURL, to: destinationURL)
+
+        let posixPermissions: Int = 0o644
+        PrettyPrint.print("Setting POSIX file permissions to '0\(String(posixPermissions, radix: 0o10))' for '\(destinationURL.path)'...")
+        try FileManager.default.setAttributes([.posixPermissions: posixPermissions], ofItemAtPath: destinationURL.path)
     }
 
     /// Generates a macOS Installer.
