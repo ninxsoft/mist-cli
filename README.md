@@ -13,7 +13,7 @@ A Mac command-line tool that automatically downloads **macOS Installers** / **Fi
   - Additionally list beta versions of macOS in search results
   - Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
 - [x] Download an available macOS Installer / Firmware:
-  - For Intel based Macs:
+  - For Intel based Macs (Universal for macOS Big Sur and later):
     - Generate an Application Bundle (.app)
     - Generate a Disk Image (.dmg)
     - Generate a Bootable Disk Image (.iso)
@@ -56,16 +56,20 @@ SUBCOMMANDS:
 # List all available macOS Firmwares for Apple Silicon Macs:
 mist list --kind "firmware"
 
-# List all available macOS Installers for Intel Macs:
+# List all available macOS Installers for Intel Macs,
+# including Universal Installers for macOS Big Sur and later:
 mist list --kind "installer"
 
-# List all available macOS Installers for Intel Macs, including betas:
+# List all available macOS Installers for Intel Macs, including betas,
+# also including Universal Installers for macOS Big Sur and later:
 mist list --kind "installer" --include-betas
 
-# List only macOS Monterey Installers for Intel Macs:
+# List only macOS Monterey Installers for Intel Macs,
+# including Universal Installers for macOS Big Sur and later:
 mist list "macOS Monterey" --kind "installer"
 
-# List only the latest macOS Monterey Installer for Intel Macs:
+# List only the latest macOS Monterey Installer for Intel Macs,
+# including Universal Installers for macOS Big Sur and later:
 mist list "macOS Monterey" --kind "installer" --latest
 
 # List + Export macOS Installers to a CSV file:
@@ -84,31 +88,37 @@ mist list --export "/path/to/export.yaml"
 # Apple Silicon Macs, with a custom name:
 mist download "Monterey" --kind "firmware" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
-# Download the latest macOS Monterey Installer for Intel Macs:
+# Download the latest macOS Monterey Installer for Intel Macs,
+# including Universal Installers for macOS Big Sur and later:
 mist download "Monterey" --kind "installer" --application
 
-# Download a specific macOS Installer version for Intel Macs:
+# Download a specific macOS Installer version for Intel Macs,
+# including Universal Installers for macOS Big Sur and later:
 mist download "12.2.1" --application
 
-# Download a specific macOS Installer version for
-# Intel Macs, with a custom name:
+# Download a specific macOS Installer version for Intel Macs,
+# including Universal Installers for macOS Big Sur and later,
+# with a custom name:
 mist download "12.2.1" --application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
-# Download a specific macOS Installer version
+# Download a specific macOS Installer version for Intel Macs,
+# including Universal Installers for macOS Big Sur and later,
 # and generate a Disk Image with a custom name:
 mist download "12.2.1" --image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
-# Download a specific macOS Installer build and generate
-# a codesigned Disk Image output to a custom directory:
+# Download a specific macOS Installer build for Inte Macs,
+# including Universal Installers for macOS Big Sur and later,
+# and generate a codesigned Disk Image output to a custom directory:
 mist download "21D62" \
      --image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
-# Download the latest macOS Monterey Installer and generate
-# an Installer Application bundle, a Disk Image, a Bootable
-# Disk Image, a macOS Installer Package, all with custom names,
-# codesigned, output to a custom directory:
+# Download the latest macOS Monterey Installer for Intel Macs,
+# including Universal Installers for macOS Big Sur and later,
+# and generate an Installer Application bundle, a Disk Image,
+# a Bootable Disk Image, a macOS Installer Package,
+# all with custom names, codesigned, output to a custom directory:
 mist download "Monterey" \
      --application \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
