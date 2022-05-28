@@ -32,16 +32,18 @@ struct Validator {
         var offset: UInt64 = 0
 
         for chunk in chunklist.chunks {
-            try fileHandle.seek(toOffset: offset)
-            data = fileHandle.readData(ofLength: Int(chunk.size))
-            let shasum: String = SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined().uppercased()
+            try autoreleasepool {
+                try fileHandle.seek(toOffset: offset)
+                data = fileHandle.readData(ofLength: Int(chunk.size))
+                let shasum: String = SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined().uppercased()
 
-            guard shasum == chunk.shasum else {
-                try fileHandle.close()
-                throw MistError.invalidShasum(invalid: shasum, valid: chunk.shasum)
+                guard shasum == chunk.shasum else {
+                    try fileHandle.close()
+                    throw MistError.invalidShasum(invalid: shasum, valid: chunk.shasum)
+                }
+
+                offset += UInt64(chunk.size)
             }
-
-            offset += UInt64(chunk.size)
         }
 
         try fileHandle.close()
