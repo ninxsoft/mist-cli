@@ -28,13 +28,12 @@ struct Validator {
 
         let chunklist: Chunklist = try Chunklist(from: url, size: size)
         let fileHandle: FileHandle = try FileHandle(forReadingFrom: destination)
-        var data: Data = Data()
         var offset: UInt64 = 0
 
         for chunk in chunklist.chunks {
             try autoreleasepool {
                 try fileHandle.seek(toOffset: offset)
-                data = fileHandle.readData(ofLength: Int(chunk.size))
+                let data: Data = fileHandle.readData(ofLength: Int(chunk.size))
                 let shasum: String = SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined().uppercased()
 
                 guard shasum == chunk.shasum else {
