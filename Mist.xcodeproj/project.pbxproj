@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		390B7199281B92AA00875374 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B7198281B92AA00875374 /* Validator.swift */; };
+		390B719B281BA31100875374 /* Chunklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B719A281BA31100875374 /* Chunklist.swift */; };
+		390B719D281BA61E00875374 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B719C281BA61E00875374 /* Chunk.swift */; };
+		390B71A1281BAD7F00875374 /* UInt32+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A0281BAD7F00875374 /* UInt32+Extension.swift */; };
+		390B71A3281BAF0100875374 /* UInt8+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A2281BAF0000875374 /* UInt8+Extension.swift */; };
+		390B71A5281BB38500875374 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A4281BB38500875374 /* Array+Extension.swift */; };
+		390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A6281BC69E00875374 /* UInt64+Extension.swift */; };
 		393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236726DDA494004755BF /* Dictionary+Extension.swift */; };
 		393C236F26DF68BF004755BF /* OutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236E26DF68BF004755BF /* OutputType.swift */; };
 		393C237126DF84E0004755BF /* Sequence+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C237026DF84E0004755BF /* Sequence+Extension.swift */; };
@@ -51,6 +58,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		390B7198281B92AA00875374 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
+		390B719A281BA31100875374 /* Chunklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunklist.swift; sourceTree = "<group>"; };
+		390B719C281BA61E00875374 /* Chunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
+		390B71A0281BAD7F00875374 /* UInt32+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt32+Extension.swift"; sourceTree = "<group>"; };
+		390B71A2281BAF0000875374 /* UInt8+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt8+Extension.swift"; sourceTree = "<group>"; };
+		390B71A4281BB38500875374 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
+		390B71A6281BC69E00875374 /* UInt64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+Extension.swift"; sourceTree = "<group>"; };
 		393C236726DDA494004755BF /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
 		393C236E26DF68BF004755BF /* OutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputType.swift; sourceTree = "<group>"; };
 		393C237026DF84E0004755BF /* Sequence+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+Extension.swift"; sourceTree = "<group>"; };
@@ -165,10 +179,14 @@
 		5744141425F8607B00DE5540 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				390B71A4281BB38500875374 /* Array+Extension.swift */,
 				393C236726DDA494004755BF /* Dictionary+Extension.swift */,
 				57F0F3CD2600907D00480DEE /* Int64+Extension.swift */,
 				393C237026DF84E0004755BF /* Sequence+Extension.swift */,
 				5744141125F8607800DE5540 /* String+Extension.swift */,
+				390B71A2281BAF0000875374 /* UInt8+Extension.swift */,
+				390B71A0281BAD7F00875374 /* UInt32+Extension.swift */,
+				390B71A6281BC69E00875374 /* UInt64+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -177,6 +195,8 @@
 			isa = PBXGroup;
 			children = (
 				570D5090260034E10066E4C9 /* Catalog.swift */,
+				390B719A281BA31100875374 /* Chunklist.swift */,
+				390B719C281BA61E00875374 /* Chunk.swift */,
 				3967935B26D7304500DC2D2D /* Firmware.swift */,
 				3967935926D7293C00DC2D2D /* Kind.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
@@ -196,6 +216,7 @@
 				57D1358B25FA3CE5003467B2 /* Installer.swift */,
 				57D1359625FB1B97003467B2 /* PrettyPrint.swift */,
 				57D1359925FE1364003467B2 /* Shell.swift */,
+				390B7198281B92AA00875374 /* Validator.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -309,18 +330,23 @@
 				57D135AB25FED139003467B2 /* MistError.swift in Sources */,
 				57D1358C25FA3CE5003467B2 /* Installer.swift in Sources */,
 				57D1358F25FA4027003467B2 /* Generator.swift in Sources */,
+				390B71A5281BB38500875374 /* Array+Extension.swift in Sources */,
 				5744140025F85EF300DE5540 /* main.swift in Sources */,
+				390B7199281B92AA00875374 /* Validator.swift in Sources */,
 				5744141725F8659D00DE5540 /* List.swift in Sources */,
 				3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */,
 				57D1358225F9F8E5003467B2 /* Package.swift in Sources */,
 				57D1359725FB1B97003467B2 /* PrettyPrint.swift in Sources */,
 				3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */,
 				5744141225F8607800DE5540 /* String+Extension.swift in Sources */,
+				390B719B281BA31100875374 /* Chunklist.swift in Sources */,
 				5744140925F8603300DE5540 /* Mist.swift in Sources */,
 				57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */,
 				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
+				390B71A3281BAF0100875374 /* UInt8+Extension.swift in Sources */,
 				3967935526D7272100DC2D2D /* ListCommand.swift in Sources */,
+				390B719D281BA61E00875374 /* Chunk.swift in Sources */,
 				570D5091260034E10066E4C9 /* Catalog.swift in Sources */,
 				3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */,
 				3967935C26D7304500DC2D2D /* Firmware.swift in Sources */,
@@ -328,10 +354,12 @@
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
 				3967935A26D7293C00DC2D2D /* Kind.swift in Sources */,
 				3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */,
+				390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
 				393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */,
 				3967936426D7757800DC2D2D /* Version.swift in Sources */,
 				393C237126DF84E0004755BF /* Sequence+Extension.swift in Sources */,
+				390B71A1281BAD7F00875374 /* UInt32+Extension.swift in Sources */,
 				5744141F25F8675000DE5540 /* Product.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -390,7 +418,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -445,7 +473,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -461,7 +489,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -476,7 +504,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 7K3HVCLV7Z;
 				ENABLE_HARDENED_RUNTIME = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

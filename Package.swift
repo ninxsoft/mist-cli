@@ -7,7 +7,7 @@ import PackageDescription
 let package = Package(
     name: "MIST",
     platforms: [
-        .macOS(.v10_10)
+        .macOS(.v10_15)
     ],
     products: [
         .executable(name: "mist", targets: ["MIST"])

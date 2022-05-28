@@ -96,6 +96,7 @@ struct Download {
 
         !options.quiet ? PrettyPrint.print("Kind will be '\(options.kind)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Cache downloads will be '\(options.cacheDownloads)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...") : Mist.noop()
@@ -351,21 +352,31 @@ struct Download {
 
         let outputURL: URL = URL(fileURLWithPath: options.outputDirectory(for: product))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("SETUP") : Mist.noop()
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
             !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...") : Mist.noop()
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
+            processing = true
         }
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) {
+        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
+            processing = true
         }
 
-        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+        if !FileManager.default.fileExists(atPath: temporaryURL.path) {
+            !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+            try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
+            processing = true
+        }
+
+        if !processing {
+            !options.quiet ? PrettyPrint.print("Nothing to do!") : Mist.noop()
+        }
     }
 
     /// Verifies free space for macOS Firmware downloads.
@@ -486,6 +497,14 @@ struct Download {
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
+
+        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+
+        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending) : Mist.noop()
+            try FileManager.default.removeItem(at: temporaryURL)
+        }
+
         !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending) : Mist.noop()
         try FileManager.default.removeItem(at: product.installerURL)
     }

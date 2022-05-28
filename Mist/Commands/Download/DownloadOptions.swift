@@ -54,6 +54,12 @@ struct DownloadOptions: ParsableArguments {
     """)
     var catalogURL: String?
 
+    @Flag(name: .long, help: """
+    Cache downloaded files in the temporary downloads directory.
+    Note: This only applies when the kind is set to 'installer'.
+    """)
+    var cacheDownloads: Bool = false
+
     @Flag(name: .shortAndLong, help: """
     Force overwriting existing macOS Downloads matching the provided filename(s).
     Note: Downloads will fail if an existing file is found and this flag is not provided.

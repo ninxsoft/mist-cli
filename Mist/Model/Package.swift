@@ -11,14 +11,20 @@ struct Package: Decodable {
     enum CodingKeys: String, CodingKey {
         case url = "URL"
         case size = "Size"
+        case integrityDataURL = "IntegrityDataURL"
+        case integrityDataSize = "IntegrityDataSize"
     }
 
     let url: String
     let size: Int
+    let integrityDataURL: String?
+    let integrityDataSize: Int?
     var dictionary: [String: Any] {
         [
             "url": url,
-            "size": size
+            "size": size,
+            "integrityDataURL": integrityDataURL ?? "",
+            "integrityDataSize": integrityDataSize ?? 0
         ]
     }
 }
