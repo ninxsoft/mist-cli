@@ -30,6 +30,7 @@ enum MistError: Error {
     case invalidChunklist(url: URL)
     case invalidData
     case invalidExitStatus(code: Int32, message: String)
+    case invalidFileSize(invalid: UInt64, valid: UInt64)
     case invalidShasum(invalid: String, valid: String)
     case invalidURL(url: String)
 
@@ -79,6 +80,8 @@ enum MistError: Error {
             return "Invalid data."
         case .invalidExitStatus(let code, let message):
             return "Invalid Exit Status Code: '\(code)', Message: \(message)"
+        case .invalidFileSize(let invalid, let valid):
+            return "Invalid File Size: '\(invalid)', should be: '\(valid)'"
         case .invalidShasum(let invalid, let valid):
             return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
         case .invalidURL(let url):

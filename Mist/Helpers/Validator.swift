@@ -20,6 +20,20 @@ struct Validator {
     /// - Throws: A `MistError` if the macOS Installer package fails validation.
     static func validate(_ package: Package, at destination: URL) throws {
 
+        guard !package.url.hasSuffix("English.dist") else {
+            return
+        }
+
+        let attributes: [FileAttributeKey: Any] = try FileManager.default.attributesOfItem(atPath: destination.path)
+
+        guard let fileSize: UInt64 = attributes[.size] as? UInt64 else {
+            throw MistError.generalError("Unble to retrieve file size from file '\(destination.path)'")
+        }
+
+        guard fileSize == package.size else {
+            throw MistError.invalidFileSize(invalid: fileSize, valid: UInt64(package.size))
+        }
+
         guard let string: String = package.integrityDataURL,
             let url: URL = URL(string: string),
             let size: Int = package.integrityDataSize else {
