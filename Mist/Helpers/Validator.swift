@@ -1,6 +1,6 @@
 //
 //  Validator.swift
-//  mist
+//  Mist
 //
 //  Created by Nindi Gill on 29/4/2022.
 //
