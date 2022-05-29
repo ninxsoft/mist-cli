@@ -64,29 +64,57 @@ class Downloader: NSObject {
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
         temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
-        let urls: [String] = [product.distribution] + product.packages.map { $0.url }.sorted { $0 < $1 }
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
-        for (index, url) in urls.enumerated() {
+        guard let temporaryURL: URL = temporaryURL else {
+            throw MistError.generalError("There was an error retrieving the temporary URL")
+        }
 
-            guard let source: URL = URL(string: url) else {
-                throw MistError.invalidURL(url: url)
+        for (index, package) in product.allDownloads.enumerated() {
+
+            guard let source: URL = URL(string: package.url) else {
+                throw MistError.invalidURL(url: package.url)
             }
 
             sourceURL = source
-            let task: URLSessionDownloadTask = session.downloadTask(with: source)
-            let current: Int = index + 1
-            let currentString: String = "\(current < 10 && product.totalFiles >= 10 ? "0" : "")\(current)"
-            prefixString = "[ \(currentString) / \(product.totalFiles) ] \(source.lastPathComponent)"
-            updateProgress(replacing: false)
-            task.resume()
-            semaphore.wait()
+            let destination: URL = temporaryURL.appendingPathComponent(source.lastPathComponent)
+            let currentIndex: Int = index + 1
+            let currentString: String = "\(currentIndex < 10 && product.allDownloads.count >= 10 ? "0" : "")\(currentIndex)"
+            prefixString = "[ \(currentString) / \(product.allDownloads.count) ] \(source.lastPathComponent)"
+            current = 0
 
-            if let mistError: MistError = mistError {
-                throw mistError
+            if FileManager.default.fileExists(atPath: destination.path) && package.size == 0 {
+                let attributes: [FileAttributeKey: Any] = try FileManager.default.attributesOfItem(atPath: destination.path)
+
+                if let size: Int64 = attributes[FileAttributeKey.size] as? Int64 {
+                    total = size
+                }
+            } else {
+                total = Int64(package.size)
             }
 
+            updateProgress(replacing: false)
+
+            if !FileManager.default.fileExists(atPath: destination.path) {
+                let task: URLSessionDownloadTask = session.downloadTask(with: source)
+                task.resume()
+                semaphore.wait()
+
+                if let mistError: MistError = mistError {
+                    throw mistError
+                }
+            }
+
+            current = total
             updateProgress()
+            let indexString: String = "[ \(currentString) / \(product.allDownloads.count) ]"
+            let verifyingString: String = "Verifying"
+            var spaceString: String = String(repeating: " ", count: indexString.count - verifyingString.count)
+            !quiet ? PrettyPrint.print("\(verifyingString)\(spaceString) \(source.lastPathComponent)....") : Mist.noop()
+            try Validator.validate(package, at: destination)
+            let verifiedString: String = "Verified"
+            spaceString = String(repeating: " ", count: indexString.count - verifiedString.count)
+            !quiet ? PrettyPrint.print("\(verifiedString)\(spaceString) \(source.lastPathComponent) \("✓✓✓".color(.green))", replacing: true) : Mist.noop()
         }
     }
 

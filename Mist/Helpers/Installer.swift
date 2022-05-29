@@ -37,8 +37,6 @@ struct Installer {
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
         _ = try Shell.execute(arguments, environment: variables)
-        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-        try FileManager.default.removeItem(at: temporaryURL)
         !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'") : Mist.noop()
     }
 }

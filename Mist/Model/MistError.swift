@@ -26,8 +26,11 @@ enum MistError: Error {
     case missingOutputDirectory
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case existingFile(path: String)
+    case chunklistValidationFailed(_ string: String)
+    case invalidChunklist(url: URL)
     case invalidData
     case invalidExitStatus(code: Int32, message: String)
+    case invalidFileSize(invalid: UInt64, valid: UInt64)
     case invalidShasum(invalid: String, valid: String)
     case invalidURL(url: String)
 
@@ -69,10 +72,16 @@ enum MistError: Error {
             return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
         case .existingFile(let path):
             return "Existing file: '\(path)'. Use [--force] to overwrite."
+        case .chunklistValidationFailed(let string):
+            return "Chunklist validation failed: \(string)"
+        case .invalidChunklist(let url):
+            return "Unable to validate data integrity due to invalid chunklist: \(url.path)"
         case .invalidData:
             return "Invalid data."
         case .invalidExitStatus(let code, let message):
             return "Invalid Exit Status Code: '\(code)', Message: \(message)"
+        case .invalidFileSize(let invalid, let valid):
+            return "Invalid File Size: '\(invalid)', should be: '\(valid)'"
         case .invalidShasum(let invalid, let valid):
             return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
         case .invalidURL(let url):
