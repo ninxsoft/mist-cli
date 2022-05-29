@@ -107,7 +107,9 @@ class Downloader: NSObject {
 
             current = total
             updateProgress()
+            PrettyPrint.print("[ \(currentString) / \(product.allDownloads.count) ] Validating integrity............")
             try Validator.validate(package, at: destination)
+            PrettyPrint.print("[ \(currentString) / \(product.allDownloads.count) ] Validating integrity.......DONE!", replacing: true)
         }
     }
 
