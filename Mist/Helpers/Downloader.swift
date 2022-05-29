@@ -114,7 +114,7 @@ class Downloader: NSObject {
             try Validator.validate(package, at: destination)
             let verifiedString: String = "Verified"
             spaceString = String(repeating: " ", count: indexString.count - verifiedString.count)
-            !quiet ? PrettyPrint.print("\(verifiedString)\(spaceString) \(source.lastPathComponent) \("✓✓✓".color(.green))", replacing: false) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(verifiedString)\(spaceString) \(source.lastPathComponent) \("✓✓✓".color(.green))", replacing: true) : Mist.noop()
         }
     }
 
