@@ -26,7 +26,7 @@ struct Product: Decodable {
     let distribution: String
     let packages: [Package]
     var allDownloads: [Package] {
-        [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)] + packages
+        [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)] + packages.sorted { $0.filename < $1.filename }
     }
     var installerURL: URL {
         URL(fileURLWithPath: "/Applications/Install \(name).app")

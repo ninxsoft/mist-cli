@@ -19,6 +19,9 @@ struct Package: Decodable {
     let size: Int
     let integrityDataURL: String?
     let integrityDataSize: Int?
+    var filename: String {
+        url.components(separatedBy: "/").last ?? url
+    }
     var dictionary: [String: Any] {
         [
             "url": url,
