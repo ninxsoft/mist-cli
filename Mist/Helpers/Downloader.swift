@@ -107,14 +107,11 @@ class Downloader: NSObject {
 
             current = total
             updateProgress()
-            let indexString: String = "[ \(currentString) / \(product.allDownloads.count) ]"
-            let verifyingString: String = "Verifying"
-            var spaceString: String = String(repeating: " ", count: indexString.count - verifyingString.count)
-            !quiet ? PrettyPrint.print("\(verifyingString)\(spaceString) \(source.lastPathComponent)....") : Mist.noop()
+            let paddingLength: Int = "[ \(currentString) / \(product.allDownloads.count) ]".count
+            let padding: String = String(repeating: " ", count: paddingLength)
+            !quiet ? PrettyPrint.print("\(padding) Verifying...", prefix: .continuing) : Mist.noop()
             try Validator.validate(package, at: destination)
-            let verifiedString: String = "Verified"
-            spaceString = String(repeating: " ", count: indexString.count - verifiedString.count)
-            !quiet ? PrettyPrint.print("\(verifiedString)\(spaceString) \(source.lastPathComponent) \("✓✓✓".color(.green))", replacing: true) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", prefix: .continuing, replacing: true) : Mist.noop()
         }
     }
 

@@ -12,6 +12,7 @@ struct PrettyPrint {
 
     enum Prefix: String {
         case `default` = "  ├─ "
+        case continuing = "  │  "
         case ending    = "  └─ "
     }
 
