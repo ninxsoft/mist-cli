@@ -138,7 +138,7 @@ struct Generator {
     private static func generateImage(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("DISK IMAGE") : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options)).appendingPathComponent("image")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.imagePath(for: product, options: options))
 
@@ -201,7 +201,7 @@ struct Generator {
     private static func generateISO(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE") : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).cdr")
         let mountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)")
@@ -286,7 +286,7 @@ struct Generator {
     private static func generateBigPackage(product: Product, options: DownloadInstallerOptions) throws {
 
         let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options)).appendingPathComponent("package")
         let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
         let scriptsURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryScriptsDirectory(for: product, options: options))
         let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
