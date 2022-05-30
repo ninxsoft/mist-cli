@@ -1,14 +1,13 @@
 //
-//  ListOptions.swift
+//  ListFirmwareOptions.swift
 //  Mist
 //
-//  Created by Nindi Gill on 26/8/21.
+//  Created by Nindi Gill on 30/5/2022.
 //
 
 import ArgumentParser
-import Foundation
 
-struct ListOptions: ParsableArguments {
+struct ListFirmwareOptions: ParsableArguments {
 
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
@@ -22,23 +21,13 @@ struct ListOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21D (macOS Monterey 12.2.x)
+    * 21F (macOS Monterey 12.4.x)
     * 20G (macOS Big Sur 11.6.x)
     * 19H (macOS Catalina 10.15.7)
     * 18G (macOS Mojave 10.14.6)
     * 17G (macOS High Sierra 10.13.6)
     """)
     var searchString: String?
-
-    @Option(name: .shortAndLong, help: """
-    Specify the kind which defines the download type:
-    * firmware or ipsw (macOS Firmware IPSW File)
-    * installer or app (macOS Installer Application Bundle)
-    Note: macOS Firmwares are for Apple Silicon Macs only.
-    Note: macOS Installers for macOS Catalina 10.15 and older are for Intel based Macs only.
-    Note: macOS Installers for macOS Big Sur 11 and newer are Universal - for both Apple Silicon and Intel based Macs.\n
-    """)
-    var kind: Kind = .installer
 
     @Flag(name: .shortAndLong, help: """
     Filter only the latest (first) result that is found.
@@ -49,12 +38,6 @@ struct ListOptions: ParsableArguments {
     Include beta macOS Firmwares / Installers in search results.
     """)
     var includeBetas: Bool = false
-
-    @Option(name: .shortAndLong, help: """
-    Override the default Software Update Catalog URLs.
-    Note: This only applies when the kind is set to 'installer'.
-    """)
-    var catalogURL: String?
 
     @Option(name: [.customShort("e"), .customLong("export")], help: """
     Specify the path to export the list to one of the following formats:
@@ -74,7 +57,7 @@ struct ListOptions: ParsableArguments {
     * plist (Property List)
     * yaml (YAML file)\n
     """)
-    var outputType: OutputType = .ascii
+    var outputType: ListOutputType = .ascii
 
     @Flag(name: .shortAndLong, help: """
     Suppress verbose output.

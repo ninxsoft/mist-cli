@@ -15,24 +15,29 @@
 		390B71A5281BB38500875374 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A4281BB38500875374 /* Array+Extension.swift */; };
 		390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A6281BC69E00875374 /* UInt64+Extension.swift */; };
 		393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236726DDA494004755BF /* Dictionary+Extension.swift */; };
-		393C236F26DF68BF004755BF /* OutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236E26DF68BF004755BF /* OutputType.swift */; };
+		393C236F26DF68BF004755BF /* ListOutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236E26DF68BF004755BF /* ListOutputType.swift */; };
 		393C237126DF84E0004755BF /* Sequence+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C237026DF84E0004755BF /* Sequence+Extension.swift */; };
-		3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListOptions.swift */; };
+		3967935326D726CE00DC2D2D /* ListInstallerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListInstallerOptions.swift */; };
 		3967935526D7272100DC2D2D /* ListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935426D7272100DC2D2D /* ListCommand.swift */; };
 		3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935726D7281400DC2D2D /* VersionCommand.swift */; };
 		3967935A26D7293C00DC2D2D /* Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935926D7293C00DC2D2D /* Kind.swift */; };
 		3967935C26D7304500DC2D2D /* Firmware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935B26D7304500DC2D2D /* Firmware.swift */; };
 		3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */; };
-		3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadOptions.swift */; };
+		3967936126D74C2400DC2D2D /* DownloadInstallerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */; };
 		3967936426D7757800DC2D2D /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936326D7757800DC2D2D /* Version.swift */; };
+		39F6D3392843916D003C2F25 /* DownloadOutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D3382843916D003C2F25 /* DownloadOutputType.swift */; };
+		39F6D33D2844754C003C2F25 /* ListFirmwareCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D33C2844754C003C2F25 /* ListFirmwareCommand.swift */; };
+		39F6D33F28447A3C003C2F25 /* DownloadFirmwareCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D33E28447A3C003C2F25 /* DownloadFirmwareCommand.swift */; };
+		39F6D34128447EF4003C2F25 /* ListFirmwareOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D34028447EF4003C2F25 /* ListFirmwareOptions.swift */; };
+		39F6D3432844833E003C2F25 /* DownloadFirmwareOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D3422844833E003C2F25 /* DownloadFirmwareOptions.swift */; };
 		570D5091260034E10066E4C9 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570D5090260034E10066E4C9 /* Catalog.swift */; };
 		5744140025F85EF300DE5540 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574413FF25F85EF300DE5540 /* main.swift */; };
 		5744140925F8603300DE5540 /* Mist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744140825F8603300DE5540 /* Mist.swift */; };
 		5744140F25F8606500DE5540 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = 5744140E25F8606500DE5540 /* ArgumentParser */; };
 		5744141225F8607800DE5540 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744141125F8607800DE5540 /* String+Extension.swift */; };
-		5744141725F8659D00DE5540 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744141625F8659D00DE5540 /* List.swift */; };
+		5744141725F8659D00DE5540 /* ListInstallerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744141625F8659D00DE5540 /* ListInstallerCommand.swift */; };
 		5744141F25F8675000DE5540 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5744141E25F8675000DE5540 /* Product.swift */; };
-		57550FE625FF3D49006C29EE /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57550FE525FF3D49006C29EE /* Download.swift */; };
+		57550FE625FF3D49006C29EE /* DownloadInstallerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57550FE525FF3D49006C29EE /* DownloadInstallerCommand.swift */; };
 		57D1357825F9F308003467B2 /* Downloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D1357725F9F308003467B2 /* Downloader.swift */; };
 		57D1357B25F9F716003467B2 /* HTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D1357A25F9F716003467B2 /* HTTP.swift */; };
 		57D1358225F9F8E5003467B2 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D1358125F9F8E5003467B2 /* Package.swift */; };
@@ -66,24 +71,29 @@
 		390B71A4281BB38500875374 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		390B71A6281BC69E00875374 /* UInt64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+Extension.swift"; sourceTree = "<group>"; };
 		393C236726DDA494004755BF /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
-		393C236E26DF68BF004755BF /* OutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputType.swift; sourceTree = "<group>"; };
+		393C236E26DF68BF004755BF /* ListOutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOutputType.swift; sourceTree = "<group>"; };
 		393C237026DF84E0004755BF /* Sequence+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+Extension.swift"; sourceTree = "<group>"; };
-		3967935226D726CE00DC2D2D /* ListOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOptions.swift; sourceTree = "<group>"; };
+		3967935226D726CE00DC2D2D /* ListInstallerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListInstallerOptions.swift; sourceTree = "<group>"; };
 		3967935426D7272100DC2D2D /* ListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommand.swift; sourceTree = "<group>"; };
 		3967935726D7281400DC2D2D /* VersionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
 		3967935926D7293C00DC2D2D /* Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kind.swift; sourceTree = "<group>"; };
 		3967935B26D7304500DC2D2D /* Firmware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firmware.swift; sourceTree = "<group>"; };
 		3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCommand.swift; sourceTree = "<group>"; };
-		3967936026D74C2400DC2D2D /* DownloadOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOptions.swift; sourceTree = "<group>"; };
+		3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadInstallerOptions.swift; sourceTree = "<group>"; };
 		3967936326D7757800DC2D2D /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		39F6D3382843916D003C2F25 /* DownloadOutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOutputType.swift; sourceTree = "<group>"; };
+		39F6D33C2844754C003C2F25 /* ListFirmwareCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFirmwareCommand.swift; sourceTree = "<group>"; };
+		39F6D33E28447A3C003C2F25 /* DownloadFirmwareCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFirmwareCommand.swift; sourceTree = "<group>"; };
+		39F6D34028447EF4003C2F25 /* ListFirmwareOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFirmwareOptions.swift; sourceTree = "<group>"; };
+		39F6D3422844833E003C2F25 /* DownloadFirmwareOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFirmwareOptions.swift; sourceTree = "<group>"; };
 		570D5090260034E10066E4C9 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		574413FC25F85EF300DE5540 /* mist */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mist; sourceTree = BUILT_PRODUCTS_DIR; };
 		574413FF25F85EF300DE5540 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5744140825F8603300DE5540 /* Mist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mist.swift; sourceTree = "<group>"; };
 		5744141125F8607800DE5540 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		5744141625F8659D00DE5540 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
+		5744141625F8659D00DE5540 /* ListInstallerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListInstallerCommand.swift; sourceTree = "<group>"; };
 		5744141E25F8675000DE5540 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
-		57550FE525FF3D49006C29EE /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
+		57550FE525FF3D49006C29EE /* DownloadInstallerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadInstallerCommand.swift; sourceTree = "<group>"; };
 		57D1357725F9F308003467B2 /* Downloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloader.swift; sourceTree = "<group>"; };
 		57D1357A25F9F716003467B2 /* HTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTP.swift; sourceTree = "<group>"; };
 		57D1358125F9F8E5003467B2 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -123,8 +133,10 @@
 			isa = PBXGroup;
 			children = (
 				3967935426D7272100DC2D2D /* ListCommand.swift */,
-				3967935226D726CE00DC2D2D /* ListOptions.swift */,
-				5744141625F8659D00DE5540 /* List.swift */,
+				39F6D33C2844754C003C2F25 /* ListFirmwareCommand.swift */,
+				39F6D34028447EF4003C2F25 /* ListFirmwareOptions.swift */,
+				5744141625F8659D00DE5540 /* ListInstallerCommand.swift */,
+				3967935226D726CE00DC2D2D /* ListInstallerOptions.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -142,8 +154,10 @@
 			isa = PBXGroup;
 			children = (
 				3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */,
-				3967936026D74C2400DC2D2D /* DownloadOptions.swift */,
-				57550FE525FF3D49006C29EE /* Download.swift */,
+				39F6D33E28447A3C003C2F25 /* DownloadFirmwareCommand.swift */,
+				39F6D3422844833E003C2F25 /* DownloadFirmwareOptions.swift */,
+				57550FE525FF3D49006C29EE /* DownloadInstallerCommand.swift */,
+				3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */,
 			);
 			path = Download;
 			sourceTree = "<group>";
@@ -197,10 +211,11 @@
 				570D5090260034E10066E4C9 /* Catalog.swift */,
 				390B719A281BA31100875374 /* Chunklist.swift */,
 				390B719C281BA61E00875374 /* Chunk.swift */,
+				39F6D3382843916D003C2F25 /* DownloadOutputType.swift */,
 				3967935B26D7304500DC2D2D /* Firmware.swift */,
 				3967935926D7293C00DC2D2D /* Kind.swift */,
+				393C236E26DF68BF004755BF /* ListOutputType.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
-				393C236E26DF68BF004755BF /* OutputType.swift */,
 				57D1358125F9F8E5003467B2 /* Package.swift */,
 				5744141E25F8675000DE5540 /* Product.swift */,
 			);
@@ -333,30 +348,35 @@
 				390B71A5281BB38500875374 /* Array+Extension.swift in Sources */,
 				5744140025F85EF300DE5540 /* main.swift in Sources */,
 				390B7199281B92AA00875374 /* Validator.swift in Sources */,
-				5744141725F8659D00DE5540 /* List.swift in Sources */,
+				5744141725F8659D00DE5540 /* ListInstallerCommand.swift in Sources */,
 				3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */,
 				57D1358225F9F8E5003467B2 /* Package.swift in Sources */,
 				57D1359725FB1B97003467B2 /* PrettyPrint.swift in Sources */,
-				3967935326D726CE00DC2D2D /* ListOptions.swift in Sources */,
+				3967935326D726CE00DC2D2D /* ListInstallerOptions.swift in Sources */,
 				5744141225F8607800DE5540 /* String+Extension.swift in Sources */,
 				390B719B281BA31100875374 /* Chunklist.swift in Sources */,
 				5744140925F8603300DE5540 /* Mist.swift in Sources */,
 				57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */,
-				57550FE625FF3D49006C29EE /* Download.swift in Sources */,
+				57550FE625FF3D49006C29EE /* DownloadInstallerCommand.swift in Sources */,
 				57D1357B25F9F716003467B2 /* HTTP.swift in Sources */,
 				390B71A3281BAF0100875374 /* UInt8+Extension.swift in Sources */,
 				3967935526D7272100DC2D2D /* ListCommand.swift in Sources */,
 				390B719D281BA61E00875374 /* Chunk.swift in Sources */,
 				570D5091260034E10066E4C9 /* Catalog.swift in Sources */,
-				3967936126D74C2400DC2D2D /* DownloadOptions.swift in Sources */,
+				3967936126D74C2400DC2D2D /* DownloadInstallerOptions.swift in Sources */,
 				3967935C26D7304500DC2D2D /* Firmware.swift in Sources */,
-				393C236F26DF68BF004755BF /* OutputType.swift in Sources */,
+				393C236F26DF68BF004755BF /* ListOutputType.swift in Sources */,
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
 				3967935A26D7293C00DC2D2D /* Kind.swift in Sources */,
+				39F6D3432844833E003C2F25 /* DownloadFirmwareOptions.swift in Sources */,
+				39F6D33D2844754C003C2F25 /* ListFirmwareCommand.swift in Sources */,
 				3967935826D7281400DC2D2D /* VersionCommand.swift in Sources */,
 				390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */,
+				39F6D34128447EF4003C2F25 /* ListFirmwareOptions.swift in Sources */,
 				57D1359A25FE1364003467B2 /* Shell.swift in Sources */,
 				393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */,
+				39F6D3392843916D003C2F25 /* DownloadOutputType.swift in Sources */,
+				39F6D33F28447A3C003C2F25 /* DownloadFirmwareCommand.swift in Sources */,
 				3967936426D7757800DC2D2D /* Version.swift in Sources */,
 				393C237126DF84E0004755BF /* Sequence+Extension.swift in Sources */,
 				390B71A1281BAD7F00875374 /* UInt32+Extension.swift in Sources */,
