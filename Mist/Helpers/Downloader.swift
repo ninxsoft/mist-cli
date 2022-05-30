@@ -24,14 +24,14 @@ class Downloader: NSObject {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware to be downloaded.
-    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options:  Download options for macOS Firmwares.
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to download.
-    func download(_ firmware: Firmware, options: DownloadOptions) throws {
+    func download(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
 
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
-        temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
+        temporaryURL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let source: URL = URL(string: firmware.url) else {
             throw MistError.invalidURL(url: firmware.url)
@@ -56,14 +56,14 @@ class Downloader: NSObject {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer fails to download.
-    func download(_ product: Product, options: DownloadOptions) throws {
+    func download(_ product: Product, options: DownloadInstallerOptions) throws {
 
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
-        temporaryURL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
         guard let temporaryURL: URL = temporaryURL else {

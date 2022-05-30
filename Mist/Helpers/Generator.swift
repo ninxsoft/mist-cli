@@ -17,10 +17,10 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options:  Download options for macOS Firmwares.
     ///
     /// - Throws: A `MistError` if the macOS Firmware options fail to generate.
-    static func generate(_ firmware: Firmware, options: DownloadOptions) throws {
+    static func generate(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
         try generateFirmware(firmware: firmware, options: options)
     }
 
@@ -28,20 +28,20 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - firmware: The selected macOS Firmware that was downloaded.
-    ///   - options:  Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options:  Download options for macOS Firmwares.
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
-    private static func generateFirmware(firmware: Firmware, options: DownloadOptions) throws {
+    private static func generateFirmware(firmware: Firmware, options: DownloadFirmwareOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("FIRMWARE") : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: firmware))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let firmwareURL: URL = URL(string: firmware.url) else {
             throw MistError.invalidURL(url: firmware.url)
         }
 
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
-        let destinationURL: URL = URL(fileURLWithPath: options.firmwarePath(for: firmware))
+        let destinationURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.firmwarePath(for: firmware, options: options))
 
         !options.quiet ? PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...") : Mist.noop()
 
@@ -78,24 +78,24 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer options fail to generate.
-    static func generate(_ product: Product, options: DownloadOptions) throws {
+    static func generate(_ product: Product, options: DownloadInstallerOptions) throws {
 
-        if options.application {
+        if options.outputType.contains(.application) {
             try generateApplication(product: product, options: options)
         }
 
-        if options.image {
+        if options.outputType.contains(.image) {
             try generateImage(product: product, options: options)
         }
 
-        if options.iso {
+        if options.outputType.contains(.iso) {
             try generateISO(product: product, options: options)
         }
 
-        if options.package {
+        if options.outputType.contains(.package) {
             try generatePackage(product: product, options: options)
         }
     }
@@ -104,13 +104,13 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
-    private static func generateApplication(product: Product, options: DownloadOptions) throws {
+    private static func generateApplication(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("APPLICATION") : Mist.noop()
-        let destinationURL: URL = URL(fileURLWithPath: options.applicationPath(for: product))
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.applicationPath(for: product, options: options))
 
         if !options.force {
 
@@ -132,15 +132,15 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
-    private static func generateImage(product: Product, options: DownloadOptions) throws {
+    private static func generateImage(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("DISK IMAGE") : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(product.name).app")
-        let destinationURL: URL = URL(fileURLWithPath: options.imagePath(for: product))
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.imagePath(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
@@ -195,17 +195,17 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
-    private static func generateISO(product: Product, options: DownloadOptions) throws {
+    private static func generateISO(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE") : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).cdr")
         let mountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)")
-        let destinationURL: URL = URL(fileURLWithPath: options.isoPath(for: product))
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
@@ -260,10 +260,10 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
-    private static func generatePackage(product: Product, options: DownloadOptions) throws {
+    private static func generatePackage(product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("PACKAGE") : Mist.noop()
 
@@ -280,20 +280,20 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
-    private static func generateBigPackage(product: Product, options: DownloadOptions) throws {
+    private static func generateBigPackage(product: Product, options: DownloadInstallerOptions) throws {
 
-        let identifier: String = options.packageIdentifier(for: product)
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
-        let scriptsURL: URL = URL(fileURLWithPath: options.temporaryScriptsDirectory(for: product))
+        let scriptsURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryScriptsDirectory(for: product, options: options))
         let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
         let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, zipURL.path]
         let splitArguments: [String] = ["split", "-b", "8191m", zipURL.path, "\(product.zipName)."]
         let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
-        let destinationURL: URL = URL(fileURLWithPath: options.packagePath(for: product))
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: product, options: options))
         let version: String = "\(product.version)-\(product.build)"
         var arguments: [String] = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", scriptsURL.path, "--root", temporaryURL.path, "--version", version]
 
@@ -371,13 +371,13 @@ struct Generator {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
-    private static func generateSmallPackage(product: Product, options: DownloadOptions) throws {
+    private static func generateSmallPackage(product: Product, options: DownloadInstallerOptions) throws {
 
-        let identifier: String = options.packageIdentifier(for: product)
-        let destinationURL: URL = URL(fileURLWithPath: options.packagePath(for: product))
+        let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: product, options: options))
         let version: String = "\(product.version)-\(product.build)"
         var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 

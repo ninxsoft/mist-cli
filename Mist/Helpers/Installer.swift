@@ -14,16 +14,16 @@ struct Installer {
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options determining kind (ie. **Firmware** or **Installer**) as well as download type, output path etc.
+    ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the downloaded macOS Installer fails to install.
-    static func install(_ product: Product, options: DownloadOptions) throws {
+    static func install(_ product: Product, options: DownloadInstallerOptions) throws {
 
         guard let url: URL = URL(string: product.distribution) else {
             throw MistError.invalidURL(url: product.distribution)
         }
 
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory(for: product))
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
         !options.quiet ? PrettyPrint.printHeader("INSTALL") : Mist.noop()
