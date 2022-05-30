@@ -20,6 +20,6 @@ jobs:
       - name: Print mist version
         run: mist version
       - name: Print mist list for Firmwares
-        run: mist list --kind "firmware"
+        run: mist list firmware
       - name: Print mist list for Installers
-        run: mist list --kind "installer"
+        run: mist list installer
