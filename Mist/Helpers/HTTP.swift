@@ -42,6 +42,8 @@ struct HTTP {
                 return []
             }
 
+            let supportedBuilds: [String] = Firmware.supportedBuilds()
+
             for (identifier, device) in devices {
 
                 guard identifier.contains("Mac"),
@@ -50,7 +52,8 @@ struct HTTP {
                     continue
                 }
 
-                for firmwareDictionary in firmwaresArray {
+                for var firmwareDictionary in firmwaresArray {
+                    firmwareDictionary["compatible"] = supportedBuilds.contains(firmwareDictionary["buildid"] as? String ?? "")
                     let firmwareData: Data = try JSONSerialization.data(withJSONObject: firmwareDictionary, options: .prettyPrinted)
                     let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
 

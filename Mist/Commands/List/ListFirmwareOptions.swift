@@ -39,6 +39,11 @@ struct ListFirmwareOptions: ParsableArguments {
     """)
     var includeBetas: Bool = false
 
+    @Flag(name: .long, help: """
+    Only include macOS Firmwares that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
+
     @Option(name: [.customShort("e"), .customLong("export")], help: """
     Specify the path to export the list to one of the following formats:
     * /path/to/export.csv (CSV file)

@@ -17,9 +17,11 @@ struct Firmware: Decodable {
         case url = "url"
         case date = "releasedate"
         case signed = "signed"
+        case compatible = "compatible"
     }
 
     static let firmwaresURL: String = "https://api.ipsw.me/v3/firmwares.json/condensed"
+    static let deviceURLTemplate: String = "https://api.ipsw.me/v4/device/MODELIDENTIFIER?type=ipsw"
 
     var identifier: String {
         "\(String.identifier).\(version)-\(build)"
@@ -40,6 +42,7 @@ struct Firmware: Decodable {
     let size: Int64
     let url: String
     let date: String
+    let compatible: Bool
     var dateDescription: String {
         String(date.prefix(10))
     }
@@ -57,7 +60,8 @@ struct Firmware: Decodable {
             "version": version,
             "build": build,
             "size": size,
-            "date": dateDescription
+            "date": dateDescription,
+            "compatible": compatible
         ]
     }
     var exportDictionary: [String: Any] {
@@ -68,9 +72,37 @@ struct Firmware: Decodable {
             "size": size,
             "url": url,
             "date": date,
+            "compatible": compatible,
             "signed": signed,
             "beta": isBeta
         ]
+    }
+
+    /// Perform a lookup and retrieve a list of supported Firmware builds for this Mac.
+    ///
+    /// - Returns: An array of Firmware build strings.
+    static func supportedBuilds() -> [String] {
+
+        guard let architecture: String = Hardware.architecture,
+            architecture.contains("arm64"),
+            let modelIdentifier: String = Hardware.modelIdentifier,
+            let url: URL = URL(string: Firmware.deviceURLTemplate.replacingOccurrences(of: "MODELIDENTIFIER", with: modelIdentifier)) else {
+            return []
+        }
+
+        do {
+            let string: String = try String(contentsOf: url)
+
+            guard let data: Data = string.data(using: .utf8),
+                let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
+                let array: [[String: Any]] = dictionary["firmwares"] as? [[String: Any]] else {
+                return []
+            }
+
+            return array.compactMap { $0["buildid"] as? String }
+        } catch {
+            return []
+        }
     }
 }
 

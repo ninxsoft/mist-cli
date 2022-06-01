@@ -56,7 +56,10 @@ struct ListInstallerCommand: ParsableCommand {
 
         try export(products.map { $0.dictionary }, options: options)
         !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending) : Mist.noop()
-        try list(products.map { $0.dictionary }, options: options)
+
+        if !products.isEmpty {
+            try list(products.map { $0.dictionary }, options: options)
+        }
     }
 
     /// Perform a series of validations on input data, throwing an error if the input data is invalid.
