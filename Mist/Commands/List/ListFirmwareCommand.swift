@@ -67,9 +67,7 @@ struct ListFirmwareCommand: ParsableCommand {
             !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...") : Mist.noop()
         }
 
-        if options.latest {
-            !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...") : Mist.noop()
-        }
+        !options.quiet ? PrettyPrint.print("Search only for latest (first) result will be '\(options.latest)'...") : Mist.noop()
 
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
 

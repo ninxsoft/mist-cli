@@ -33,7 +33,7 @@ struct DownloadFirmwareOptions: ParsableArguments {
     var searchString: String
 
     @Flag(name: [.customShort("b"), .long], help: """
-    Include beta macOS Firmwares / Installers in search results.
+    Include beta macOS Firmwares in search results.
     """)
     var includeBetas: Bool = false
 
