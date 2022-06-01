@@ -31,14 +31,10 @@ struct ListFirmwareCommand: ParsableCommand {
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...") : Mist.noop()
-        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, quiet: options.quiet)
+        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             firmwares = HTTP.firmwares(from: firmwares, searchString: searchString)
-        }
-
-        if options.compatible {
-            firmwares = firmwares.filter { $0.compatible }
         }
 
         if options.latest {

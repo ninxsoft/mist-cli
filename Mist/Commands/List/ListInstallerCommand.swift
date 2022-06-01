@@ -38,14 +38,10 @@ struct ListInstallerCommand: ParsableCommand {
             catalogURLs = [catalogURL]
         }
 
-        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, quiet: options.quiet)
+        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             products = HTTP.products(from: products, searchString: searchString)
-        }
-
-        if options.compatible {
-            products = products.filter { $0.compatible }
         }
 
         if options.latest {

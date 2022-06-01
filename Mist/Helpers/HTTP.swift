@@ -14,10 +14,11 @@ struct HTTP {
     ///
     /// - Parameters:
     ///   - includeBetas: Set to `true` to prevent skipping of macOS Firmwares in search results.
+    ///   - compatible:   Set to `true` to filter down compatible macOS Firmwares in search results.
     ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Firmwares.
-    static func retrieveFirmwares(includeBetas: Bool, quiet: Bool = false) -> [Firmware] {
+    static func retrieveFirmwares(includeBetas: Bool, compatible: Bool, quiet: Bool = false) -> [Firmware] {
         var firmwares: [Firmware] = []
 
         let firmwaresURLString: String = Firmware.firmwaresURL
@@ -70,6 +71,10 @@ struct HTTP {
             firmwares = firmwares.filter { !$0.isBeta }
         }
 
+        if compatible {
+            firmwares = firmwares.filter { $0.compatible }
+        }
+
         firmwares.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
         return firmwares
     }
@@ -109,10 +114,11 @@ struct HTTP {
     /// - Parameters:
     ///   - catalogURLs:  The Apple Software Update catalog URLs to base the search queries against.
     ///   - includeBetas: Set to `true` to prevent skipping of macOS Installers in search results.
+    ///   - compatible:   Set to `true` to filter down compatible macOS Installers in search results.
     ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, quiet: Bool = false) -> [Product] {
+    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, quiet: Bool = false) -> [Product] {
         var products: [Product] = []
 
         for catalogURL in catalogURLs {
@@ -146,6 +152,10 @@ struct HTTP {
 
         if !includeBetas {
             products = products.filter { !$0.isBeta }
+        }
+
+        if compatible {
+            products = products.filter { $0.compatible }
         }
 
         products.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }

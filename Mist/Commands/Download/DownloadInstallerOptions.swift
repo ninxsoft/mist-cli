@@ -47,6 +47,11 @@ struct DownloadInstallerOptions: ParsableArguments {
     """)
     var includeBetas: Bool = false
 
+    @Flag(name: .long, help: """
+    Only include macOS Installers that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
+
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.
     """)

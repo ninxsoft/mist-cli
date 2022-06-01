@@ -37,6 +37,11 @@ struct DownloadFirmwareOptions: ParsableArguments {
     """)
     var includeBetas: Bool = false
 
+    @Flag(name: .long, help: """
+    Only include macOS Firmwares that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
+
     @Flag(name: .shortAndLong, help: """
     Force overwriting existing macOS Downloads matching the provided filename(s).
     Note: Downloads will fail if an existing file is found and this flag is not provided.
