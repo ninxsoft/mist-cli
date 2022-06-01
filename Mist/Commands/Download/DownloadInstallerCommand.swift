@@ -367,7 +367,7 @@ struct DownloadInstallerCommand: ParsableCommand {
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: .ending) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
         try FileManager.default.removeItem(at: product.installerURL)
     }
 
@@ -383,6 +383,8 @@ struct DownloadInstallerCommand: ParsableCommand {
         guard let path: String = options.exportPath else {
             return
         }
+
+        !options.quiet ? PrettyPrint.printHeader("EXPORT RESULTS") : Mist.noop()
 
         let url: URL = URL(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
@@ -400,13 +402,13 @@ struct DownloadInstallerCommand: ParsableCommand {
         switch url.pathExtension {
         case "json":
             try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'", prefix: .ending) : Mist.noop()
         case "plist":
             try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'", prefix: .ending) : Mist.noop()
         case "yaml":
             try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'", prefix: .ending) : Mist.noop()
         default:
             break
         }
@@ -414,7 +416,7 @@ struct DownloadInstallerCommand: ParsableCommand {
 
     private static func exportDictionary(for product: Product, options: DownloadInstallerOptions) -> [String: Any] {
         [
-            "outputTypes": options.outputType,
+            "outputTypes": options.outputType.map { $0.description },
             "includeBetas": options.includeBetas,
             "catalogURL": options.catalogURL ?? "",
             "force": options.force,
