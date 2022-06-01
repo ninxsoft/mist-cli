@@ -42,13 +42,7 @@ extension Dictionary where Key == String {
 
     func jsonString() throws -> String {
 
-        var data: Data
-
-        if #available(macOS 10.13, *) {
-            data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
-        } else {
-            data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
-        }
+        let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
 
         guard let string: String = String(data: data, encoding: .utf8) else {
             throw MistError.invalidData

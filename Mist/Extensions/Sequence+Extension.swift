@@ -213,7 +213,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     }
 
     func jsonString() throws -> String {
-        let data: Data = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+        let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
 
         guard let string: String = String(data: data, encoding: .utf8) else {
             throw MistError.invalidData
