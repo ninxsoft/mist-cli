@@ -187,7 +187,7 @@ struct HTTP {
 
                 let boardIDs: [String] = boardIDsFromDistribution(string)
                 let deviceIDs: [String] = deviceIDsFromDistribution(string)
-                let unsupportedModels: [String] = unsupportedModelsFromDistribution(string)
+                let unsupportedModelIdentifiers: [String] = unsupportedModelIdentifiersFromDistribution(string)
 
                 value["Identifier"] = key
                 value["Name"] = name
@@ -195,7 +195,7 @@ struct HTTP {
                 value["Build"] = build
                 value["BoardIDs"] = boardIDs
                 value["DeviceIDs"] = deviceIDs
-                value["UnsupportedModels"] = unsupportedModels
+                value["UnsupportedModelIdentifiers"] = unsupportedModelIdentifiers
                 value["PostDate"] = dateFormatter.string(from: date)
                 value["DistributionURL"] = distributionURL
 
@@ -279,6 +279,7 @@ struct HTTP {
             .replacingOccurrences(of: "'", with: "")
             .replacingOccurrences(of: " ", with: "")
             .components(separatedBy: ",")
+            .sorted()
     }
 
     /// Returns the macOS Installer **Device ID** values from the provided distribution file string.
@@ -299,15 +300,16 @@ struct HTTP {
             .replacingOccurrences(of: " ", with: "")
             .uppercased()
             .components(separatedBy: ",")
+            .sorted()
     }
 
-    /// Returns the macOS Installer **Unsupported Model** values from the provided distribution file string.
+    /// Returns the macOS Installer **Unsupported Model Identifier** values from the provided distribution file string.
     ///
     /// - Parameters:
     ///   - string: The distribution string.
     ///
-    /// - Returns: An array of **Unsupported Model** strings.
-    private static func unsupportedModelsFromDistribution(_ string: String) -> [String] {
+    /// - Returns: An array of **Unsupported Model Identifier** strings.
+    private static func unsupportedModelIdentifiersFromDistribution(_ string: String) -> [String] {
 
         guard string.contains("nonSupportedModels") else {
             return []
@@ -315,9 +317,10 @@ struct HTTP {
 
         return string.replacingOccurrences(of: "^[\\s\\S]*nonSupportedModels = \\[", with: "", options: .regularExpression)
             .replacingOccurrences(of: ",?\\];[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "','", with: "'|'")
             .replacingOccurrences(of: "'", with: "")
-            .replacingOccurrences(of: " ", with: "")
-            .components(separatedBy: ",")
+            .components(separatedBy: "|")
+            .sorted()
     }
 
     /// Retrieves the first macOS Installer download match for the provided search string.
