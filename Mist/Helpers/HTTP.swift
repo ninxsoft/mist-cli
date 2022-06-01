@@ -161,40 +161,41 @@ struct HTTP {
         var products: [Product] = []
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        var format: PropertyListSerialization.PropertyListFormat = .xml
 
         for (key, value) in dictionary {
 
             guard var value: [String: Any] = value as? [String: Any],
                 let date: Date = value["PostDate"] as? Date,
                 let extendedMetaInfo: [String: Any] = value["ExtendedMetaInfo"] as? [String: Any],
-                extendedMetaInfo["InstallAssistantPackageIdentifiers"] as? [String: Any] != nil else {
-                continue
-            }
-
-            guard let distributions: [String: Any] = value["Distributions"] as? [String: Any],
+                extendedMetaInfo["InstallAssistantPackageIdentifiers"] as? [String: Any] != nil,
+                let distributions: [String: Any] = value["Distributions"] as? [String: Any],
                 let distributionURL: String = distributions["English"] as? String,
                 let url: URL = URL(string: distributionURL) else {
-                !quiet ? PrettyPrint.print("No English distribution found, skipping...") : Mist.noop()
                 continue
             }
 
             do {
-                let string: String = try productPropertyList(from: url)
+                let string: String = try String(contentsOf: url, encoding: .utf8)
 
-                guard let distributionData: Data = string.data(using: .utf8),
-                    let distribution: [String: Any] = try PropertyListSerialization.propertyList(from: distributionData, options: [.mutableContainers], format: &format) as? [String: Any],
-                    let name: String = distribution["NAME"] as? String,
-                    let version: String = distribution["VERSION"] as? String,
-                    let build: String = distribution["BUILD"] as? String else {
+                guard let name: String = nameFromDistribution(string),
+                    let version: String = versionFromDistribution(string),
+                    let build: String = buildFromDistribution(string),
+                    !name.isEmpty && !version.isEmpty && !build.isEmpty else {
                     !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...") : Mist.noop()
                     continue
                 }
+
+                let boardIDs: [String] = boardIDsFromDistribution(string)
+                let deviceIDs: [String] = deviceIDsFromDistribution(string)
+                let unsupportedModels: [String] = unsupportedModelsFromDistribution(string)
 
                 value["Identifier"] = key
                 value["Name"] = name
                 value["Version"] = version
                 value["Build"] = build
+                value["BoardIDs"] = boardIDs
+                value["DeviceIDs"] = deviceIDs
+                value["UnsupportedModels"] = unsupportedModels
                 value["PostDate"] = dateFormatter.string(from: date)
                 value["DistributionURL"] = distributionURL
 
@@ -212,27 +213,111 @@ struct HTTP {
         return products
     }
 
-    /// Converts the contents of a macOS Installer distribution URL into a workable Property List format.
+    /// Returns the macOS Installer **Name** value from the provided distribution file string.
     ///
     /// - Parameters:
-    ///   - url: The macOS Installer distribution URL.
+    ///   - string: The distribution string.
     ///
-    /// - Throws: An `Error` if the contents of the macOS Installer distribution URL are invalid.
-    ///
-    /// - Returns: A macOS Installer Property List.
-    private static func productPropertyList(from url: URL) throws -> String {
-        let distributionString: String = try String(contentsOf: url, encoding: .utf8)
+    /// - Returns: The macOS Installer **Name** string if present, otherwise `nil`.
+    private static func nameFromDistribution(_ string: String) -> String? {
 
-        let name: String = distributionString.replacingOccurrences(of: "^[\\s\\S]*suDisabledGroupID=\"", with: "", options: .regularExpression)
+        guard string.contains("suDisabledGroupID") else {
+            return nil
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*suDisabledGroupID=\"", with: "", options: .regularExpression)
             .replacingOccurrences(of: "\"[\\s\\S]*$", with: "", options: .regularExpression)
             .replacingOccurrences(of: "Install ", with: "")
+    }
 
-        let string: String = distributionString.replacingOccurrences(of: "^[\\s\\S]*<auxinfo>\\s*", with: "", options: .regularExpression)
-            .replacingOccurrences(of: "\\s*</auxinfo>[\\s\\S]*$", with: "", options: .regularExpression)
-            .replacingOccurrences(of: "</dict>", with: "<key>NAME</key><string>\(name)</string></dict>")
-            .wrappedInPropertyList()
+    /// Returns the macOS Installer **Version** value from the provided distribution file string.
+    ///
+    /// - Parameters:
+    ///   - string: The distribution string.
+    ///
+    /// - Returns: The macOS Installer **Version** string if present, otherwise `nil`.
+    private static func versionFromDistribution(_ string: String) -> String? {
 
-        return string
+        guard string.contains("<key>VERSION</key>") else {
+            return nil
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*<key>VERSION<\\/key>\\s*<string>", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "<\\/string>[\\s\\S]*$", with: "", options: .regularExpression)
+    }
+
+    /// Returns the macOS Installer **Build** value from the provided distribution file string.
+    ///
+    /// - Parameters:
+    ///   - string: The distribution string.
+    ///
+    /// - Returns: The macOS Installer **Build** string if present, otherwise `nil`.
+    private static func buildFromDistribution(_ string: String) -> String? {
+
+        guard string.contains("<key>BUILD</key>") else {
+            return nil
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*<key>BUILD<\\/key>\\s*<string>", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "<\\/string>[\\s\\S]*$", with: "", options: .regularExpression)
+    }
+
+    /// Returns the macOS Installer **Board ID** values from the provided distribution file string.
+    ///
+    /// - Parameters:
+    ///   - string: The distribution string.
+    ///
+    /// - Returns: An array of **Board ID** strings.
+    private static func boardIDsFromDistribution(_ string: String) -> [String] {
+
+        guard string.contains("supportedBoardIDs") || string.contains("boardIds") else {
+            return []
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*(supportedBoardIDs|boardIds) = \\[", with: "", options: .regularExpression)
+            .replacingOccurrences(of: ",?\\];[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: " ", with: "")
+            .components(separatedBy: ",")
+    }
+
+    /// Returns the macOS Installer **Device ID** values from the provided distribution file string.
+    ///
+    /// - Parameters:
+    ///   - string: The distribution string.
+    ///
+    /// - Returns: An array of **Device ID** strings.
+    private static func deviceIDsFromDistribution(_ string: String) -> [String] {
+
+        guard string.contains("supportedDeviceIDs") else {
+            return []
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*supportedDeviceIDs = \\[", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\\];[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: " ", with: "")
+            .uppercased()
+            .components(separatedBy: ",")
+    }
+
+    /// Returns the macOS Installer **Unsupported Model** values from the provided distribution file string.
+    ///
+    /// - Parameters:
+    ///   - string: The distribution string.
+    ///
+    /// - Returns: An array of **Unsupported Model** strings.
+    private static func unsupportedModelsFromDistribution(_ string: String) -> [String] {
+
+        guard string.contains("nonSupportedModels") else {
+            return []
+        }
+
+        return string.replacingOccurrences(of: "^[\\s\\S]*nonSupportedModels = \\[", with: "", options: .regularExpression)
+            .replacingOccurrences(of: ",?\\];[\\s\\S]*$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: " ", with: "")
+            .components(separatedBy: ",")
     }
 
     /// Retrieves the first macOS Installer download match for the provided search string.

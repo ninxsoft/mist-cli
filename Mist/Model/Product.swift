@@ -16,6 +16,9 @@ struct Product: Decodable {
         case date = "PostDate"
         case distribution = "DistributionURL"
         case packages = "Packages"
+        case boardIDs = "BoardIDs"
+        case deviceIDs = "DeviceIDs"
+        case unsupportedModels = "UnsupportedModels"
     }
 
     let identifier: String
@@ -25,6 +28,33 @@ struct Product: Decodable {
     let date: String
     let distribution: String
     let packages: [Package]
+    let boardIDs: [String]
+    let deviceIDs: [String]
+    let unsupportedModels: [String]
+    var compatible: Bool {
+        // Board ID (Intel)
+        if !boardIDs.isEmpty,
+            let boardID: String = Hardware.boardID,
+            !boardIDs.contains(boardID) {
+            return false
+        }
+
+        // Device ID (Apple Silicon or Intel T2)
+        if !deviceIDs.isEmpty,
+            let deviceID: String = Hardware.deviceID,
+            !deviceIDs.contains(deviceID) {
+            return false
+        }
+
+        // Model Identifier (Apple Silicon or Intel)
+        if !unsupportedModels.isEmpty,
+            let modelIdentifier: String = Hardware.modelIdentifier,
+            unsupportedModels.contains(modelIdentifier) {
+            return false
+        }
+
+        return true
+    }
     var allDownloads: [Package] {
         [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)] + packages.sorted { $0.filename < $1.filename }
     }
@@ -41,7 +71,8 @@ struct Product: Decodable {
             "version": version,
             "build": build,
             "size": size,
-            "date": date
+            "date": date,
+            "compatible": compatible
         ]
     }
     var exportDictionary: [String: Any] {
@@ -52,6 +83,7 @@ struct Product: Decodable {
             "build": build,
             "size": size,
             "date": date,
+            "compatible": compatible,
             "distribution": distribution,
             "packages": packages.map { $0.dictionary },
             "beta": isBeta
