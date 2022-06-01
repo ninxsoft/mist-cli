@@ -40,7 +40,7 @@ struct DownloadInstallerCommand: ParsableCommand {
             catalogURLs = [catalogURL]
         }
 
-        let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas)
+        let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible)
 
         guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
             !options.quiet ? PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending) : Mist.noop()
@@ -85,6 +85,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Cache downloads will be '\(options.cacheDownloads)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()

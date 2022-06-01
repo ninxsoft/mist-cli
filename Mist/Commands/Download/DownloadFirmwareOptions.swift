@@ -33,9 +33,14 @@ struct DownloadFirmwareOptions: ParsableArguments {
     var searchString: String
 
     @Flag(name: [.customShort("b"), .long], help: """
-    Include beta macOS Firmwares / Installers in search results.
+    Include beta macOS Firmwares in search results.
     """)
     var includeBetas: Bool = false
+
+    @Flag(name: .long, help: """
+    Only include macOS Firmwares that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
 
     @Flag(name: .shortAndLong, help: """
     Force overwriting existing macOS Downloads matching the provided filename(s).

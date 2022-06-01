@@ -38,7 +38,7 @@ struct ListInstallerCommand: ParsableCommand {
             catalogURLs = [catalogURL]
         }
 
-        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, quiet: options.quiet)
+        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             products = HTTP.products(from: products, searchString: searchString)
@@ -52,7 +52,10 @@ struct ListInstallerCommand: ParsableCommand {
 
         try export(products.map { $0.dictionary }, options: options)
         !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending) : Mist.noop()
-        try list(products.map { $0.dictionary }, options: options)
+
+        if !products.isEmpty {
+            try list(products.map { $0.dictionary }, options: options)
+        }
     }
 
     /// Perform a series of validations on input data, throwing an error if the input data is invalid.
@@ -74,11 +77,11 @@ struct ListInstallerCommand: ParsableCommand {
             !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...") : Mist.noop()
         }
 
-        if options.latest {
-            !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...") : Mist.noop()
-        }
+        !options.quiet ? PrettyPrint.print("Search only for latest (first) result will be '\(options.latest)'...") : Mist.noop()
 
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+
+        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...") : Mist.noop()
 
         if let path: String = options.exportPath {
 

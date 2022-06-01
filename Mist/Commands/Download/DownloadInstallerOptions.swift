@@ -43,9 +43,14 @@ struct DownloadInstallerOptions: ParsableArguments {
     var outputType: [DownloadOutputType]
 
     @Flag(name: [.customShort("b"), .long], help: """
-    Include beta macOS Firmwares / Installers in search results.
+    Include beta macOS Installers in search results.
     """)
     var includeBetas: Bool = false
+
+    @Flag(name: .long, help: """
+    Only include macOS Installers that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
 
     @Option(name: .shortAndLong, help: """
     Override the default Software Update Catalog URLs.

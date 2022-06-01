@@ -35,9 +35,14 @@ struct ListFirmwareOptions: ParsableArguments {
     var latest: Bool = false
 
     @Flag(name: [.customShort("b"), .long], help: """
-    Include beta macOS Firmwares / Installers in search results.
+    Include beta macOS Firmwares in search results.
     """)
     var includeBetas: Bool = false
+
+    @Flag(name: .long, help: """
+    Only include macOS Firmwares that are compatible with this Mac in search results.
+    """)
+    var compatible: Bool = false
 
     @Option(name: [.customShort("e"), .customLong("export")], help: """
     Specify the path to export the list to one of the following formats:

@@ -31,7 +31,7 @@ struct ListFirmwareCommand: ParsableCommand {
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...") : Mist.noop()
-        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, quiet: options.quiet)
+        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             firmwares = HTTP.firmwares(from: firmwares, searchString: searchString)
@@ -45,7 +45,10 @@ struct ListFirmwareCommand: ParsableCommand {
 
         try export(firmwares.map { $0.dictionary }, options: options)
         !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", prefix: .ending) : Mist.noop()
-        try list(firmwares.map { $0.dictionary }, options: options)
+
+        if !firmwares.isEmpty {
+            try list(firmwares.map { $0.dictionary }, options: options)
+        }
     }
 
     /// Perform a series of validations on input data, throwing an error if the input data is invalid.
@@ -67,11 +70,11 @@ struct ListFirmwareCommand: ParsableCommand {
             !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...") : Mist.noop()
         }
 
-        if options.latest {
-            !options.quiet ? PrettyPrint.print("Searching only for latest (first) result...") : Mist.noop()
-        }
+        !options.quiet ? PrettyPrint.print("Search only for latest (first) result will be '\(options.latest)'...") : Mist.noop()
 
         !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+
+        !options.quiet ? PrettyPrint.print("Only include compatible firmwares will be '\(options.compatible)'...") : Mist.noop()
 
         if let path: String = options.exportPath {
 
