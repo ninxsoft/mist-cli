@@ -66,7 +66,7 @@ struct ListInstallerOptions: ParsableArguments {
     * csv (Comma Separated Values)
     * json (JSON - pretty printed)
     * plist (Property List)
-    * yaml (YAML file)\n
+    * yaml (YAML file)
     """)
     var outputType: ListOutputType = .ascii
 
