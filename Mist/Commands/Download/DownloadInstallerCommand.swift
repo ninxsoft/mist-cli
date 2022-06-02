@@ -381,7 +381,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func export(_ product: Product, options: DownloadInstallerOptions) throws {
 
-        guard let path: String = options.exportPath else {
+        guard let path: String = exportPath(for: product, options: options) else {
             return
         }
 
@@ -431,13 +431,22 @@ struct DownloadInstallerCommand: ParsableCommand {
             "keychain": options.keychain ?? "",
             "outputDirectory": outputDirectory(for: product, options: options),
             "temporaryDirectory": temporaryDirectory(for: product, options: options),
-            "exportPath": options.exportPath ?? "",
+            "exportPath": exportPath(for: product, options: options) ?? "",
             "quiet": options.quiet
         ]
     }
 
     static func applicationPath(for product: Product, options: DownloadInstallerOptions) -> String {
         "\(options.outputDirectory)/\(options.applicationName)".stringWithSubstitutions(using: product)
+    }
+
+    private static func exportPath(for product: Product, options: DownloadInstallerOptions) -> String? {
+
+        guard let path: String = options.exportPath else {
+            return nil
+        }
+
+        return path.stringWithSubstitutions(using: product)
     }
 
     static func imagePath(for product: Product, options: DownloadInstallerOptions) -> String {

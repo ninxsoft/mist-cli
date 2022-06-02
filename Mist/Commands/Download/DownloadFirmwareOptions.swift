@@ -52,7 +52,7 @@ struct DownloadFirmwareOptions: ParsableArguments {
     Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'\n
+    * %BUILD% will be replaced with '21A5304g'
     """)
     var firmwareName: String = .filenameTemplate + ".ipsw"
 
@@ -61,13 +61,13 @@ struct DownloadFirmwareOptions: ParsableArguments {
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
     * %BUILD% will be replaced with '21A5304g'
-    Note: Parent directories will be created automatically.\n
+    Note: Parent directories will be created automatically.
     """)
     var outputDirectory: String = .outputDirectory
 
     @Option(name: .shortAndLong, help: """
     Specify the temporary downloads directory.
-    Note: Parent directories will be created automatically.\n
+    Note: Parent directories will be created automatically.
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
@@ -76,7 +76,12 @@ struct DownloadFirmwareOptions: ParsableArguments {
     * /path/to/export.json (JSON file)
     * /path/to/export.plist (Property List file)
     * /path/to/export.yaml (YAML file)
+    The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5304g'
     Note: The file extension will determine the output file format.
+    Note: Parent directories will be created automatically.
     """)
     var exportPath: String?
 

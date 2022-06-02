@@ -72,7 +72,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Specify the macOS Installer output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'\n
+    * %BUILD% will be replaced with '21A5304g'
     """)
     var applicationName: String = .filenameTemplate + ".app"
 
@@ -80,7 +80,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Specify the macOS Disk Image output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'\n
+    * %BUILD% will be replaced with '21A5304g'
     """)
     var imageName: String = .filenameTemplate + ".dmg"
 
@@ -94,7 +94,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Specify the Bootable macOS Disk Image output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'\n
+    * %BUILD% will be replaced with '21A5304g'
     """)
     var isoName: String = .filenameTemplate + ".iso"
 
@@ -102,7 +102,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Specify the macOS Installer Package output filename. The following variables will be dynamically substituted:
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'\n
+    * %BUILD% will be replaced with '21A5304g'
     """)
     var packageName: String = .filenameTemplate + ".pkg"
 
@@ -132,13 +132,13 @@ struct DownloadInstallerOptions: ParsableArguments {
     * %NAME% will be replaced with 'macOS Monterey'
     * %VERSION% will be replaced with '12.0'
     * %BUILD% will be replaced with '21A5304g'
-    Note: Parent directories will be created automatically.\n
+    Note: Parent directories will be created automatically.
     """)
     var outputDirectory: String = .outputDirectory
 
     @Option(name: .shortAndLong, help: """
     Specify the temporary downloads directory.
-    Note: Parent directories will be created automatically.\n
+    Note: Parent directories will be created automatically.
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
@@ -147,7 +147,12 @@ struct DownloadInstallerOptions: ParsableArguments {
     * /path/to/export.json (JSON file)
     * /path/to/export.plist (Property List file)
     * /path/to/export.yaml (YAML file)
+    The following variables will be dynamically substituted:
+    * %NAME% will be replaced with 'macOS Monterey'
+    * %VERSION% will be replaced with '12.0'
+    * %BUILD% will be replaced with '21A5304g'
     Note: The file extension will determine the output file format.
+    Note: Parent directories will be created automatically.
     """)
     var exportPath: String?
 

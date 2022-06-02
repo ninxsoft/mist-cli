@@ -210,7 +210,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func export(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
 
-        guard let path: String = options.exportPath else {
+        guard let path: String = exportPath(for: firmware, options: options) else {
             return
         }
 
@@ -249,9 +249,18 @@ struct DownloadFirmwareCommand: ParsableCommand {
             "firmwarePath": firmwarePath(for: firmware, options: options),
             "outputDirectory": outputDirectory(for: firmware, options: options),
             "temporaryDirectory": temporaryDirectory(for: firmware, options: options),
-            "exportPath": options.exportPath ?? "",
+            "exportPath": exportPath(for: firmware, options: options) ?? "",
             "quiet": options.quiet
         ]
+    }
+
+    private static func exportPath(for firmware: Firmware, options: DownloadFirmwareOptions) -> String? {
+
+        guard let path: String = options.exportPath else {
+            return nil
+        }
+
+        return path.stringWithSubstitutions(using: firmware)
     }
 
     static func firmwarePath(for firmware: Firmware, options: DownloadFirmwareOptions) -> String {
