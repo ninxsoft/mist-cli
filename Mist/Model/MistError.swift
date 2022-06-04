@@ -23,6 +23,7 @@ enum MistError: Error {
     case missingPackageIdentifier
     case missingPackageSigningIdentity
     case missingOutputDirectory
+    case maximumRetriesReached
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
     case existingFile(path: String)
     case chunklistValidationFailed(_ string: String)
@@ -65,6 +66,8 @@ enum MistError: Error {
             return "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
         case .missingOutputDirectory:
             return "[-o, --output-directory] Output directory is missing or empty."
+        case .maximumRetriesReached:
+            return "Maximum number of retries reached."
         case .notEnoughFreeSpace(let volume, let free, let required):
             return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
         case .existingFile(let path):

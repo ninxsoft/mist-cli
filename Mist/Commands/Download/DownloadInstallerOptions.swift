@@ -156,6 +156,16 @@ struct DownloadInstallerOptions: ParsableArguments {
     """)
     var exportPath: String?
 
+    @Option(name: .long, help: """
+    Number of times to attempt resuming a download before failing.
+    """)
+    var retries: Int = 10
+
+    @Option(name: .long, help: """
+    Number of seconds to wait before attempting to resume a download.
+    """)
+    var retryDelay: Int = 30
+
     @Flag(name: .shortAndLong, help: """
     Suppress verbose output.
     """)
