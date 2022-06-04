@@ -70,7 +70,7 @@ struct Generator {
         try FileManager.default.moveItem(at: temporaryFirmwareURL, to: destinationURL)
 
         let posixPermissions: Int = 0o644
-        PrettyPrint.print("Setting POSIX file permissions to '0\(String(posixPermissions, radix: 0o10))' for '\(destinationURL.path)'...")
+        !options.quiet ? PrettyPrint.print("Setting POSIX file permissions to '0\(String(posixPermissions, radix: 0o10))' for '\(destinationURL.path)'...") : Mist.noop()
         try FileManager.default.setAttributes([.posixPermissions: posixPermissions], ofItemAtPath: destinationURL.path)
     }
 
