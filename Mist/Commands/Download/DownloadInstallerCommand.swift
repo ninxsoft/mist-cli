@@ -364,7 +364,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
-            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 

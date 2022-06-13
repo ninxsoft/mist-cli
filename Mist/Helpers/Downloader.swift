@@ -16,6 +16,7 @@ class Downloader: NSObject {
     private var current: Int64 = 0
     private var total: Int64 = 0
     private var prefixString: String = ""
+    private var urlError: URLError?
     private var mistError: MistError?
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
     private var quiet: Bool = false
@@ -44,6 +45,17 @@ class Downloader: NSObject {
         updateProgress(replacing: false)
         task.resume()
         semaphore.wait()
+        var retries: Int = 0
+
+        while urlError != nil {
+
+            if retries >= options.retries {
+                throw MistError.maximumRetriesReached
+            }
+
+            retries += 1
+            retry(attempt: retries, of: options.retries, with: options.retryDelay, using: session)
+        }
 
         if let mistError: MistError = mistError {
             throw mistError
@@ -78,8 +90,7 @@ class Downloader: NSObject {
 
             sourceURL = source
             let destination: URL = temporaryURL.appendingPathComponent(source.lastPathComponent)
-            let currentIndex: Int = index + 1
-            let currentString: String = "\(currentIndex < 10 && product.allDownloads.count >= 10 ? "0" : "")\(currentIndex)"
+            let currentString: String = "\(index + 1 < 10 && product.allDownloads.count >= 10 ? "0" : "")\(index + 1)"
             prefixString = "[ \(currentString) / \(product.allDownloads.count) ] \(source.lastPathComponent)"
             current = 0
 
@@ -99,6 +110,17 @@ class Downloader: NSObject {
                 let task: URLSessionDownloadTask = session.downloadTask(with: source)
                 task.resume()
                 semaphore.wait()
+                var retries: Int = 0
+
+                while urlError != nil {
+
+                    if retries >= options.retries {
+                        throw MistError.maximumRetriesReached
+                    }
+
+                    retries += 1
+                    retry(attempt: retries, of: options.retries, with: options.retryDelay, using: session)
+                }
 
                 if let mistError: MistError = mistError {
                     throw mistError
@@ -113,6 +135,26 @@ class Downloader: NSObject {
             try Validator.validate(package, at: destination)
             !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", prefix: .continuing, replacing: true) : Mist.noop()
         }
+    }
+
+    private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, using session: URLSession) {
+
+        guard let urlError: URLError = urlError,
+            let data: Data = urlError.downloadTaskResumeData else {
+            mistError = MistError.generalError("Unable to retrieve URL Error data")
+            return
+        }
+
+        self.urlError = nil
+
+        !quiet ? PrettyPrint.print(urlError.localizedDescription, prefixColor: .red) : Mist.noop()
+        !quiet ? PrettyPrint.print("Retrying attempt [ \(retry) / \(maximumRetries) ] in \(delay) seconds...") : Mist.noop()
+        sleep(UInt32(delay))
+
+        let task: URLSessionDownloadTask = session.downloadTask(withResumeData: data)
+        updateProgress(replacing: false)
+        task.resume()
+        semaphore.wait()
     }
 
     private func updateProgress(replacing: Bool = true) {
@@ -167,6 +209,14 @@ extension Downloader: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 
+        if let error: URLError = error as? URLError {
+            urlError = error
+            semaphore.signal()
+            return
+        }
+
+        urlError = nil
+
         if let error: Error = error {
             mistError = MistError.generalError(error.localizedDescription)
             semaphore.signal()
@@ -185,7 +235,7 @@ extension Downloader: URLSessionDownloadDelegate {
             return
         }
 
-        guard response.statusCode == 200 else {
+        guard [200, 206].contains(response.statusCode) else {
             mistError = MistError.generalError("Invalid HTTP status code: \(response.statusCode)")
             semaphore.signal()
             return
