@@ -141,6 +141,8 @@ mist download installer "macOS Monterey" application image iso package \
 
 - Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/Mist/releases).
 - Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist`
+- **Note:** Version **1.8** requires **macOS Catalina 10.15** or later.
+  - If you need to run **mist** on an older operating system, you can still use version **1.7**.
 
 ## Credits / Thank You
 
@@ -178,6 +180,8 @@ mist download installer "macOS Monterey" application image iso package \
   - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.1.2**
   - Bumped [Yams](https://github.com/jpsim/Yams) version to **5.0.1**
   - General code refactoring and print message formatting fixes
+
+  **Note:** Requires macOS Catalina 10.15 or later
 
 - 1.7
 
