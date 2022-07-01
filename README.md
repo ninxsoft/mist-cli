@@ -6,6 +6,8 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
 
 ![Installers](README%20Resources/Installers.png)
 
+## :information_source: Check out [Mist](https://github.com/ninxsoft/Mist) for the companion Mac app!
+
 ## Features
 
 - [x] List all available macOS Firmwares / Installers available for download:
