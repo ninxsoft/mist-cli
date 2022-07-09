@@ -18,7 +18,7 @@ jobs:
       - name: Build Xcode project
         run: swift build --configuration release --arch arm64 --arch x86_64
       - name: Print mist version
-        run: mist version
+        run: mist --version
       - name: Print mist list for Firmwares
         run: mist list firmware
       - name: Print mist list for Installers
