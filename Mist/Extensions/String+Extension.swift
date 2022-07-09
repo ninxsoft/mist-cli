@@ -30,14 +30,15 @@ extension String {
     }
 
     static let appName: String = "mist"
+    static let projectName: String = "mist-cli"
     static let identifier: String = "com.ninxsoft.\(appName)"
     static let abstract: String = "macOS Installer Super Tool."
     static let discussion: String = "Automatically download macOS Firmwares / Installers."
     static let temporaryDirectory: String = "/private/tmp/com.ninxsoft.mist"
     static let outputDirectory: String = "/Users/Shared/Mist"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
-    static let repositoryURL: String = "https://github.com/ninxsoft/\(appName)"
-    static let latestReleaseURL: String = "https://api.github.com/repos/ninxsoft/\(appName)/releases/latest"
+    static let repositoryURL: String = "https://github.com/ninxsoft/\(projectName)"
+    static let latestReleaseURL: String = "https://api.github.com/repos/ninxsoft/\(projectName)/releases/latest"
 
     func color(_ color: Color) -> String {
         color.rawValue + self + Color.reset.rawValue
