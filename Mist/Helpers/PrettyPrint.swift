@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Darwin
 
 /// Helper Struct used to format printed messages.
 struct PrettyPrint {
@@ -21,6 +22,7 @@ struct PrettyPrint {
     /// - Parameters:
     ///   - header: The string to print.
     static func printHeader(_ header: String) {
+        setbuf(__stdoutp, nil)
         let horizontal: String = String(repeating: "─", count: header.count + 2)
         let string: String = "┌\(horizontal)┐\n│ \(header) │\n└\(horizontal)┘"
         Swift.print(string.color(.blue))
@@ -34,6 +36,7 @@ struct PrettyPrint {
     ///   - prefixColor: The optional prefix color.
     ///   - replacing:   Optionally set to `true` to replace the previous line.
     static func print(_ string: String, prefix: Prefix = .default, prefixColor: String.Color = .green, replacing: Bool = false) {
+        setbuf(__stdoutp, nil)
         let replacing: String = replacing ? "\u{1B}[1A\u{1B}[K" : ""
         let string: String = "\(replacing)\(prefix.rawValue.color(prefixColor))\(string)"
         Swift.print(string)
