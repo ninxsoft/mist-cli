@@ -32,22 +32,22 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadInstallerOptions) throws {
         try inputValidation(options)
-        !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SEARCH", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", color: options.color) : Mist.noop()
         var catalogURLs: [String] = Catalog.urls
 
         if let catalogURL: String = options.catalogURL {
             catalogURLs = [catalogURL]
         }
 
-        let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible)
+        let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet, color: options.color)
 
         guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
-            !options.quiet ? PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", color: options.color, prefix: .ending) : Mist.noop()
             return
         }
 
-        !options.quiet ? PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]", color: options.color) : Mist.noop()
         try verifyExistingFiles(product, options: options)
         try setup(product, options: options)
         try verifyFreeSpace(product, options: options)
@@ -66,30 +66,32 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadInstallerOptions) throws {
 
-        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", color: options.color) : Mist.noop()
 
         guard NSUserName() == "root" else {
             throw MistError.invalidUser
         }
 
-        !options.quiet ? PrettyPrint.print("User is 'root'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("User is 'root'...", color: options.color) : Mist.noop()
 
         guard !options.searchString.isEmpty else {
             throw MistError.missingDownloadSearchString
         }
 
-        !options.quiet ? PrettyPrint.print("Download search string will be '\(options.searchString)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Download search string will be '\(options.searchString)'...", color: options.color) : Mist.noop()
 
         guard !options.outputDirectory.isEmpty else {
             throw MistError.missingOutputDirectory
         }
 
-        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Cache downloads will be '\(options.cacheDownloads)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Cache downloads will be '\(options.cacheDownloads)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print(
+            "Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...", color: options.color
+        ) : Mist.noop()
 
         if let path: String = options.exportPath {
 
@@ -97,7 +99,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.missingExportPath
             }
 
-            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", color: options.color) : Mist.noop()
 
             let url: URL = URL(fileURLWithPath: path)
 
@@ -105,7 +107,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.invalidExportFileExtension
             }
 
-            !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...", color: options.color) : Mist.noop()
         }
 
         try inputValidationApplication(options)
@@ -128,7 +130,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.missingApplicationName
             }
 
-            !options.quiet ? PrettyPrint.print("Application name will be '\(options.applicationName)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Application name will be '\(options.applicationName)'...", color: options.color) : Mist.noop()
         }
     }
 
@@ -146,7 +148,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.missingImageName
             }
 
-            !options.quiet ? PrettyPrint.print("Disk Image name will be '\(options.imageName)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Disk Image name will be '\(options.imageName)'...", color: options.color) : Mist.noop()
 
             if let identity: String = options.imageSigningIdentity {
 
@@ -154,7 +156,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                     throw MistError.missingImageSigningIdentity
                 }
 
-                !options.quiet ? PrettyPrint.print("Disk Image signing identity will be '\(identity)'...") : Mist.noop()
+                !options.quiet ? PrettyPrint.print("Disk Image signing identity will be '\(identity)'...", color: options.color) : Mist.noop()
             }
         }
     }
@@ -173,7 +175,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.missingIsoName
             }
 
-            !options.quiet ? PrettyPrint.print("Bootable Disk Image name will be '\(options.isoName)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Bootable Disk Image name will be '\(options.isoName)'...", color: options.color) : Mist.noop()
         }
     }
 
@@ -191,14 +193,14 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.missingPackageName
             }
 
-            !options.quiet ? PrettyPrint.print("Package name will be '\(options.packageName)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Package name will be '\(options.packageName)'...", color: options.color) : Mist.noop()
 
             guard let identifier: String = options.packageIdentifier,
                 !identifier.isEmpty else {
                 throw MistError.missingPackageIdentifier
             }
 
-            !options.quiet ? PrettyPrint.print("Package identifier will be '\(identifier)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Package identifier will be '\(identifier)'...", color: options.color) : Mist.noop()
 
             if let identity: String = options.packageSigningIdentity {
 
@@ -206,7 +208,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                     throw MistError.missingPackageSigningIdentity
                 }
 
-                !options.quiet ? PrettyPrint.print("Package signing identity will be '\(identity)'...") : Mist.noop()
+                !options.quiet ? PrettyPrint.print("Package signing identity will be '\(identity)'...", color: options.color) : Mist.noop()
             }
         }
     }
@@ -270,28 +272,28 @@ struct DownloadInstallerCommand: ParsableCommand {
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
         var processing: Bool = false
 
-        !options.quiet ? PrettyPrint.printHeader("SETUP") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SETUP", color: options.color) : Mist.noop()
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
             processing = true
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
-            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
             processing = true
         }
 
         if !FileManager.default.fileExists(atPath: temporaryURL.path) {
-            !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
             processing = true
         }
 
         if !processing {
-            !options.quiet ? PrettyPrint.print("Nothing to do!") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Nothing to do!", color: options.color) : Mist.noop()
         }
     }
 
@@ -359,16 +361,16 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadInstallerOptions) throws {
-        !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("TEARDOWN", color: options.color) : Mist.noop()
 
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
-            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", color: options.color, prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
         try FileManager.default.removeItem(at: product.installerURL)
     }
 
@@ -385,13 +387,13 @@ struct DownloadInstallerCommand: ParsableCommand {
             return
         }
 
-        !options.quiet ? PrettyPrint.printHeader("EXPORT RESULTS") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("EXPORT RESULTS", color: options.color) : Mist.noop()
 
         let url: URL = URL(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
-            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
 
@@ -403,13 +405,13 @@ struct DownloadInstallerCommand: ParsableCommand {
         switch url.pathExtension {
         case "json":
             try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'", color: options.color, prefix: .ending) : Mist.noop()
         case "plist":
             try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'", color: options.color, prefix: .ending) : Mist.noop()
         case "yaml":
             try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'", color: options.color, prefix: .ending) : Mist.noop()
         default:
             break
         }
@@ -496,7 +498,7 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
+            PrettyPrint.print(mistError.description, color: options.color, prefix: .ending, prefixColor: .red)
             throw mistError
         }
     }

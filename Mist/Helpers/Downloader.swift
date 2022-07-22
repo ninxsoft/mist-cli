@@ -20,6 +20,7 @@ class Downloader: NSObject {
     private var mistError: MistError?
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
     private var quiet: Bool = false
+    private var color: Bool = true
 
     /// Downloads a macOS Firmware.
     ///
@@ -31,7 +32,8 @@ class Downloader: NSObject {
     func download(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
 
         quiet = options.quiet
-        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
+        color = options.color
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD", color: options.color) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let source: URL = URL(string: firmware.url) else {
@@ -42,7 +44,7 @@ class Downloader: NSObject {
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         let task: URLSessionDownloadTask = session.downloadTask(with: source)
         prefixString = source.lastPathComponent
-        updateProgress(replacing: false)
+        updateProgress(replacing: false, color: color)
         task.resume()
         semaphore.wait()
         var retries: Int = 0
@@ -54,14 +56,14 @@ class Downloader: NSObject {
             }
 
             retries += 1
-            retry(attempt: retries, of: options.retries, with: options.retryDelay, using: session)
+            retry(attempt: retries, of: options.retries, with: options.retryDelay, color: color, using: session)
         }
 
         if let mistError: MistError = mistError {
             throw mistError
         }
 
-        updateProgress()
+        updateProgress(replacing: true, color: color)
     }
 
     /// Downloads a macOS Installer.
@@ -74,7 +76,8 @@ class Downloader: NSObject {
     func download(_ product: Product, options: DownloadInstallerOptions) throws {
 
         quiet = options.quiet
-        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
+        color = options.color
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD", color: options.color) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
@@ -104,7 +107,7 @@ class Downloader: NSObject {
                 total = Int64(package.size)
             }
 
-            updateProgress(replacing: false)
+            updateProgress(replacing: false, color: color)
 
             if !FileManager.default.fileExists(atPath: destination.path) {
                 let task: URLSessionDownloadTask = session.downloadTask(with: source)
@@ -119,7 +122,7 @@ class Downloader: NSObject {
                     }
 
                     retries += 1
-                    retry(attempt: retries, of: options.retries, with: options.retryDelay, using: session)
+                    retry(attempt: retries, of: options.retries, with: options.retryDelay, color: color, using: session)
                 }
 
                 if let mistError: MistError = mistError {
@@ -128,16 +131,16 @@ class Downloader: NSObject {
             }
 
             current = total
-            updateProgress()
+            updateProgress(replacing: true, color: color)
             let paddingLength: Int = "[ \(currentString) / \(product.allDownloads.count) ]".count
             let padding: String = String(repeating: " ", count: paddingLength)
-            !quiet ? PrettyPrint.print("\(padding) Verifying...", prefix: .continuing) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Verifying...", color: options.color, prefix: .continuing) : Mist.noop()
             try Validator.validate(package, at: destination)
-            !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", prefix: .continuing, replacing: true) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", color: options.color, prefix: .continuing, replacing: true) : Mist.noop()
         }
     }
 
-    private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, using session: URLSession) {
+    private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, color: Bool, using session: URLSession) {
 
         guard let urlError: URLError = urlError,
             let data: Data = urlError.downloadTaskResumeData else {
@@ -147,17 +150,17 @@ class Downloader: NSObject {
 
         self.urlError = nil
 
-        !quiet ? PrettyPrint.print(urlError.localizedDescription, prefixColor: .red) : Mist.noop()
-        !quiet ? PrettyPrint.print("Retrying attempt [ \(retry) / \(maximumRetries) ] in \(delay) seconds...") : Mist.noop()
+        !quiet ? PrettyPrint.print(urlError.localizedDescription, color: color, prefixColor: .red) : Mist.noop()
+        !quiet ? PrettyPrint.print("Retrying attempt [ \(retry) / \(maximumRetries) ] in \(delay) seconds...", color: color) : Mist.noop()
         sleep(UInt32(delay))
 
         let task: URLSessionDownloadTask = session.downloadTask(withResumeData: data)
-        updateProgress(replacing: false)
         task.resume()
+        updateProgress(replacing: false, color: color)
         semaphore.wait()
     }
 
-    private func updateProgress(replacing: Bool = true) {
+    private func updateProgress(replacing: Bool, color: Bool) {
         let currentString: String = current.bytesString()
         let totalString: String = total.bytesString()
         let percentage: Double = total > 0 ? Double(current) / Double(total) * 100 : 0
@@ -166,7 +169,7 @@ class Downloader: NSObject {
         let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
         let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
         let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
-        !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing) : Mist.noop()
+        !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", color: color, replacing: replacing) : Mist.noop()
     }
 }
 
@@ -175,7 +178,7 @@ extension Downloader: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         current = totalBytesWritten
         total = totalBytesExpectedToWrite
-        updateProgress()
+        updateProgress(replacing: true, color: color)
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {

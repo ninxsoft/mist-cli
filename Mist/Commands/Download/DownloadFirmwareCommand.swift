@@ -28,15 +28,18 @@ struct DownloadFirmwareCommand: ParsableCommand {
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadFirmwareOptions) throws {
         try inputValidation(options)
-        !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SEARCH", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", color: options.color) : Mist.noop()
 
-        guard let firmware: Firmware = HTTP.firmware(from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible), searchString: options.searchString) else {
-            !options.quiet ? PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", prefix: .ending) : Mist.noop()
+        guard let firmware: Firmware = HTTP.firmware(
+            from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet, color: options.color),
+            searchString: options.searchString
+        ) else {
+            !options.quiet ? PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", color: options.color, prefix: .ending) : Mist.noop()
             return
         }
 
-        !options.quiet ? PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Found \(firmware.name) \(firmware.version) (\(firmware.build)) [\(firmware.dateDescription)]", color: options.color) : Mist.noop()
         try verifyExistingFiles(firmware, options: options)
         try setup(firmware, options: options)
         try verifyFreeSpace(firmware, options: options)
@@ -54,23 +57,25 @@ struct DownloadFirmwareCommand: ParsableCommand {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadFirmwareOptions) throws {
 
-        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", color: options.color) : Mist.noop()
 
         guard !options.searchString.isEmpty else {
             throw MistError.missingDownloadSearchString
         }
 
-        !options.quiet ? PrettyPrint.print("Download search string will be '\(options.searchString)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Download search string will be '\(options.searchString)'...", color: options.color) : Mist.noop()
 
         guard !options.outputDirectory.isEmpty else {
             throw MistError.missingOutputDirectory
         }
 
-        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Only include compatible firmwares will be '\(options.compatible)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Only include compatible firmwares will be '\(options.compatible)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", color: options.color) : Mist.noop()
+        !options.quiet ? PrettyPrint.print(
+            "Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten...", color: options.color
+        ) : Mist.noop()
 
         if let path: String = options.exportPath {
 
@@ -78,7 +83,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
                 throw MistError.missingExportPath
             }
 
-            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", color: options.color) : Mist.noop()
 
             let url: URL = URL(fileURLWithPath: path)
 
@@ -86,7 +91,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
                 throw MistError.invalidExportFileExtension
             }
 
-            !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...", color: options.color) : Mist.noop()
         }
 
         try inputValidationFirmware(options)
@@ -104,7 +109,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
             throw MistError.missingFirmwareName
         }
 
-        !options.quiet ? PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Firmware name will be '\(options.firmwareName)'...", color: options.color) : Mist.noop()
     }
 
     /// Verifies if macOS Firmware files already exist.
@@ -139,19 +144,19 @@ struct DownloadFirmwareCommand: ParsableCommand {
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
 
-        !options.quiet ? PrettyPrint.printHeader("SETUP") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SETUP", color: options.color) : Mist.noop()
 
         if !FileManager.default.fileExists(atPath: outputURL.path) {
-            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating output directory '\(outputURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.createDirectory(atPath: outputURL.path, withIntermediateDirectories: true, attributes: nil)
         }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", color: options.color) : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
     }
 
@@ -195,8 +200,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
-            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: .ending) : Mist.noop()
+            !options.quiet ? PrettyPrint.printHeader("TEARDOWN", color: options.color) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", color: options.color, prefix: .ending) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         }
     }
@@ -218,7 +223,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
-            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
 
@@ -230,13 +235,13 @@ struct DownloadFirmwareCommand: ParsableCommand {
         switch url.pathExtension {
         case "json":
             try dictionary.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as JSON: '\(path)'", color: options.color) : Mist.noop()
         case "plist":
             try dictionary.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as Property List: '\(path)'", color: options.color) : Mist.noop()
         case "yaml":
             try dictionary.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported download results as YAML: '\(path)'", color: options.color) : Mist.noop()
         default:
             break
         }
@@ -284,7 +289,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
                 throw error
             }
 
-            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
+            PrettyPrint.print(mistError.description, color: options.color, prefix: .ending, prefixColor: .red)
             throw mistError
         }
     }

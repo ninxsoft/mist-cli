@@ -6,6 +6,7 @@
 //
 
 import ArgumentParser
+import Foundation
 
 struct ListFirmwareOptions: ParsableArguments {
 
@@ -68,4 +69,19 @@ struct ListFirmwareOptions: ParsableArguments {
     Suppress verbose output.
     """)
     var quiet: Bool = false
+
+    @Flag(name: .long, help: """
+    Print verbose output without any color or formatting.
+    """)
+    var noColor: Bool = false
+
+    var color: Bool {
+
+        if let environmentVariable: String = ProcessInfo.processInfo.environment["NO_COLOR"],
+            !environmentVariable.isEmpty {
+            return false
+        }
+
+        return !noColor
+    }
 }

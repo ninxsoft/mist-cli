@@ -26,17 +26,17 @@ struct Installer {
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
-        !options.quiet ? PrettyPrint.printHeader("INSTALL") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("INSTALL", color: options.color) : Mist.noop()
 
         if FileManager.default.fileExists(atPath: product.installerURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...", color: options.color) : Mist.noop()
             try FileManager.default.removeItem(at: product.installerURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...", color: options.color) : Mist.noop()
         let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
         let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
         _ = try Shell.execute(arguments, environment: variables)
-        !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'", color: options.color) : Mist.noop()
     }
 }

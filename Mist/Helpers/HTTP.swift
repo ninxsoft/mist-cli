@@ -16,15 +16,16 @@ struct HTTP {
     ///   - includeBetas: Set to `true` to prevent skipping of macOS Firmwares in search results.
     ///   - compatible:   Set to `true` to filter down compatible macOS Firmwares in search results.
     ///   - quiet:        Set to `true` to suppress verbose output.
+    ///   - color:        Set to `false` to print without any color or formatting.
     ///
     /// - Returns: An array of macOS Firmwares.
-    static func retrieveFirmwares(includeBetas: Bool, compatible: Bool, quiet: Bool = false) -> [Firmware] {
+    static func retrieveFirmwares(includeBetas: Bool, compatible: Bool, quiet: Bool, color: Bool) -> [Firmware] {
         var firmwares: [Firmware] = []
 
         let firmwaresURLString: String = Firmware.firmwaresURL
 
         guard let firmwaresURL: URL = URL(string: firmwaresURLString) else {
-            !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
+            !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...", color: color) : Mist.noop()
             return []
         }
 
@@ -33,13 +34,13 @@ struct HTTP {
 
             guard let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-                !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...") : Mist.noop()
+                !quiet ? PrettyPrint.print("There was an error retrieving firmwares from \(firmwaresURLString)...", color: color) : Mist.noop()
                 return []
             }
 
             guard let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
-                !quiet ? PrettyPrint.print("There was an error retrieving the 'devices' key from \(firmwaresURLString)...") : Mist.noop()
-                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...") : Mist.noop()
+                !quiet ? PrettyPrint.print("There was an error retrieving the 'devices' key from \(firmwaresURLString)...", color: color) : Mist.noop()
+                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...", color: color) : Mist.noop()
                 return []
             }
 
@@ -64,7 +65,7 @@ struct HTTP {
                 }
             }
         } catch {
-            !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
+            !quiet ? PrettyPrint.print(error.localizedDescription, color: color) : Mist.noop()
         }
 
         if !includeBetas {
@@ -116,15 +117,16 @@ struct HTTP {
     ///   - includeBetas: Set to `true` to prevent skipping of macOS Installers in search results.
     ///   - compatible:   Set to `true` to filter down compatible macOS Installers in search results.
     ///   - quiet:        Set to `true` to suppress verbose output.
+    ///   - color:        Set to `false` to print without any color or formatting.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, quiet: Bool = false) -> [Product] {
+    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, quiet: Bool, color: Bool) -> [Product] {
         var products: [Product] = []
 
         for catalogURL in catalogURLs {
 
             guard let url: URL = URL(string: catalogURL) else {
-                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
+                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...", color: color) : Mist.noop()
                 continue
             }
 
@@ -132,7 +134,7 @@ struct HTTP {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
                 guard let data: Data = string.data(using: .utf8) else {
-                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...", color: color) : Mist.noop()
                     continue
                 }
 
@@ -140,13 +142,13 @@ struct HTTP {
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...", color: color) : Mist.noop()
                     continue
                 }
 
-                products.append(contentsOf: getProducts(from: productsDictionary, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
+                products.append(contentsOf: getProducts(from: productsDictionary, quiet: quiet, color: color).filter { !products.map { $0.identifier }.contains($0.identifier) })
             } catch {
-                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
+                !quiet ? PrettyPrint.print(error.localizedDescription, color: color) : Mist.noop()
             }
         }
 
@@ -167,9 +169,10 @@ struct HTTP {
     /// - Parameters:
     ///   - dictionary: The dictionary values obtained from the Apple Software Update Catalog Property List.
     ///   - quiet:      Set to `true` to suppress verbose output.
+    ///   - color:      Set to `false` to print without any color or formatting.
     ///
     /// - Returns: The filtered list of macOS Installers.
-    private static func getProducts(from dictionary: [String: Any], quiet: Bool) -> [Product] {
+    private static func getProducts(from dictionary: [String: Any], quiet: Bool, color: Bool) -> [Product] {
 
         var products: [Product] = []
         let dateFormatter: DateFormatter = DateFormatter()
@@ -194,7 +197,7 @@ struct HTTP {
                     let version: String = versionFromDistribution(string),
                     let build: String = buildFromDistribution(string),
                     !name.isEmpty && !version.isEmpty && !build.isEmpty else {
-                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...", color: color) : Mist.noop()
                     continue
                 }
 
@@ -219,7 +222,7 @@ struct HTTP {
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
             } catch {
-                !quiet ? PrettyPrint.print(error.localizedDescription) : Mist.noop()
+                !quiet ? PrettyPrint.print(error.localizedDescription, color: color) : Mist.noop()
             }
         }
 
