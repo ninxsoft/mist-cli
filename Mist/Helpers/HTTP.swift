@@ -68,7 +68,7 @@ struct HTTP {
         }
 
         if !includeBetas {
-            firmwares = firmwares.filter { !$0.isBeta }
+            firmwares = firmwares.filter { !$0.beta }
         }
 
         if compatible {
@@ -151,7 +151,7 @@ struct HTTP {
         }
 
         if !includeBetas {
-            products = products.filter { !$0.isBeta }
+            products = products.filter { !$0.beta }
         }
 
         if compatible {

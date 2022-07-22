@@ -97,13 +97,13 @@ struct Product: Decodable {
             "compatible": compatible,
             "distribution": distribution,
             "packages": packages.map { $0.dictionary },
-            "beta": isBeta
+            "beta": beta
         ]
     }
     var isTooBigForPackagePayload: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }
-    var isBeta: Bool {
+    var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
     var size: Int64 {
