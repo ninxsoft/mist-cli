@@ -28,13 +28,20 @@ struct Firmware: Decodable {
     }
     var name: String {
 
-        if version.range(of: "^12", options: .regularExpression) != nil {
-            return "macOS Monterey"
+        var name: String = ""
+
+        if version.range(of: "^13", options: .regularExpression) != nil {
+            name = "macOS Ventura"
+        } else if version.range(of: "^12", options: .regularExpression) != nil {
+            name = "macOS Monterey"
         } else if version.range(of: "^11", options: .regularExpression) != nil {
-            return "macOS Big Sur"
+            name = "macOS Big Sur"
         } else {
-            return "macOS"
+            name = "macOS \(version)"
         }
+
+        name = beta ? "\(name) beta" : name
+        return name
     }
     let version: String
     let build: String
@@ -50,7 +57,7 @@ struct Firmware: Decodable {
     var signedDescription: String {
         signed ? "Yes": "No"
     }
-    var isBeta: Bool {
+    var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
     var dictionary: [String: Any] {
@@ -74,7 +81,7 @@ struct Firmware: Decodable {
             "date": date,
             "compatible": compatible,
             "signed": signed,
-            "beta": isBeta
+            "beta": beta
         ]
     }
 
