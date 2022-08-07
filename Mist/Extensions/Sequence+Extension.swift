@@ -51,13 +51,13 @@ extension Sequence where Iterator.Element == [String: Any] {
 
         for item in self {
 
-            let signed: String = (item["signed"] as? Bool ?? false) ? "True": "False"
+            let signed: String = (item["signed"] as? Bool ?? false) ? "True" : "False"
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
             let build: String = item["build"] as? String ?? ""
             let size: String = (item["size"] as? Int64 ?? 0).bytesString()
             let date: String = item["date"] as? String ?? ""
-            let compatible: String = (item["compatible"] as? Bool ?? false) ? "True": "False"
+            let compatible: String = (item["compatible"] as? Bool ?? false) ? "True" : "False"
 
             let signedPadding: Int = Swift.max(maximumSignedLength - signed.count, 0)
             let namePadding: Int = Swift.max(maximumNameLength - name.count, 0)
@@ -130,7 +130,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             let build: String = item["build"] as? String ?? ""
             let size: String = (item["size"] as? Int64 ?? 0).bytesString()
             let date: String = item["date"] as? String ?? ""
-            let compatible: String = (item["compatible"] as? Bool ?? false) ? "True": "False"
+            let compatible: String = (item["compatible"] as? Bool ?? false) ? "True" : "False"
 
             let identifierPadding: Int = Swift.max(maximumIdentifierLength - identifier.count, 0)
             let namePadding: Int = Swift.max(maximumNameLength - name.count, 0)
