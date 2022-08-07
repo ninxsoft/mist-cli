@@ -9,6 +9,8 @@ jobs:
       - uses: swift-actions/setup-swift@v1
       - name: Update $PATH
         run: echo "$GITHUB_WORKSPACE/.build/apple/Products/release" >> $GITHUB_PATH
+      - name: Print SwiftLint version
+        run: swiftlint --version
       - name: Run SwiftLint
         run: swiftlint --strict
       # - name: Run DrString
