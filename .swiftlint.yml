@@ -17,6 +17,9 @@ missing_docs:
     - public
     - open
 
+disabled_rules:
+  - void_function_in_ternary
+
 opt_in_rules:
   - attributes
   - balanced_xctest_lifecycle

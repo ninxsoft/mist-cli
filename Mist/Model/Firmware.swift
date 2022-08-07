@@ -55,7 +55,7 @@ struct Firmware: Decodable {
     }
     let signed: Bool
     var signedDescription: String {
-        signed ? "Yes": "No"
+        signed ? "Yes" : "No"
     }
     var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
