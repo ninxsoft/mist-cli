@@ -75,7 +75,7 @@ struct HTTP {
             firmwares = firmwares.filter { $0.compatible }
         }
 
-        firmwares.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
+        firmwares.sort { $0.version == $1.version ? $0.date > $1.date : $0.version > $1.version }
         return firmwares
     }
 
@@ -158,7 +158,7 @@ struct HTTP {
             products = products.filter { $0.compatible }
         }
 
-        products.sort { $0.version == $1.version ? ($0.build.count == $1.build.count ? $0.build > $1.build : $0.build.count > $1.build.count) : $0.version > $1.version }
+        products.sort { $0.version == $1.version ? $0.date > $1.date : $0.version > $1.version }
         return products
     }
 
