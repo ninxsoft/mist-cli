@@ -59,7 +59,7 @@ struct HTTP {
                     let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
 
                     if !firmware.shasum.isEmpty,
-                       !firmwares.contains(where: { $0 == firmware }) {
+                        !firmwares.contains(where: { $0 == firmware }) {
                         firmwares.append(firmware)
                     }
                 }
