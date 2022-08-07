@@ -58,7 +58,8 @@ struct HTTP {
                     let firmwareData: Data = try JSONSerialization.data(withJSONObject: firmwareDictionary, options: .prettyPrinted)
                     let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
 
-                    if !firmwares.contains(where: { $0 == firmware }) {
+                    if !firmware.shasum.isEmpty,
+                        !firmwares.contains(where: { $0 == firmware }) {
                         firmwares.append(firmware)
                     }
                 }
