@@ -11,6 +11,24 @@ import Foundation
 /// Helper Struct used to validate macOS Firmware and Installer downloads.
 struct Validator {
 
+    /// Validates the macOS Firmware IPSW that was downloaded.
+    ///
+    /// - Parameters:
+    ///   - firmware:    The selected macOS Firmware IPSW that was downloaded.
+    ///   - destination: The destination file URL of the downloaded firmware.
+    ///
+    /// - Throws: A `MistError` if the macOS Firmware IPSW fails validation.
+    static func validate(_ firmware: Firmware, at destination: URL) throws {
+
+        guard let shasum: String = destination.shasum() else {
+            throw MistError.invalidData
+        }
+
+        guard shasum == firmware.shasum else {
+            throw MistError.invalidShasum(invalid: shasum, valid: firmware.shasum)
+        }
+    }
+
     /// Validates the macOS Installer package that was downloaded.
     ///
     /// - Parameters:
