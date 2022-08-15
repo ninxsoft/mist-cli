@@ -109,7 +109,7 @@ struct Product: Decodable {
     var size: Int64 {
         Int64(packages.map { $0.size }.reduce(0, +))
     }
-    var isoSize: Int64 {
-        Int64(ceil(Double(size) / Double(Int64.gigabyte))) + 1
+    var isoSize: Double {
+        ceil(Double(size) / Double(Int64.gigabyte)) + 1.5
     }
 }
