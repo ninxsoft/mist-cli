@@ -1,11 +1,11 @@
-identifier = com.ninxsoft.pkg.mist
+identifier = com.ninxsoft.pkg.mist-cli
 identity_app = Developer ID Application: Nindi Gill (7K3HVCLV7Z)
 identity_pkg = Developer ID Installer: Nindi Gill (7K3HVCLV7Z)
 binary = mist
 source = .build/apple/Products/release/$(binary)
 destination = /usr/local/bin/$(binary)
 temp = /private/tmp/$(identifier)
-version = $(shell mist version | awk '{ print $$1 }')
+version = $(shell mist --version | awk '{ print $$1 }')
 min_os_version = 10.15
 package_dir = build
 package = $(package_dir)/Mist $(version).pkg
