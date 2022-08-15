@@ -1,6 +1,6 @@
 //
 //  URL+Extension.swift
-//  mist
+//  Mist
 //
 //  Created by Nindi Gill on 15/8/2022.
 //
