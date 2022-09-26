@@ -82,7 +82,11 @@ class Downloader: NSObject {
             throw MistError.generalError("There was an error retrieving the temporary URL")
         }
 
-        for (index, package) in product.allDownloads.enumerated() {
+        var index: Int = 0
+
+        while index < product.allDownloads.count {
+
+            let package: Package = product.allDownloads[index]
 
             guard let source: URL = URL(string: package.url) else {
                 throw MistError.invalidURL(url: package.url)
@@ -129,11 +133,37 @@ class Downloader: NSObject {
 
             current = total
             updateProgress()
-            let paddingLength: Int = "[ \(currentString) / \(product.allDownloads.count) ]".count
-            let padding: String = String(repeating: " ", count: paddingLength)
-            !quiet ? PrettyPrint.print("\(padding) Verifying...", prefix: .continuing) : Mist.noop()
+
+            if verify(package, at: destination, current: currentString, total: product.allDownloads.count) {
+                index += 1
+            }
+        }
+    }
+
+    private func verify(_ package: Package, at destination: URL, current: String, total: Int) -> Bool {
+
+        let paddingLength: Int = "[ \(current) / \(total) ]".count
+        let padding: String = String(repeating: " ", count: paddingLength)
+        !quiet ? PrettyPrint.print("\(padding) Verifying...", prefix: .continuing) : Mist.noop()
+
+        do {
             try Validator.validate(package, at: destination)
             !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", prefix: .continuing, replacing: true) : Mist.noop()
+            return true
+        } catch {
+            !quiet ? PrettyPrint.print("\(padding) Verifying... \("xxx".color(.red))", prefix: .continuing, replacing: true) : Mist.noop()
+
+            if let error: MistError = error as? MistError {
+                !quiet ? PrettyPrint.print("\(padding) \(error.description)", prefix: .continuing) : Mist.noop()
+            }
+
+            !quiet ? PrettyPrint.print("\(padding) Trying again...", prefix: .continuing) : Mist.noop()
+
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try? FileManager.default.removeItem(at: destination)
+            }
+
+            return false
         }
     }
 
