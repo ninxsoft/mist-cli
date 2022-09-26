@@ -156,6 +156,21 @@ mist download installer "macOS Monterey" application image iso package \
 
 ## Version History
 
+- 1.9
+
+  - Added support for macOS Ventura 13
+  - macOS Installer files are retried when an invalid cache file is detected on-disk
+  - Calculating ISO image sizes is _slightly_ more dynamic (to better support macOS Ventura ISOs)
+  - macOS Firmware / Installer lists are now sorted by version, then by date
+  - Firmwares with invalid SHA-1 checksums are now ignored and unavailable for download
+  - stdout stream buffering is disabled to improve output frequency - thanks Nate Felton ([n8felton](https://github.com/n8felton))!
+  - SHA-1 checksum validation logic is now implemented in Swift (no longer shells out to `shasum`)
+  - Checking for mist updates now points to the recently renamed [mist-cli](https://github.com/ninxsoft/mist-cli) repository URL
+  - Looking up the version of mist-cli is now performed using the built-in `mist --version` command
+  - General code refactoring
+
+  **Note:** To help avoid conflicts with the [Mist](https://github.com/ninxsoft/Mist) companion Mac app, the mist-cli installer package identifier has been renamed to `com.ninxsoft.pkg.mist-cli`
+
 - 1.8
 
   - `mist` is now a [Universal macOS Binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary)
