@@ -156,6 +156,10 @@ mist download installer "macOS Monterey" application image iso package \
 
 ## Version History
 
+- 1.9.1
+
+  - Firmware SHA-1 checksum validation is now working correctly again - thanks Nathan Pierce ([Norse Gaud](https://github.com/NorseGaud))!
+
 - 1.9
 
   - Added support for macOS Ventura 13
