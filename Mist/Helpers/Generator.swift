@@ -44,7 +44,7 @@ struct Generator {
         let destinationURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.firmwarePath(for: firmware, options: options))
 
         !options.quiet ? PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...") : Mist.noop()
-        try Validator.validate(firmware, at: destinationURL)
+        try Validator.validate(firmware, at: temporaryFirmwareURL)
 
         if !options.force {
 
