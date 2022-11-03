@@ -100,7 +100,7 @@ struct Product: Decodable {
             "beta": beta
         ]
     }
-    var isTooBigForPackagePayload: Bool {
+    var bigSurOrNewer: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }
     var beta: Bool {

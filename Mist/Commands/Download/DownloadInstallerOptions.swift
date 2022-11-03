@@ -113,7 +113,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     * %BUILD% will be replaced with '21A5304g'
     * Spaces will be replaced with hyphens -
     """)
-    var packageIdentifier: String?
+    var packageIdentifier: String = .packageIdentifierTemplate
 
     @Option(name: .long, help: """
     Codesign the exported macOS Installer Package (.pkg).
