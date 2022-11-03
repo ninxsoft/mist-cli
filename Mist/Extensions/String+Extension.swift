@@ -37,6 +37,7 @@ extension String {
     static let temporaryDirectory: String = "/private/tmp/com.ninxsoft.mist"
     static let outputDirectory: String = "/Users/Shared/Mist"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
+    static let packageIdentifierTemplate: String = "com.company.pkg.%NAME%.%VERSION%.%BUILD%"
     static let repositoryURL: String = "https://github.com/ninxsoft/\(projectName)"
     static let latestReleaseURL: String = "https://api.github.com/repos/ninxsoft/\(projectName)/releases/latest"
 

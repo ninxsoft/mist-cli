@@ -7,9 +7,6 @@
 
 import Foundation
 
-// swiftlint:disable file_length
-// swiftlint:disable type_body_length
-
 /// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 struct Generator {
 
@@ -259,188 +256,59 @@ struct Generator {
 
         !options.quiet ? PrettyPrint.printHeader("PACKAGE") : Mist.noop()
 
-        if product.isTooBigForPackagePayload {
-            try generateBigPackage(product: product, options: options)
+        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: product, options: options))
+
+        if product.bigSurOrNewer {
+            let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+            let packageURL: URL = temporaryURL.appendingPathComponent("InstallAssistant.pkg")
+
+            if !options.force {
+
+                guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                    throw MistError.existingFile(path: destinationURL.path)
+                }
+            }
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
+                try FileManager.default.removeItem(at: destinationURL)
+            }
+
+            !options.quiet ? PrettyPrint.print("Copying '\(packageURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
+            try FileManager.default.copyItem(at: packageURL, to: destinationURL)
         } else {
-            try generateSmallPackage(product: product, options: options)
-        }
-    }
+            let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
+            let version: String = "\(product.version)-\(product.build)"
+            var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 
-    // swiftlint:disable function_body_length
+            if let identity: String = options.packageSigningIdentity,
+                !identity.isEmpty {
 
-    /// Generates a macOS Installer Package for payloads larger than 8GB (ie. **macOS Big Sur** and above).
-    ///
-    /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options for macOS Installers.
-    ///
-    /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
-    private static func generateBigPackage(product: Product, options: DownloadInstallerOptions) throws {
+                arguments += ["--sign", identity]
 
-        let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options)).appendingPathComponent("package")
-        let zipURL: URL = temporaryURL.appendingPathComponent(product.zipName)
-        let scriptsURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryScriptsDirectory(for: product, options: options))
-        let postInstallURL: URL = scriptsURL.appendingPathComponent("postinstall")
-        let zipArguments: [String] = ["ditto", "-c", "-k", "--keepParent", "--sequesterRsrc", "--zlibCompressionLevel", "0", product.installerURL.path, zipURL.path]
-        let splitArguments: [String] = ["split", "-b", "8191m", zipURL.path, "\(product.zipName)."]
-        let installLocation: String = "\(String.temporaryDirectory)/\(product.identifier)"
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: product, options: options))
-        let version: String = "\(product.version)-\(product.build)"
-        var arguments: [String] = ["pkgbuild", "--identifier", identifier, "--install-location", installLocation, "--scripts", scriptsURL.path, "--root", temporaryURL.path, "--version", version]
-
-        if FileManager.default.fileExists(atPath: temporaryURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: temporaryURL)
-        }
-
-        !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-        try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
-
-        !options.quiet ? PrettyPrint.print("Creating ZIP archive '\(zipURL.path)'...") : Mist.noop()
-        _ = try Shell.execute(zipArguments)
-
-        !options.quiet ? PrettyPrint.print("Splitting ZIP archive '\(zipURL.path)'...") : Mist.noop()
-        _ = try Shell.execute(splitArguments, currentDirectoryPath: temporaryURL.path)
-
-        !options.quiet ? PrettyPrint.print("Deleting temporary ZIP archive '\(zipURL.path)'") : Mist.noop()
-        try FileManager.default.removeItem(at: zipURL)
-
-        if FileManager.default.fileExists(atPath: scriptsURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: scriptsURL)
-        }
-
-        !options.quiet ? PrettyPrint.print("Creating new temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
-        try FileManager.default.createDirectory(at: scriptsURL, withIntermediateDirectories: true, attributes: nil)
-
-        !options.quiet ? PrettyPrint.print("Creating temporary post install script '\(postInstallURL.path)'...") : Mist.noop()
-        try postInstall(for: product).write(to: postInstallURL, atomically: true, encoding: .utf8)
-
-        !options.quiet ? PrettyPrint.print("Setting executable permissions on temporary post install script '\(postInstallURL.path)'...") : Mist.noop()
-        try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: postInstallURL.path)
-
-        if let identity: String = options.packageSigningIdentity,
-            !identity.isEmpty {
-
-            arguments += ["--sign", identity]
-
-            if let keychain: String = options.keychain,
-                !keychain.isEmpty {
-                arguments += ["--keychain", keychain]
+                if let keychain: String = options.keychain,
+                    !keychain.isEmpty {
+                    arguments += ["--keychain", keychain]
+                }
             }
-        }
 
-        arguments += [destinationURL.path]
+            arguments += [destinationURL.path]
 
-        if !options.force {
+            if !options.force {
 
-            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
-                throw MistError.existingFile(path: destinationURL.path)
+                guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                    throw MistError.existingFile(path: destinationURL.path)
+                }
             }
-        }
 
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: destinationURL)
-        }
-
-        !options.quiet ? PrettyPrint.print("Creating package '\(destinationURL.path)'...") : Mist.noop()
-        _ = try Shell.execute(arguments)
-
-        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-        try FileManager.default.removeItem(at: temporaryURL)
-
-        !options.quiet ? PrettyPrint.print("Deleting temporary scripts directory '\(scriptsURL.path)'...") : Mist.noop()
-        try FileManager.default.removeItem(at: scriptsURL)
-
-        !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'") : Mist.noop()
-    }
-
-    // swiftlint:enable function_body_length
-
-    /// Generates a macOS Installer Package for payloads smaller than 8GB (ie. **macOS Catalina** and below).
-    ///
-    /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options for macOS Installers.
-    ///
-    /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
-    private static func generateSmallPackage(product: Product, options: DownloadInstallerOptions) throws {
-
-        let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: product, options: options))
-        let version: String = "\(product.version)-\(product.build)"
-        var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
-
-        if let identity: String = options.packageSigningIdentity,
-            !identity.isEmpty {
-
-            arguments += ["--sign", identity]
-
-            if let keychain: String = options.keychain,
-                !keychain.isEmpty {
-                arguments += ["--keychain", keychain]
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
+                try FileManager.default.removeItem(at: destinationURL)
             }
+
+            !options.quiet ? PrettyPrint.print("Creating package '\(destinationURL.path)'...") : Mist.noop()
+            _ = try Shell.execute(arguments)
+            !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'") : Mist.noop()
         }
-
-        arguments += [destinationURL.path]
-
-        if !options.force {
-
-            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
-                throw MistError.existingFile(path: destinationURL.path)
-            }
-        }
-
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old package '\(destinationURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: destinationURL)
-        }
-
-        !options.quiet ? PrettyPrint.print("Creating package '\(destinationURL.path)'...") : Mist.noop()
-        _ = try Shell.execute(arguments)
-        !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'") : Mist.noop()
-    }
-
-    /// Creates a custom postinstall script for the macOS Installer Package, used to re-join large payloads (ie. **macOS Big Sur** and above).
-    ///
-    /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///
-    /// - Returns: The contents of the custom postinstall script.
-    private static func postInstall(for product: Product) -> String {
-        """
-        #!/usr/bin/env bash
-
-        set -e
-
-        NAME="Install \(product.name)"
-        TEMP_DIR="\(String.temporaryDirectory)/\(product.identifier)"
-        ZIP="$TEMP_DIR/\(product.zipName)"
-        APPS_DIR="/Applications"
-        APP="$APPS_DIR/$NAME.app"
-
-        # merge the split zip files
-        cat "$ZIP."* > "$ZIP"
-
-        # remove installer app if it already exists
-        if [[ -d "$APP" ]] ; then
-            rm -rf "$APP"
-        fi
-
-        # unpack the app bundle
-        ditto -x -k "$ZIP" "$APPS_DIR"
-
-        # cleanup
-        rm -rf "$TEMP_DIR"
-
-        # change ownership and permissions
-        chown -R root:wheel "$APP"
-        chmod -R 755 "$APP"
-
-        exit 0
-
-        """
     }
 }

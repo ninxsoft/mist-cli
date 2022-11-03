@@ -193,12 +193,11 @@ struct DownloadInstallerCommand: ParsableCommand {
 
             !options.quiet ? PrettyPrint.print("Package name will be '\(options.packageName)'...") : Mist.noop()
 
-            guard let identifier: String = options.packageIdentifier,
-                !identifier.isEmpty else {
+            guard !options.packageIdentifier.isEmpty else {
                 throw MistError.missingPackageIdentifier
             }
 
-            !options.quiet ? PrettyPrint.print("Package identifier will be '\(identifier)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Package identifier will be '\(options.packageIdentifier)'...") : Mist.noop()
 
             if let identity: String = options.packageSigningIdentity {
 
@@ -359,17 +358,27 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ product: Product, options: DownloadInstallerOptions) throws {
-        !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
 
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
+        var processing: Bool = false
+
+        !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
+            processing = true
         }
 
-        !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
-        try FileManager.default.removeItem(at: product.installerURL)
+        if FileManager.default.fileExists(atPath: product.installerURL.path) {
+            !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
+            try FileManager.default.removeItem(at: product.installerURL)
+            processing = true
+        }
+
+        if !processing {
+            !options.quiet ? PrettyPrint.print("Nothing to do!", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
+        }
     }
 
     /// Exports the results for macOS Installer downloads.
@@ -462,12 +471,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     }
 
     static func packageIdentifier(for product: Product, options: DownloadInstallerOptions) -> String {
-
-        guard let identifier: String = options.packageIdentifier else {
-            return ""
-        }
-
-        return identifier
+        options.packageIdentifier
             .stringWithSubstitutions(using: product)
             .replacingOccurrences(of: " ", with: "-")
             .lowercased()

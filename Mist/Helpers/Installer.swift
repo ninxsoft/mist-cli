@@ -33,10 +33,14 @@ struct Installer {
             try FileManager.default.removeItem(at: product.installerURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...") : Mist.noop()
-        let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
-        let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
-        _ = try Shell.execute(arguments, environment: variables)
-        !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'") : Mist.noop()
+        if product.bigSurOrNewer && options.outputType == [.package] {
+            !options.quiet ? PrettyPrint.print("Nothing to do!") : Mist.noop()
+        } else {
+            !options.quiet ? PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...") : Mist.noop()
+            let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
+            let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
+            _ = try Shell.execute(arguments, environment: variables)
+            !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'") : Mist.noop()
+        }
     }
 }
