@@ -8,7 +8,6 @@
 import Foundation
 
 enum Catalog: String, CaseIterable {
-    // swiftlint:disable redundant_string_enum_value
     case standard = "standard"
     case customer = "customer"
     case developer = "developer"
