@@ -287,6 +287,13 @@ struct DownloadFirmwareCommand: ParsableCommand {
         "\(options.temporaryDirectory)/\(firmware.identifier)".replacingOccurrences(of: "//", with: "/")
     }
 
+    static func resumeDataURL(for firmware: Firmware, options: DownloadFirmwareOptions) -> URL {
+        let temporaryDirectory: String = temporaryDirectory(for: firmware, options: options)
+        let string: String = "\(temporaryDirectory)/\(firmware.filename).resumeData"
+        let url: URL = URL(fileURLWithPath: string)
+        return url
+    }
+
     mutating func run() throws {
 
         do {
