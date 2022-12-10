@@ -31,7 +31,7 @@ struct ListFirmwareCommand: ParsableCommand {
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...") : Mist.noop()
-        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
+        var firmwares: [Firmware] = HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, metadataCachePath: options.metadataCachePath, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             firmwares = HTTP.firmwares(from: firmwares, searchString: searchString)
@@ -92,6 +92,12 @@ struct ListFirmwareCommand: ParsableCommand {
 
             !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
         }
+
+        guard !options.metadataCachePath.isEmpty else {
+            throw MistError.missingFirmwareMetadataCachePath
+        }
+
+        !options.quiet ? PrettyPrint.print("macOS Firmware metadata cache path will be '\(options.metadataCachePath)'...") : Mist.noop()
 
         !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...") : Mist.noop()
     }
