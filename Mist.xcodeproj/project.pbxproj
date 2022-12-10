@@ -24,6 +24,7 @@
 		3967935C26D7304500DC2D2D /* Firmware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935B26D7304500DC2D2D /* Firmware.swift */; };
 		3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */; };
 		3967936126D74C2400DC2D2D /* DownloadInstallerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */; };
+		39D1C22C2944683700EAE5E4 /* MistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39D1C22B2944683700EAE5E4 /* MistTests.swift */; };
 		39F6D3392843916D003C2F25 /* DownloadOutputType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D3382843916D003C2F25 /* DownloadOutputType.swift */; };
 		39F6D33D2844754C003C2F25 /* ListFirmwareCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D33C2844754C003C2F25 /* ListFirmwareCommand.swift */; };
 		39F6D33F28447A3C003C2F25 /* DownloadFirmwareCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F6D33E28447A3C003C2F25 /* DownloadFirmwareCommand.swift */; };
@@ -80,6 +81,8 @@
 		3967935B26D7304500DC2D2D /* Firmware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firmware.swift; sourceTree = "<group>"; };
 		3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCommand.swift; sourceTree = "<group>"; };
 		3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadInstallerOptions.swift; sourceTree = "<group>"; };
+		39D1C2292944683700EAE5E4 /* MistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		39D1C22B2944683700EAE5E4 /* MistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MistTests.swift; sourceTree = "<group>"; };
 		39F6D3382843916D003C2F25 /* DownloadOutputType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOutputType.swift; sourceTree = "<group>"; };
 		39F6D33C2844754C003C2F25 /* ListFirmwareCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListFirmwareCommand.swift; sourceTree = "<group>"; };
 		39F6D33E28447A3C003C2F25 /* DownloadFirmwareCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFirmwareCommand.swift; sourceTree = "<group>"; };
@@ -106,6 +109,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		39D1C2262944683700EAE5E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		574413F925F85EF300DE5540 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -152,10 +162,19 @@
 			path = Download;
 			sourceTree = "<group>";
 		};
+		39D1C22A2944683700EAE5E4 /* MistTests */ = {
+			isa = PBXGroup;
+			children = (
+				39D1C22B2944683700EAE5E4 /* MistTests.swift */,
+			);
+			path = MistTests;
+			sourceTree = "<group>";
+		};
 		574413F325F85EF300DE5540 = {
 			isa = PBXGroup;
 			children = (
 				574413FE25F85EF300DE5540 /* Mist */,
+				39D1C22A2944683700EAE5E4 /* MistTests */,
 				574413FD25F85EF300DE5540 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -164,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				574413FC25F85EF300DE5540 /* mist */,
+				39D1C2292944683700EAE5E4 /* MistTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -231,6 +251,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		39D1C2282944683700EAE5E4 /* MistTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39D1C22F2944683700EAE5E4 /* Build configuration list for PBXNativeTarget "MistTests" */;
+			buildPhases = (
+				39D1C2252944683700EAE5E4 /* Sources */,
+				39D1C2262944683700EAE5E4 /* Frameworks */,
+				39D1C2272944683700EAE5E4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MistTests;
+			productName = MistTests;
+			productReference = 39D1C2292944683700EAE5E4 /* MistTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		574413FB25F85EF300DE5540 /* mist */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5744140325F85EF300DE5540 /* Build configuration list for PBXNativeTarget "mist" */;
@@ -260,9 +297,12 @@
 		574413F425F85EF300DE5540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1320;
+				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					39D1C2282944683700EAE5E4 = {
+						CreatedOnToolsVersion = 14.1;
+					};
 					574413FB25F85EF300DE5540 = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -286,9 +326,20 @@
 			projectRoot = "";
 			targets = (
 				574413FB25F85EF300DE5540 /* mist */,
+				39D1C2282944683700EAE5E4 /* MistTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		39D1C2272944683700EAE5E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		393C236926DDC995004755BF /* Run DrString */ = {
@@ -332,6 +383,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		39D1C2252944683700EAE5E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39D1C22C2944683700EAE5E4 /* MistTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		574413F825F85EF300DE5540 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -381,6 +440,48 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		39D1C22D2944683700EAE5E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 7K3HVCLV7Z;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		39D1C22E2944683700EAE5E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 7K3HVCLV7Z;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ninxsoft.mist.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		5744140125F85EF300DE5540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -533,6 +634,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		39D1C22F2944683700EAE5E4 /* Build configuration list for PBXNativeTarget "MistTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39D1C22D2944683700EAE5E4 /* Debug */,
+				39D1C22E2944683700EAE5E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		574413F725F85EF300DE5540 /* Build configuration list for PBXProject "Mist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
