@@ -42,6 +42,11 @@ struct DownloadFirmwareOptions: ParsableArguments {
     """)
     var compatible: Bool = false
 
+    @Flag(name: .long, help: """
+    Cache downloaded files in the temporary downloads directory.
+    """)
+    var cacheDownloads: Bool = false
+
     @Flag(name: .shortAndLong, help: """
     Force overwriting existing macOS Downloads matching the provided filename(s).
     Note: Downloads will fail if an existing file is found and this flag is not provided.
