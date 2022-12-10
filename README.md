@@ -1,5 +1,7 @@
 # MIST - macOS Installer Super Tool
 
+![Latest Release](https://img.shields.io/github/v/release/ninxsoft/mist-cli?display_name=tag&label=Latest%20Release&sort=semver) [![Linting](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml) [![Unit Tests](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml) [![Build](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml)
+
 A Mac command-line tool that automatically downloads **macOS Firmwares** / **Installers**:
 
 ![Firmwares](README%20Resources/Firmwares.png)
@@ -12,9 +14,10 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
 
 - [x] List all available macOS Firmwares / Installers available for download:
   - Display names, versions, builds, sizes and release dates
-  - Additionally list beta versions of macOS in search results
-  - Optionally export list as **CSV**, **JSON**, **Property List** or **YAML**
-- [x] Download an available macOS Firmware / Installer:
+  - Optionally list beta versions of macOS
+  - Filter macOS versions that are compatible with the Mac the app is being run from
+  - Export lists as **CSV**, **JSON**, **Property List** or **YAML**
+- [x] Download available macOS Firmwares / Installers:
   - For Apple Silicon Macs:
     - Download a Firmware Restore file (.ipsw)
     - Validates the SHA-1 checksum upon download
@@ -29,9 +32,10 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
     - Check for free space before attempting any downloads or installations
     - Cache downloads to speed up build operations
     - Optionally specify a custom catalog URL, allowing you to list and download macOS Installers from the following:
-      - **Customer Seed** - AppleSeed Program
-      - **Developer Seed** - Apple Developer Program
-      - **Public Seed** - Apple Beta Software Program
+      - **Customer Seed:** The catalog available as part of the [AppleSeed Program](https://appleseed.apple.com/)
+      - **Developer Seed:** The catalog available as part of the [Apple Developer Program](https://developer.apple.com/programs/)
+      - **Public Seed:** The catalog available as part of the [Apple Beta Software Program](https://beta.apple.com/)
+      - **Note:** Catalogs from the Seed Programs may contain beta / unreleased versions of macOS. Ensure you are a member of these programs before proceeding.
     - Validates the Chunklist checksums upon download
   - Automatic retries for failed downloads!
 
@@ -69,13 +73,13 @@ mist list installer
 # also including Universal Installers for macOS Big Sur and later:
 mist list installer --include-betas
 
-# List only macOS Monterey Installers for Intel Macs,
+# List only macOS Ventura Installers for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist list installer "macOS Monterey"
+mist list installer "macOS Ventura"
 
-# List only the latest macOS Monterey Installer for Intel Macs,
+# List only the latest macOS Ventura Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist list installer --latest "macOS Monterey"
+mist list installer --latest "macOS Ventura"
 
 # List + Export macOS Installers to a CSV file:
 mist list installer --export "/path/to/export.csv"
@@ -89,41 +93,41 @@ mist list installer --export "/path/to/export.plist"
 # List + Export macOS Installers to a YAML file:
 mist list installer --export "/path/to/export.yaml"
 
-# Download the latest macOS Monterey Firmware for
+# Download the latest macOS Ventura Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download firmware "macOS Monterey" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
+mist download firmware "macOS Ventura" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
-# Download the latest macOS Monterey Installer for Intel Macs,
+# Download the latest macOS Ventura Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "macOS Monterey" application
+mist download installer "macOS Ventura" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "12.2.1" application
+mist download installer "13.0.1" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # with a custom name:
-mist download installer "12.2.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
+mist download installer "13.0.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a Disk Image with a custom name:
-mist download installer "12.2.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+mist download installer "13.0.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build for Inte Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a codesigned Disk Image output to a custom directory:
-mist download installer "21D62" image \
+mist download installer "22A400" image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
-# Download the latest macOS Monterey Installer for Intel Macs,
+# Download the latest macOS Ventura Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate an Installer Application bundle, a Disk Image,
 # a Bootable Disk Image, a macOS Installer Package,
 # all with custom names, codesigned, output to a custom directory:
-mist download installer "macOS Monterey" application image iso package \
+mist download installer "macOS Ventura" application image iso package \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
      --image-name "Install %NAME% %VERSION%-%BUILD%.dmg" \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
@@ -136,7 +140,7 @@ mist download installer "macOS Monterey" application image iso package \
 
 ## Build Requirements
 
-- Swift **5.5**.
+- Swift **5.7**.
 - Runs on **macOS Catalina 10.15** and later.
 
 ## Download
