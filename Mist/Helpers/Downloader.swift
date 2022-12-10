@@ -47,6 +47,7 @@ class Downloader: NSObject {
             do {
                 let resumeData: Data = try Data(contentsOf: resumeDataURL)
                 task = session.downloadTask(withResumeData: resumeData)
+                PrettyPrint.print("Resuming download...")
             } catch {
                 task = session.downloadTask(with: source)
             }
@@ -142,6 +143,7 @@ class Downloader: NSObject {
                     do {
                         let resumeData: Data = try Data(contentsOf: resumeDataURL)
                         task = session.downloadTask(withResumeData: resumeData)
+                        PrettyPrint.print("Resuming download...")
                     } catch {
                         task = session.downloadTask(with: source)
                     }
