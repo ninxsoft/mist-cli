@@ -1,6 +1,6 @@
 # MIST - macOS Installer Super Tool
 
-![Latest Release](https://img.shields.io/github/v/release/ninxsoft/mist-cli?display_name=tag&label=Latest%20Release&sort=semver) [![Linting](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml) [![Unit Tests](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml) [![Build](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml)
+![Latest Release](https://img.shields.io/github/v/release/ninxsoft/mist-cli?display_name=tag&label=Latest%20Release&sort=semver) ![Downloads](https://img.shields.io/github/downloads/ninxsoft/mist-cli/total?label=Downloads) [![Linting](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml) [![Unit Tests](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml) [![Build](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml)
 
 A Mac command-line tool that automatically downloads **macOS Firmwares** / **Installers**:
 
