@@ -8,6 +8,8 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
 
 ## :information_source: Check out [Mist](https://github.com/ninxsoft/Mist) for the companion Mac app!
 
+## ![Slack](README%20Resources/Slack.png) Check out [#mist](https://macadmins.slack.com/archives/CF0CFM5B7) on the [Mac Admins Slack](https://macadmins.slack.com) to discuss all things mist-cli!
+
 ## Features
 
 - [x] List all available macOS Firmwares / Installers available for download:
