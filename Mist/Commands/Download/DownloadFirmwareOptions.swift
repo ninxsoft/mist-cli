@@ -12,21 +12,15 @@ struct DownloadFirmwareOptions: ParsableArguments {
 
     @Argument(help: """
     Specify a macOS name, version or build to download:
+    * macOS Ventura
     * macOS Monterey
     * macOS Big Sur
-    * macOS Catalina
-    * macOS Mojave
-    * macOS High Sierra
+    * 13.x (macOS Ventura)
     * 12.x (macOS Monterey)
     * 11.x (macOS Big Sur)
-    * 10.15.x (macOS Catalina)
-    * 10.14.x (macOS Mojave)
-    * 10.13.x (macOS High Sierra)
-    * 21F (macOS Monterey 12.4.x)
+    * 22A (macOS Ventura 13.0.x)
+    * 21G (macOS Monterey 12.6.x)
     * 20G (macOS Big Sur 11.6.x)
-    * 19H (macOS Catalina 10.15.7)
-    * 18G (macOS Mojave 10.14.6)
-    * 17G (macOS High Sierra 10.13.6)
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
@@ -41,6 +35,11 @@ struct DownloadFirmwareOptions: ParsableArguments {
     Only include macOS Firmwares that are compatible with this Mac in search results.
     """)
     var compatible: Bool = false
+
+    @Flag(name: .long, help: """
+    Cache downloaded files in the temporary downloads directory.
+    """)
+    var cacheDownloads: Bool = false
 
     @Flag(name: .shortAndLong, help: """
     Force overwriting existing macOS Downloads matching the provided filename(s).

@@ -12,18 +12,21 @@ struct ListInstallerOptions: ParsableArguments {
 
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
+    * macOS Ventura
     * macOS Monterey
     * macOS Big Sur
     * macOS Catalina
     * macOS Mojave
     * macOS High Sierra
+    * 13.x (macOS Ventura)
     * 12.x (macOS Monterey)
     * 11.x (macOS Big Sur)
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 21F (macOS Monterey 12.4.x)
-    * 20G (macOS Big Sur 11.6.x)
+    * 22A (macOS Ventura 13.0.x)
+    * 21G (macOS Monterey 12.6.x)
+    * 20G (macOS Big Sur 11.7.x)
     * 19H (macOS Catalina 10.15.7)
     * 18G (macOS Mojave 10.14.6)
     * 17G (macOS High Sierra 10.13.6)

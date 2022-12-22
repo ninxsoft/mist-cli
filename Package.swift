@@ -5,12 +5,12 @@ import PackageDescription
 
 /// Package configuration
 let package = Package(
-    name: "MIST",
+    name: "Mist",
     platforms: [
         .macOS(.v10_15)
     ],
     products: [
-        .executable(name: "mist", targets: ["MIST"])
+        .executable(name: "mist", targets: ["Mist"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.1.4"),
@@ -18,12 +18,20 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "MIST",
+            name: "Mist",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "Yams", package: "Yams")
             ],
-            path: "MIST"
+            path: "Mist"
+        ),
+        .testTarget(
+            name: "MistTests",
+            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Yams", package: "Yams")
+            ],
+            path: "MistTests"
         )
     ]
 )

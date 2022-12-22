@@ -49,7 +49,7 @@ struct Mist: ParsableCommand {
         }
     }
 
-    mutating func run() throws {
+    mutating func run() {
         print(Mist.helpMessage())
     }
 }

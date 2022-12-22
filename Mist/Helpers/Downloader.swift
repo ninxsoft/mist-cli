@@ -40,7 +40,23 @@ class Downloader: NSObject {
 
         sourceURL = source
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
-        let task: URLSessionDownloadTask = session.downloadTask(with: source)
+        let resumeDataURL: URL = DownloadFirmwareCommand.resumeDataURL(for: firmware, options: options)
+        let task: URLSessionDownloadTask
+
+        if FileManager.default.fileExists(atPath: resumeDataURL.path) {
+            do {
+                let resumeData: Data = try Data(contentsOf: resumeDataURL)
+                task = session.downloadTask(withResumeData: resumeData)
+                PrettyPrint.print("Resuming download...")
+            } catch {
+                task = session.downloadTask(with: source)
+            }
+
+            try FileManager.default.removeItem(at: resumeDataURL)
+        } else {
+            task = session.downloadTask(with: source)
+        }
+
         prefixString = source.lastPathComponent
         updateProgress(replacing: false)
         task.resume()
@@ -50,6 +66,13 @@ class Downloader: NSObject {
         while urlError != nil {
 
             if retries >= options.retries {
+
+                if let error: URLError = urlError,
+                    let data: Data = error.downloadTaskResumeData {
+                    PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...")
+                    try data.write(to: resumeDataURL)
+                }
+
                 throw MistError.maximumRetriesReached
             }
 
@@ -63,6 +86,8 @@ class Downloader: NSObject {
 
         updateProgress()
     }
+
+    // swiftlint:disable cyclomatic_complexity function_body_length
 
     /// Downloads a macOS Installer.
     ///
@@ -111,7 +136,24 @@ class Downloader: NSObject {
             updateProgress(replacing: false)
 
             if !FileManager.default.fileExists(atPath: destination.path) {
-                let task: URLSessionDownloadTask = session.downloadTask(with: source)
+                let resumeDataURL: URL = DownloadInstallerCommand.resumeDataURL(for: package, in: product, options: options)
+                let task: URLSessionDownloadTask
+
+                if FileManager.default.fileExists(atPath: resumeDataURL.path) {
+                    do {
+                        let resumeData: Data = try Data(contentsOf: resumeDataURL)
+                        task = session.downloadTask(withResumeData: resumeData)
+                        PrettyPrint.print("Resuming download...", replacing: true)
+                        PrettyPrint.print("")
+                    } catch {
+                        task = session.downloadTask(with: source)
+                    }
+
+                    try FileManager.default.removeItem(at: resumeDataURL)
+                } else {
+                    task = session.downloadTask(with: source)
+                }
+
                 task.resume()
                 semaphore.wait()
                 var retries: Int = 0
@@ -119,6 +161,13 @@ class Downloader: NSObject {
                 while urlError != nil {
 
                     if retries >= options.retries {
+
+                        if let error: URLError = urlError,
+                            let data: Data = error.downloadTaskResumeData {
+                            PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...")
+                            try data.write(to: resumeDataURL)
+                        }
+
                         throw MistError.maximumRetriesReached
                     }
 
@@ -139,6 +188,8 @@ class Downloader: NSObject {
             }
         }
     }
+
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     private func verify(_ package: Package, at destination: URL, current: String, total: Int) -> Bool {
 
