@@ -102,6 +102,11 @@ struct HTTP {
             let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
             let path: String = url.absoluteString.replacingOccurrences(of: "file://", with: "")
             !quiet ? PrettyPrint.print("There was an error retrieving macOS Firmware metadata from '\(path)'", prefixColor: .red) : Mist.noop()
+            
+            if url.scheme == "https" {
+                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...") : Mist.noop()
+            }
+            
             return nil
         }
 
