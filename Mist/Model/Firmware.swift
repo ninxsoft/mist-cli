@@ -60,6 +60,9 @@ struct Firmware: Decodable {
     var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
+    var filename: String {
+        url.components(separatedBy: "/").last ?? url
+    }
     var dictionary: [String: Any] {
         [
             "signed": signed,
