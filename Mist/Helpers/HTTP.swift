@@ -29,6 +29,13 @@ struct HTTP {
             if let url: URL = URL(string: Firmware.firmwaresURL),
                 let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, quiet: quiet) {
                 devices = dictionary
+                let directory: URL = metadataURL.deletingLastPathComponent()
+                
+                if !FileManager.default.fileExists(atPath: directory.path) {
+                    !quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+                    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
+                }
+                
                 !quiet ? PrettyPrint.print("Caching macOS Firmware metadata to '\(metadataCachePath)'...") : Mist.noop()
                 try string.write(to: metadataURL, atomically: true, encoding: .utf8)
             } else if FileManager.default.fileExists(atPath: metadataURL.path) {
