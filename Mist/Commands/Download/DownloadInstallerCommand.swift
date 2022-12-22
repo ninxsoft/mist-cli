@@ -498,17 +498,16 @@ struct DownloadInstallerCommand: ParsableCommand {
         return url
     }
 
-    mutating func run() throws {
+    mutating func run() {
 
         do {
             try DownloadInstallerCommand.run(options: options)
         } catch {
-            guard let mistError: MistError = error as? MistError else {
-                throw error
+            if let mistError: MistError = error as? MistError {
+                PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
+            } else {
+                PrettyPrint.print(error.localizedDescription, prefix: .ending, prefixColor: .red)
             }
-
-            PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
-            throw mistError
         }
     }
 }
