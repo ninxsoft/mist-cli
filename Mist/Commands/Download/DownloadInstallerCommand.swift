@@ -486,11 +486,6 @@ struct DownloadInstallerCommand: ParsableCommand {
             .replacingOccurrences(of: "//", with: "/")
     }
 
-    static func temporaryScriptsDirectory(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.temporaryDirectory)/\(product.identifier)-Scripts"
-            .replacingOccurrences(of: "//", with: "/")
-    }
-
     static func resumeDataURL(for package: Package, in product: Product, options: DownloadInstallerOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: product, options: options)
         let string: String = "\(temporaryDirectory)/\(package.filename).resumeData"

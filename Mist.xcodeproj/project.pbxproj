@@ -20,7 +20,6 @@
 		393C237126DF84E0004755BF /* Sequence+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C237026DF84E0004755BF /* Sequence+Extension.swift */; };
 		3967935326D726CE00DC2D2D /* ListInstallerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935226D726CE00DC2D2D /* ListInstallerOptions.swift */; };
 		3967935526D7272100DC2D2D /* ListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935426D7272100DC2D2D /* ListCommand.swift */; };
-		3967935A26D7293C00DC2D2D /* Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935926D7293C00DC2D2D /* Kind.swift */; };
 		3967935C26D7304500DC2D2D /* Firmware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935B26D7304500DC2D2D /* Firmware.swift */; };
 		3967935F26D74BAC00DC2D2D /* DownloadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */; };
 		3967936126D74C2400DC2D2D /* DownloadInstallerOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */; };
@@ -77,7 +76,6 @@
 		393C237026DF84E0004755BF /* Sequence+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+Extension.swift"; sourceTree = "<group>"; };
 		3967935226D726CE00DC2D2D /* ListInstallerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListInstallerOptions.swift; sourceTree = "<group>"; };
 		3967935426D7272100DC2D2D /* ListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommand.swift; sourceTree = "<group>"; };
-		3967935926D7293C00DC2D2D /* Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kind.swift; sourceTree = "<group>"; };
 		3967935B26D7304500DC2D2D /* Firmware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firmware.swift; sourceTree = "<group>"; };
 		3967935E26D74BAC00DC2D2D /* DownloadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCommand.swift; sourceTree = "<group>"; };
 		3967936026D74C2400DC2D2D /* DownloadInstallerOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadInstallerOptions.swift; sourceTree = "<group>"; };
@@ -224,7 +222,6 @@
 				390B719C281BA61E00875374 /* Chunk.swift */,
 				39F6D3382843916D003C2F25 /* DownloadOutputType.swift */,
 				3967935B26D7304500DC2D2D /* Firmware.swift */,
-				3967935926D7293C00DC2D2D /* Kind.swift */,
 				393C236E26DF68BF004755BF /* ListOutputType.swift */,
 				57D135AA25FED139003467B2 /* MistError.swift */,
 				57D1358125F9F8E5003467B2 /* Package.swift */,
@@ -422,7 +419,6 @@
 				3967935C26D7304500DC2D2D /* Firmware.swift in Sources */,
 				393C236F26DF68BF004755BF /* ListOutputType.swift in Sources */,
 				57D1357825F9F308003467B2 /* Downloader.swift in Sources */,
-				3967935A26D7293C00DC2D2D /* Kind.swift in Sources */,
 				39F6D3432844833E003C2F25 /* DownloadFirmwareOptions.swift in Sources */,
 				39F6D33D2844754C003C2F25 /* ListFirmwareCommand.swift in Sources */,
 				390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */,

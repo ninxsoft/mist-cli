@@ -54,9 +54,6 @@ struct Firmware: Decodable {
         String(date.prefix(10))
     }
     let signed: Bool
-    var signedDescription: String {
-        signed ? "Yes" : "No"
-    }
     var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }

@@ -72,9 +72,6 @@ struct Product: Decodable {
     var installerURL: URL {
         URL(fileURLWithPath: "/Applications/Install \(name).app")
     }
-    var zipName: String {
-        "Install \(name) \(version) \(build).zip".replacingOccurrences(of: " ", with: "-")
-    }
     var dictionary: [String: Any] {
         [
             "identifier": identifier,
