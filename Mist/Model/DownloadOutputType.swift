@@ -6,7 +6,6 @@
 //
 
 import ArgumentParser
-import Foundation
 
 enum DownloadOutputType: String, ExpressibleByArgument {
     // swiftlint:disable redundant_string_enum_value

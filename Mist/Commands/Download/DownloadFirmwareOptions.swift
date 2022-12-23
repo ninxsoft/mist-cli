@@ -6,7 +6,6 @@
 //
 
 import ArgumentParser
-import Foundation
 
 struct DownloadFirmwareOptions: ParsableArguments {
 

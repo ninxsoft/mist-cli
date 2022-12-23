@@ -6,7 +6,6 @@
 //
 
 import ArgumentParser
-import Foundation
 
 struct ListCommand: ParsableCommand {
     static var configuration: CommandConfiguration = CommandConfiguration(

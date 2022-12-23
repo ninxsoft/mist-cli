@@ -5,8 +5,6 @@
 //  Created by Nindi Gill on 12/3/21.
 //
 
-import Foundation
-
 /// Helper Struct used to format printed messages.
 struct PrettyPrint {
 

@@ -5,8 +5,6 @@
 //  Created by Nindi Gill on 16/3/21.
 //
 
-import Foundation
-
 enum Catalog: String, CaseIterable {
     case standard = "standard"
     case customer = "customer"

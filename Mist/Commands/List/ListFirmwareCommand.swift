@@ -7,7 +7,6 @@
 
 import ArgumentParser
 import Foundation
-import Yams
 
 /// Struct used to perform **List Firmware** operations.
 struct ListFirmwareCommand: ParsableCommand {
