@@ -7,8 +7,12 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 /// Helper Struct used to perform HTTP queries.
 struct HTTP {
+
+    // swiftlint:disable cyclomatic_complexity
 
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
     ///
@@ -30,12 +34,12 @@ struct HTTP {
                 let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, quiet: quiet) {
                 devices = dictionary
                 let directory: URL = metadataURL.deletingLastPathComponent()
-                
+
                 if !FileManager.default.fileExists(atPath: directory.path) {
                     !quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
                 }
-                
+
                 !quiet ? PrettyPrint.print("Caching macOS Firmware metadata to '\(metadataCachePath)'...") : Mist.noop()
                 try string.write(to: metadataURL, atomically: true, encoding: .utf8)
             } else if FileManager.default.fileExists(atPath: metadataURL.path) {
@@ -85,6 +89,8 @@ struct HTTP {
         return firmwares
     }
 
+    // swiftlint:enable cyclomatic_complexity
+
     /// Retrieves a dictionary containing macOS Firmwares metadata.
     ///
     /// - Parameters:
@@ -102,11 +108,11 @@ struct HTTP {
             let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
             let path: String = url.absoluteString.replacingOccurrences(of: "file://", with: "")
             !quiet ? PrettyPrint.print("There was an error retrieving macOS Firmware metadata from '\(path)'", prefixColor: .red) : Mist.noop()
-            
+
             if url.scheme == "https" {
                 !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...") : Mist.noop()
             }
-            
+
             return nil
         }
 
