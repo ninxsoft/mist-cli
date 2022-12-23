@@ -69,8 +69,14 @@ struct Product: Decodable {
     var allDownloads: [Package] {
         [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)] + packages.sorted { $0.filename < $1.filename }
     }
-    var installerURL: URL {
-        URL(fileURLWithPath: "/Applications/Install \(name).app")
+    var temporaryDiskImageMountPointURL: URL {
+        URL(fileURLWithPath: "/Volumes/\(identifier)")
+    }
+    var temporaryInstallerURL: URL {
+        temporaryDiskImageMountPointURL.appendingPathComponent("/Applications/Install \(name).app")
+    }
+    var temporaryISOMountPointURL: URL {
+        URL(fileURLWithPath: "/Volumes/Install \(name)")
     }
     var dictionary: [String: Any] {
         [
@@ -97,6 +103,9 @@ struct Product: Decodable {
             "beta": beta
         ]
     }
+    var catalinaOrNewer: Bool {
+        bigSurOrNewer || version.range(of: "^10\\.15\\.", options: .regularExpression) != nil
+    }
     var bigSurOrNewer: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }
@@ -105,6 +114,9 @@ struct Product: Decodable {
     }
     var size: Int64 {
         Int64(packages.map { $0.size }.reduce(0, +))
+    }
+    var diskImageSize: Double {
+        ceil(Double(size) / Double(Int64.gigabyte)) + 1.5
     }
     var isoSize: Double {
         ceil(Double(size) / Double(Int64.gigabyte)) + 1.5
