@@ -48,6 +48,11 @@ struct ListFirmwareOptions: ParsableArguments {
     """)
     var exportPath: String?
 
+    @Option(name: .customLong("metadata-cache"), help: """
+    Optionally specify the path to cache the macOS Firmwares metadata JSON file. This cache is used when mist is unable to retrieve macOS Firmwares remotely.
+    """)
+    var metadataCachePath: String = .firmwaresMetadataCachePath
+
     @Option(name: .shortAndLong, help: """
     Specify the standard output format:
     * ascii (ASCII table)

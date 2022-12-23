@@ -15,6 +15,7 @@ enum MistError: Error {
     case invalidUser
     case missingDownloadSearchString
     case missingFirmwareName
+    case missingFirmwareMetadataCachePath
     case missingApplicationName
     case missingImageName
     case missingImageSigningIdentity
@@ -50,6 +51,8 @@ enum MistError: Error {
             return "Download <search-string> is missing or empty."
         case .missingFirmwareName:
             return "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
+        case .missingFirmwareMetadataCachePath:
+            return "[--metadata-cache] macOS Firmware metadata cache path is missing or empty."
         case .missingApplicationName:
             return "[--application-name] macOS Installer output filename is missing or empty."
         case .missingImageName:
