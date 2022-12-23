@@ -35,6 +35,7 @@ extension String {
     static let abstract: String = "macOS Installer Super Tool."
     static let discussion: String = "Automatically download macOS Firmwares / Installers."
     static let temporaryDirectory: String = "/private/tmp/com.ninxsoft.mist"
+    static let firmwaresMetadataCachePath: String = "/Users/Shared/Mist/firmwares.json"
     static let outputDirectory: String = "/Users/Shared/Mist"
     static let filenameTemplate: String = "Install %NAME% %VERSION%-%BUILD%"
     static let packageIdentifierTemplate: String = "com.company.pkg.%NAME%.%VERSION%.%BUILD%"

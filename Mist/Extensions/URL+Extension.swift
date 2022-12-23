@@ -37,7 +37,6 @@ extension URL {
             let data: Data = Data(shasum.finalize())
             return data.map { String(format: "%02hhx", $0) }.joined()
         } catch {
-            print(error.localizedDescription)
             return nil
         }
     }
