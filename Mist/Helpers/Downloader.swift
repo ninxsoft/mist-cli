@@ -19,7 +19,9 @@ class Downloader: NSObject {
     private var urlError: URLError?
     private var mistError: MistError?
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
+    private var noAnsi: Bool = false
     private var quiet: Bool = false
+    private var previousTime: Date = Date()
 
     /// Downloads a macOS Firmware.
     ///
@@ -29,9 +31,9 @@ class Downloader: NSObject {
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to download.
     func download(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
+        noAnsi = options.noAnsi
         quiet = options.quiet
-        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let source: URL = URL(string: firmware.url) else {
@@ -47,7 +49,7 @@ class Downloader: NSObject {
             do {
                 let resumeData: Data = try Data(contentsOf: resumeDataURL)
                 task = session.downloadTask(withResumeData: resumeData)
-                PrettyPrint.print("Resuming download...")
+                !quiet ? PrettyPrint.print("Resuming download...", noAnsi: noAnsi) : Mist.noop()
             } catch {
                 task = session.downloadTask(with: source)
             }
@@ -69,7 +71,7 @@ class Downloader: NSObject {
 
                 if let error: URLError = urlError,
                     let data: Data = error.downloadTaskResumeData {
-                    PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...")
+                    !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                     try data.write(to: resumeDataURL)
                 }
 
@@ -98,8 +100,9 @@ class Downloader: NSObject {
     /// - Throws: A `MistError` if the macOS Installer fails to download.
     func download(_ product: Product, options: DownloadInstallerOptions) throws {
 
+        noAnsi = options.noAnsi
         quiet = options.quiet
-        !quiet ? PrettyPrint.printHeader("DOWNLOAD") : Mist.noop()
+        !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
@@ -143,8 +146,8 @@ class Downloader: NSObject {
                     do {
                         let resumeData: Data = try Data(contentsOf: resumeDataURL)
                         task = session.downloadTask(withResumeData: resumeData)
-                        PrettyPrint.print("Resuming download...", replacing: true)
-                        PrettyPrint.print("")
+                        !quiet ? PrettyPrint.print("Resuming download...", noAnsi: noAnsi, replacing: true) : Mist.noop()
+                        !quiet ? PrettyPrint.print("", noAnsi: noAnsi) : Mist.noop()
                     } catch {
                         task = session.downloadTask(with: source)
                     }
@@ -164,7 +167,7 @@ class Downloader: NSObject {
 
                         if let error: URLError = urlError,
                             let data: Data = error.downloadTaskResumeData {
-                            PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...")
+                            !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                             try data.write(to: resumeDataURL)
                         }
 
@@ -195,20 +198,20 @@ class Downloader: NSObject {
 
         let paddingLength: Int = "[ \(current) / \(total) ]".count
         let padding: String = String(repeating: " ", count: paddingLength)
-        !quiet ? PrettyPrint.print("\(padding) Verifying...", prefix: .continuing) : Mist.noop()
+        !quiet ? PrettyPrint.print("\(padding) Verifying...", noAnsi: noAnsi, prefix: .continuing) : Mist.noop()
 
         do {
             try Validator.validate(package, at: destination)
-            !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", prefix: .continuing, replacing: true) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Verifying... \("✓✓✓".color(.green))", noAnsi: noAnsi, prefix: .continuing, replacing: true) : Mist.noop()
             return true
         } catch {
-            !quiet ? PrettyPrint.print("\(padding) Verifying... \("xxx".color(.red))", prefix: .continuing, replacing: true) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Verifying... \("xxx".color(.red))", noAnsi: noAnsi, prefix: .continuing, replacing: true) : Mist.noop()
 
             if let error: MistError = error as? MistError {
-                !quiet ? PrettyPrint.print("\(padding) \(error.description)", prefix: .continuing) : Mist.noop()
+                !quiet ? PrettyPrint.print("\(padding) \(error.description)", noAnsi: noAnsi, prefix: .continuing) : Mist.noop()
             }
 
-            !quiet ? PrettyPrint.print("\(padding) Trying again...", prefix: .continuing) : Mist.noop()
+            !quiet ? PrettyPrint.print("\(padding) Trying again...", noAnsi: noAnsi, prefix: .continuing) : Mist.noop()
 
             if FileManager.default.fileExists(atPath: destination.path) {
                 try? FileManager.default.removeItem(at: destination)
@@ -228,8 +231,8 @@ class Downloader: NSObject {
 
         self.urlError = nil
 
-        !quiet ? PrettyPrint.print(urlError.localizedDescription, prefixColor: .red) : Mist.noop()
-        !quiet ? PrettyPrint.print("Retrying attempt [ \(retry) / \(maximumRetries) ] in \(delay) seconds...") : Mist.noop()
+        !quiet ? PrettyPrint.print(urlError.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
+        !quiet ? PrettyPrint.print("Retrying attempt [ \(retry) / \(maximumRetries) ] in \(delay) seconds...", noAnsi: noAnsi) : Mist.noop()
         sleep(UInt32(delay))
 
         let task: URLSessionDownloadTask = session.downloadTask(withResumeData: data)
@@ -247,7 +250,7 @@ class Downloader: NSObject {
         let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
         let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
         let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
-        !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", replacing: replacing) : Mist.noop()
+        !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", noAnsi: noAnsi, replacing: replacing) : Mist.noop()
     }
 }
 
@@ -256,7 +259,17 @@ extension Downloader: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         current = totalBytesWritten
         total = totalBytesExpectedToWrite
-        updateProgress()
+
+        if noAnsi {
+            let currentTime: Date = Date()
+
+            if currentTime.timeIntervalSince1970 - previousTime.timeIntervalSince1970 > 1.0 {
+                updateProgress()
+                previousTime = currentTime
+            }
+        } else {
+            updateProgress()
+        }
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {

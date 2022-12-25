@@ -20,10 +20,11 @@ struct HTTP {
     ///   - includeBetas:      Set to `true` to prevent skipping of macOS Firmwares in search results.
     ///   - compatible:        Set to `true` to filter down compatible macOS Firmwares in search results.
     ///   - metadataCachePath: Path to cache the macOS Firmwares metadata JSON file.
+    ///   - noAnsi:            Set to `true` to print the string without any color or formatting.
     ///   - quiet:             Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Firmwares.
-    static func retrieveFirmwares(includeBetas: Bool, compatible: Bool, metadataCachePath: String, quiet: Bool = false) -> [Firmware] {
+    static func retrieveFirmwares(includeBetas: Bool, compatible: Bool, metadataCachePath: String, noAnsi: Bool, quiet: Bool = false) -> [Firmware] {
         var firmwares: [Firmware] = []
 
         do {
@@ -31,25 +32,25 @@ struct HTTP {
             let metadataURL: URL = URL(fileURLWithPath: metadataCachePath)
 
             if let url: URL = URL(string: Firmware.firmwaresURL),
-                let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, quiet: quiet) {
+                let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, noAnsi: noAnsi, quiet: quiet) {
                 devices = dictionary
                 let directory: URL = metadataURL.deletingLastPathComponent()
 
                 if !FileManager.default.fileExists(atPath: directory.path) {
-                    !quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", noAnsi: noAnsi) : Mist.noop()
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
                 }
 
-                !quiet ? PrettyPrint.print("Caching macOS Firmware metadata to '\(metadataCachePath)'...") : Mist.noop()
+                !quiet ? PrettyPrint.print("Caching macOS Firmware metadata to '\(metadataCachePath)'...", noAnsi: noAnsi) : Mist.noop()
                 try string.write(to: metadataURL, atomically: true, encoding: .utf8)
             } else if FileManager.default.fileExists(atPath: metadataURL.path) {
-                !quiet ? PrettyPrint.print("Retrieving macOS Firmware metadata from '\(metadataCachePath)'...") : Mist.noop()
+                !quiet ? PrettyPrint.print("Retrieving macOS Firmware metadata from '\(metadataCachePath)'...", noAnsi: noAnsi) : Mist.noop()
 
-                if let (_, dictionary): (String, [String: Any]) = try retrieveMetadata(metadataURL, quiet: quiet) {
+                if let (_, dictionary): (String, [String: Any]) = try retrieveMetadata(metadataURL, noAnsi: noAnsi, quiet: quiet) {
                     devices = dictionary
                 }
             } else {
-                !quiet ? PrettyPrint.print("Unable to retrieve macOS Firmware metadata from missing cache '\(metadataCachePath)'", prefixColor: .red) : Mist.noop()
+                !quiet ? PrettyPrint.print("Unable to retrieve macOS Firmware metadata from missing cache '\(metadataCachePath)'", noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
 
             let supportedBuilds: [String] = Firmware.supportedBuilds()
@@ -74,7 +75,7 @@ struct HTTP {
                 }
             }
         } catch {
-            !quiet ? PrettyPrint.print(error.localizedDescription, prefixColor: .red) : Mist.noop()
+            !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
         }
 
         if !includeBetas {
@@ -94,23 +95,24 @@ struct HTTP {
     /// Retrieves a dictionary containing macOS Firmwares metadata.
     ///
     /// - Parameters:
-    ///   - url:   URL to the macOS Firmwares metadata JSON file.
-    ///   - quiet: Set to `true` to suppress verbose output.
+    ///   - url:    URL to the macOS Firmwares metadata JSON file.
+    ///   - noAnsi: Set to `true` to print the string without any color or formatting.
+    ///   - quiet:  Set to `true` to suppress verbose output.
     ///
     /// - Throws: An error if the macOS Firmwares metadata cannot be retrieved.
     ///
     /// - Returns: A dictionary of macOS Firmwares metadata.
-    private static func retrieveMetadata(_ url: URL, quiet: Bool) throws -> (String, [String: Any])? {
+    private static func retrieveMetadata(_ url: URL, noAnsi: Bool, quiet: Bool) throws -> (String, [String: Any])? {
         let string: String = try String(contentsOf: url, encoding: .utf8)
 
         guard let data: Data = string.data(using: .utf8),
             let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
             let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
             let path: String = url.absoluteString.replacingOccurrences(of: "file://", with: "")
-            !quiet ? PrettyPrint.print("There was an error retrieving macOS Firmware metadata from '\(path)'", prefixColor: .red) : Mist.noop()
+            !quiet ? PrettyPrint.print("There was an error retrieving macOS Firmware metadata from '\(path)'", noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
 
             if url.scheme == "https" {
-                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...") : Mist.noop()
+                !quiet ? PrettyPrint.print("This may indicate the API is being updated, please try again shortly...", noAnsi: noAnsi) : Mist.noop()
             }
 
             return nil
@@ -155,16 +157,17 @@ struct HTTP {
     ///   - catalogURLs:  The Apple Software Update catalog URLs to base the search queries against.
     ///   - includeBetas: Set to `true` to prevent skipping of macOS Installers in search results.
     ///   - compatible:   Set to `true` to filter down compatible macOS Installers in search results.
+    ///   - noAnsi:       Set to `true` to print the string without any color or formatting.
     ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, quiet: Bool = false) -> [Product] {
+    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, noAnsi: Bool, quiet: Bool = false) -> [Product] {
         var products: [Product] = []
 
         for catalogURL in catalogURLs {
 
             guard let url: URL = URL(string: catalogURL) else {
-                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...") : Mist.noop()
+                !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...", noAnsi: noAnsi) : Mist.noop()
                 continue
             }
 
@@ -172,7 +175,7 @@ struct HTTP {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
                 guard let data: Data = string.data(using: .utf8) else {
-                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("Unable to get data from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
                 }
 
@@ -180,13 +183,13 @@ struct HTTP {
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
                 }
 
-                products.append(contentsOf: getProducts(from: productsDictionary, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
+                products.append(contentsOf: getProducts(from: productsDictionary, noAnsi: noAnsi, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
             } catch {
-                !quiet ? PrettyPrint.print(error.localizedDescription, prefixColor: .red) : Mist.noop()
+                !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
         }
 
@@ -206,10 +209,11 @@ struct HTTP {
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary values obtained from the Apple Software Update Catalog Property List.
+    ///   - noAnsi:     Set to `true` to print the string without any color or formatting.
     ///   - quiet:      Set to `true` to suppress verbose output.
     ///
     /// - Returns: The filtered list of macOS Installers.
-    private static func getProducts(from dictionary: [String: Any], quiet: Bool) -> [Product] {
+    private static func getProducts(from dictionary: [String: Any], noAnsi: Bool, quiet: Bool) -> [Product] {
 
         var products: [Product] = []
         let dateFormatter: DateFormatter = DateFormatter()
@@ -234,7 +238,7 @@ struct HTTP {
                     let version: String = versionFromDistribution(string),
                     let build: String = buildFromDistribution(string),
                     !name.isEmpty && !version.isEmpty && !build.isEmpty else {
-                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...") : Mist.noop()
+                    !quiet ? PrettyPrint.print("No 'Name', 'Version' or 'Build' found, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
                 }
 
@@ -259,7 +263,7 @@ struct HTTP {
                 let product: Product = try JSONDecoder().decode(Product.self, from: productData)
                 products.append(product)
             } catch {
-                !quiet ? PrettyPrint.print(error.localizedDescription, prefixColor: .red) : Mist.noop()
+                !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
         }
 

@@ -88,6 +88,11 @@ struct DownloadFirmwareOptions: ParsableArguments {
     """)
     var metadataCachePath: String = .firmwaresMetadataCachePath
 
+    @Flag(name: .long, help: """
+    Remove all ANSI escape sequences (ie. strip all color and formatting) from standard output.
+    """)
+    var noAnsi: Bool = false
+
     @Option(name: .long, help: """
     Number of times to attempt resuming a download before failing.
     """)

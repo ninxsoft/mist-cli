@@ -53,6 +53,11 @@ struct ListFirmwareOptions: ParsableArguments {
     """)
     var metadataCachePath: String = .firmwaresMetadataCachePath
 
+    @Flag(name: .long, help: """
+    Remove all ANSI escape sequences (ie. strip all color and formatting) from standard output.
+    """)
+    var noAnsi: Bool = false
+
     @Option(name: .shortAndLong, help: """
     Specify the standard output format:
     * ascii (ASCII table)
