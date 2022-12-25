@@ -113,8 +113,8 @@ struct Generator {
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        !options.quiet ? PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
-        try FileManager.default.copyItem(at: product.installerURL, to: destinationURL)
+        !options.quiet ? PrettyPrint.print("Copying '\(product.temporaryInstallerURL.path)' to '\(destinationURL.path)'...") : Mist.noop()
+        try FileManager.default.copyItem(at: product.temporaryInstallerURL, to: destinationURL)
     }
 
     /// Generates a macOS Installer Disk Image, optionally codesigning.
@@ -139,8 +139,8 @@ struct Generator {
         !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...") : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        !options.quiet ? PrettyPrint.print("Copying '\(product.installerURL.path)' to '\(temporaryApplicationURL.path)'...") : Mist.noop()
-        try FileManager.default.copyItem(at: product.installerURL, to: temporaryApplicationURL)
+        !options.quiet ? PrettyPrint.print("Copying '\(product.temporaryInstallerURL.path)' to '\(temporaryApplicationURL.path)'...") : Mist.noop()
+        try FileManager.default.copyItem(at: product.temporaryInstallerURL, to: temporaryApplicationURL)
 
         if !options.force {
 
@@ -193,7 +193,6 @@ struct Generator {
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(product.identifier).cdr")
-        let mountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)")
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
@@ -208,16 +207,16 @@ struct Generator {
         var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(product.isoSize)g", dmgURL.path]
         _ = try Shell.execute(arguments)
 
-        !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(mountPointURL.path)'...") : Mist.noop()
-        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-mountpoint", mountPointURL.path]
+        !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(product.temporaryISOMountPointURL.path)'...") : Mist.noop()
+        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-mountpoint", product.temporaryISOMountPointURL    .path]
         _ = try Shell.execute(arguments)
 
-        !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(mountPointURL.path)'...") : Mist.noop()
-        arguments = ["\(product.installerURL.path)/Contents/Resources/createinstallmedia", "--volume", mountPointURL.path, "--nointeraction"]
+        !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(product.temporaryISOMountPointURL.path)'...") : Mist.noop()
+        arguments = ["\(product.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", product.temporaryISOMountPointURL.path, "--nointeraction"]
         _ = try Shell.execute(arguments)
 
-        !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(mountPointURL.path)'...") : Mist.noop()
-        arguments = ["hdiutil", "detach", mountPointURL.path, "-force"]
+        !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(product.temporaryISOMountPointURL.path)'...") : Mist.noop()
+        arguments = ["hdiutil", "detach", product.temporaryISOMountPointURL.path, "-force"]
         _ = try Shell.execute(arguments)
 
         if !options.force {
@@ -279,7 +278,7 @@ struct Generator {
         } else {
             let identifier: String = DownloadInstallerCommand.packageIdentifier(for: product, options: options)
             let version: String = "\(product.version)-\(product.build)"
-            var arguments: [String] = ["pkgbuild", "--component", product.installerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
+            var arguments: [String] = ["pkgbuild", "--component", product.temporaryInstallerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 
             if let identity: String = options.packageSigningIdentity,
                 !identity.isEmpty {

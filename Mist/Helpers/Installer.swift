@@ -24,23 +24,36 @@ struct Installer {
         }
 
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+        let imageURL: URL = DownloadInstallerCommand.temporaryImage(for: product, options: options)
         let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
 
         !options.quiet ? PrettyPrint.printHeader("INSTALL") : Mist.noop()
 
-        if FileManager.default.fileExists(atPath: product.installerURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old installer '\(product.installerURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: product.installerURL)
+        if FileManager.default.fileExists(atPath: imageURL.path) {
+            !options.quiet ? PrettyPrint.print("Deleting old image '\(imageURL.path)'...") : Mist.noop()
+            try FileManager.default.removeItem(at: imageURL)
         }
 
-        if product.bigSurOrNewer && options.outputType == [.package] {
-            !options.quiet ? PrettyPrint.print("Nothing to do!") : Mist.noop()
-        } else {
-            !options.quiet ? PrettyPrint.print("Creating new installer '\(product.installerURL.path)'...") : Mist.noop()
-            let arguments: [String] = ["installer", "-pkg", distributionURL.path, "-target", "/"]
-            let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
-            _ = try Shell.execute(arguments, environment: variables)
-            !options.quiet ? PrettyPrint.print("Created new installer '\(product.installerURL.path)'") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Creating image '\(imageURL.path)'...") : Mist.noop()
+        var arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-layout", "SPUD", "-size", "\(product.diskImageSize)g", "-volname", product.identifier, imageURL.path]
+        _ = try Shell.execute(arguments)
+
+        !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(product.temporaryDiskImageMountPointURL.path)'...") : Mist.noop()
+        arguments = ["hdiutil", "attach", imageURL.path, "-noverify", "-mountpoint", product.temporaryDiskImageMountPointURL.path]
+        _ = try Shell.execute(arguments)
+
+        !options.quiet ? PrettyPrint.print("Creating new installer '\(product.temporaryInstallerURL.path)'...") : Mist.noop()
+        arguments = ["installer", "-pkg", distributionURL.path, "-target", product.temporaryDiskImageMountPointURL.path]
+        let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
+        _ = try Shell.execute(arguments, environment: variables)
+
+        if product.catalinaOrNewer {
+            arguments = ["ditto", "\(product.temporaryDiskImageMountPointURL.path)Applications", "\(product.temporaryDiskImageMountPointURL.path)/Applications"]
+            _ = try Shell.execute(arguments)
+            arguments = ["rm", "-r", "\(product.temporaryDiskImageMountPointURL.path)Applications"]
+            _ = try Shell.execute(arguments)
         }
+
+        !options.quiet ? PrettyPrint.print("Created new installer '\(product.temporaryInstallerURL.path)'") : Mist.noop()
     }
 }

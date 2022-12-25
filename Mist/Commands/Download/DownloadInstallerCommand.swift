@@ -52,7 +52,11 @@ struct DownloadInstallerCommand: ParsableCommand {
         try setup(product, options: options)
         try verifyFreeSpace(product, options: options)
         try Downloader().download(product, options: options)
-        try Installer.install(product, options: options)
+
+        if !product.bigSurOrNewer || options.outputType != [.package] {
+            try Installer.install(product, options: options)
+        }
+
         try Generator.generate(product, options: options)
         try teardown(product, options: options)
         try export(product, options: options)
@@ -360,19 +364,25 @@ struct DownloadInstallerCommand: ParsableCommand {
     private static func teardown(_ product: Product, options: DownloadInstallerOptions) throws {
 
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
+        let imageURL: URL = temporaryImage(for: product, options: options)
         var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN") : Mist.noop()
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
-            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...") : Mist.noop()
-            try FileManager.default.removeItem(at: temporaryURL)
+        if !product.bigSurOrNewer || options.outputType != [.package] {
+            !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(product.temporaryDiskImageMountPointURL.path)'...") : Mist.noop()
+            let arguments: [String] = ["hdiutil", "detach", product.temporaryDiskImageMountPointURL.path, "-force"]
+            _ = try Shell.execute(arguments)
             processing = true
         }
 
-        if FileManager.default.fileExists(atPath: product.installerURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting installer '\(product.installerURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
-            try FileManager.default.removeItem(at: product.installerURL)
+        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
+            try FileManager.default.removeItem(at: temporaryURL)
+            processing = true
+        } else if FileManager.default.fileExists(atPath: imageURL.path) {
+            !options.quiet ? PrettyPrint.print("Deleting image '\(imageURL.path)'...", prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
+            try FileManager.default.removeItem(at: imageURL)
             processing = true
         }
 
@@ -484,6 +494,10 @@ struct DownloadInstallerCommand: ParsableCommand {
     static func temporaryDirectory(for product: Product, options: DownloadInstallerOptions) -> String {
         "\(options.temporaryDirectory)/\(product.identifier)"
             .replacingOccurrences(of: "//", with: "/")
+    }
+
+    static func temporaryImage(for product: Product, options: DownloadInstallerOptions) -> URL {
+        URL(fileURLWithPath: "\(temporaryDirectory(for: product, options: options))/\(product.identifier).dmg")
     }
 
     static func resumeDataURL(for package: Package, in product: Product, options: DownloadInstallerOptions) -> URL {
