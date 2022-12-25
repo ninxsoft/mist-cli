@@ -59,6 +59,10 @@ SUBCOMMANDS:
   See 'mist help <subcommand>' for detailed help.
 ```
 
+**Note:** Depending on what Mist downloads, you may require allowing **Full Disk Access** for your **Terminal** application via [System Settings](https://support.apple.com/en-us/guide/mac-help/mh15217/13.0/mac/13.0):
+
+![Full Disk Access](README%20Resources/Full%20Disk%20Access.png)
+
 ## Examples
 
 ```bash
