@@ -6,9 +6,13 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
 
 ![Example Screenshot](README%20Resources/Example.png)
 
+<!-- markdownlint-disable no-trailing-punctuation -->
+
 ## :information_source: Check out [Mist](https://github.com/ninxsoft/Mist) for the companion Mac app!
 
 ## ![Slack](README%20Resources/Slack.png) Check out [#mist](https://macadmins.slack.com/archives/CF0CFM5B7) on the [Mac Admins Slack](https://macadmins.slack.com) to discuss all things mist-cli!
+
+<!-- markdownlint-enable no-trailing-punctuation -->
 
 ## Features
 
@@ -107,22 +111,22 @@ mist download installer "macOS Ventura" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "13.0.1" application
+mist download installer "13.1" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # with a custom name:
-mist download installer "13.0.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
+mist download installer "13.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a Disk Image with a custom name:
-mist download installer "13.0.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+mist download installer "13.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build for Inte Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a codesigned Disk Image output to a custom directory:
-mist download installer "22A400" image \
+mist download installer "22C65" image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
@@ -161,159 +165,6 @@ mist download installer "macOS Ventura" application image iso package \
 - JP Simard ([jpsim](https://github.com/jpsim)) for [Yams](https://github.com/jpsim/Yams), used to export YAML.
 - Callum Jones ([cj123](https://github.com/cj123)) for [IPSW Downloads API](https://ipswdownloads.docs.apiary.io), used to determine macOS Firmware metadata.
 - Timothy Sutton ([timsutton](https://github.com/timsutton)) for the [mist Homebrew Formula](https://formulae.brew.sh/formula/mist).
-
-## Version History
-
-- 1.9.1
-
-  - Firmware SHA-1 checksum validation is now working correctly again - thanks Nathan Pierce ([Norse Gaud](https://github.com/NorseGaud))!
-
-- 1.9
-
-  - Added support for macOS Ventura 13
-  - macOS Installer files are retried when invalid cache files are detected on-disk
-  - Calculating ISO image sizes is _slightly_ more dynamic (to better support macOS Ventura ISOs)
-  - macOS Firmware / Installer lists are now sorted by version, then by date
-  - Firmwares with invalid SHA-1 checksums are now ignored and unavailable for download
-  - SHA-1 checksum validation logic is now implemented in Swift (no longer shells out to `shasum`)
-  - stdout stream buffering is disabled to improve output frequency - thanks Nate Felton ([n8felton](https://github.com/n8felton))!
-  - Checking for mist updates now points to the recently renamed [mist-cli](https://github.com/ninxsoft/mist-cli) repository URL
-  - Looking up the version of mist-cli is now performed using the built-in `mist --version` command
-  - General code refactoring
-
-  **Note:** To help avoid conflicts with the [Mist](https://github.com/ninxsoft/Mist) companion Mac app, the mist-cli installer package + installer package identifier have been renamed to `mist-cli` and `com.ninxsoft.pkg.mist-cli` respectively.
-
-- 1.8
-
-  - `mist` is now a [Universal macOS Binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary)
-    - Supports Apple Silicon
-    - Supports Intel-based Macs
-  - `mist` now supports automatic retrying failed downloads:
-    - Specify a value to the `--retries` option to override the total number of retry attempts **(default: 10)**
-    - Specify a value to the `--retry-delay` option to override the number of seconds to wait before the next retry attempt **(default: 30)**
-  - To help keep the `mist` command line options unambiguous, the `-k, --kind` option has been removed:
-    - Use `mist list firmware` to list all available macOS Firmwares
-    - Use `mist list installer` to list all available macOS Installers
-    - Use `mist download firmware` to download a macOS Firmware
-    - Use `mist download installer` to download a macOS Installer
-    - Add `--help` to any of the above commands for additional information
-  - Firmware downloads now have `0x644` POSIX permissions correctly applied upon successful download
-  - Installer downloads can be cached using the `--cache-downloads` flag
-    - Cached downloads will be stored in the temporary directory
-    - Supply a value to the `--temporary-directory` option to change the temporary directory location
-  - Installers downloads are now chunklist-verified upon successful download
-  - The `--compatible` flag has been added to `mist list` and `mist download` to list / download Firmwares and Installers compatible with the Mac that is running `mist`
-  - The `--export` option has been added to `mist download` to optionally generate a report of performed actions
-  - The `--quiet` flag has been added to `mist download` to optionally suppress verbose output
-  - Reports exported as JSON now have their keys sorted alphabetically
-  - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.1.2**
-  - Bumped [Yams](https://github.com/jpsim/Yams) version to **5.0.1**
-  - General code refactoring and print message formatting fixes
-
-  **Note:** Requires macOS Catalina 10.15 or later
-
-- 1.7
-
-  - The `--platform` option has been renamed to `-k, --kind`, to improve readability and reduce confusion
-    - Specify `firmware` or `ipsw` to download a macOS Firmware IPSW file
-    - Specify `installer` or `app` to download a macOS Install Application bundle
-  - Support for generating Bootable Disk Images (.iso)
-    - For use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox)
-    - `mist download <search-string> --iso`
-    - Optionally specify `--iso-name` for a custom output file name
-  - Downloading macOS Firmware IPSW files no longer requires escalated `sudo` privileges
-  - Improved error messaging for when things go wrong (no longer outputs just the command that failed)
-  - Granular error messages for when searching for Firmwares fails
-
-- 1.6.1
-
-  - `mist version` now correctly displays the current version when offline
-
-- 1.6
-
-  - SUCatalog URLs have been updated to point to **macOS Monterey (12)** URLs
-  - Beta versions of macOS are now excluded by default in search results
-    - Use `--include-betas` to include betas in search results
-  - `mist version` now informs you if a new version is available for download
-  - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.0.1**
-
-- 1.5
-
-  - Added List search support
-    - `mist list <search-string>` to filter on results
-    - `--latest` to filter the latest (first) match found
-    - `--quiet` to suppress verbose output
-    - `--output-type` to specify a custom output type
-  - Added progress indicators
-    - Displays current and total download amounts
-    - Displays overal percentage downloaded
-  - macOS Firmwares and Installers will fail to download if they already exist
-    - Use `--force` to overwrite this behaviour
-  - Faster macOS Firmwares list retrieval time
-  - Faster macOS Installers list retrieval time
-  - Replaced **SANITY CHECKS** headers with more inclusive **INPUT VALIDATION**
-  - Fixed a bug with partial string matching when searching for downloads
-  - Improved error handling and messaging
-
-- 1.4
-
-  - Support for downloading macOS Firmware (IPSW) files
-    - Shasum is validated upon download
-  - Moved list, download and version options to subcommands:
-    - `mist --list` is now `mist list`
-    - `mist --download` is now `mist download`
-    - `mist --version` is now `mist version`
-    - See `mist <subcommand> --help` for detailed help
-  - Renamed `--list-export` option to `--export`
-  - Re-added `--application` output option, back by popular demand!
-  - Removed short flags for output options due to naming collisions:
-    - Removed `-a` for `--application`
-    - Removed `-i` for `--image`
-    - Removed `-p` for `--package`
-  - Lists now display / export total size
-  - More verbose output for input validation
-
-- 1.3.1
-
-  - Fixed bug where SUCatalog files were not being parsed correctly
-
-- 1.3
-
-  - Removed `--name`, `--mac-os-version` and `--build` options, `--download` now supports all three
-  - Removed `--list-format` option and renamed `--list-path` to `--list-export`, file extension determines export type
-  - Removed `--application` and `--zip` options
-  - Added `--catalogURL`
-  - Added `--temporary-directory` option
-  - Added `--keychain` option
-  - Added free space check before downloads are initiated
-  - Support for building hardware specific installers on all Macs
-  - macOS name is now determined from the distribution files, no longer hardcoded
-  - CSV cells with spaces now display correctly
-  - Better input validation before downloads are initiated
-  - Cleanup of standard output messaging (less verbose)
-  - Removed download progress output
-  - General code refactoring
-
-- 1.2
-
-  - Downloads now show progress: current + total download sizes and % completed
-  - Mist will now create the `--output` directory if it does not exist
-
-- 1.1.1
-
-  - `--application` and `--zip` flags are now detected correctly
-
-- 1.1
-
-  - Specify custom catalog seeds: **Customer**, **Developer** and **Public**
-    - This allows downloading macOS Install Betas
-  - Output the macOS Installer application bundle to a custom directory
-  - Generate a ZIP archive of the macOS Installer application bundle
-  - Checks for free space before attempting any downloads and installations
-  - Cleaned up CLI argument flags, options, and formatting
-
-- 1.0
-  - Initial release
 
 ## License
 

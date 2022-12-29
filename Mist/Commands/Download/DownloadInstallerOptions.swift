@@ -23,7 +23,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     * 10.15.x (macOS Catalina)
     * 10.14.x (macOS Mojave)
     * 10.13.x (macOS High Sierra)
-    * 22A (macOS Ventura 13.0.x)
+    * 22C (macOS Ventura 13.1.x)
     * 21G (macOS Monterey 12.6.x)
     * 20G (macOS Big Sur 11.7.x)
     * 19H (macOS Catalina 10.15.7)
