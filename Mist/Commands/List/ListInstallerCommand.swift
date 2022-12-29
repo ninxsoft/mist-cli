@@ -29,15 +29,15 @@ struct ListInstallerCommand: ParsableCommand {
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListInstallerOptions) throws {
         try inputValidation(options)
-        !options.quiet ? PrettyPrint.printHeader("SEARCH") : Mist.noop()
-        !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...", noAnsi: options.noAnsi) : Mist.noop()
         var catalogURLs: [String] = Catalog.urls
 
         if let catalogURL: String = options.catalogURL {
             catalogURLs = [catalogURL]
         }
 
-        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, quiet: options.quiet)
+        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, noAnsi: options.noAnsi, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
             products = HTTP.products(from: products, searchString: searchString)
@@ -50,7 +50,7 @@ struct ListInstallerCommand: ParsableCommand {
         }
 
         try export(products.map { $0.dictionary }, options: options)
-        !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", prefix: .ending) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
 
         if !products.isEmpty {
             try list(products.map { $0.dictionary }, options: options)
@@ -65,7 +65,7 @@ struct ListInstallerCommand: ParsableCommand {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: ListInstallerOptions) throws {
 
-        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION") : Mist.noop()
+        !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", noAnsi: options.noAnsi) : Mist.noop()
 
         if let string: String = options.searchString {
 
@@ -73,14 +73,14 @@ struct ListInstallerCommand: ParsableCommand {
                 throw MistError.missingListSearchString
             }
 
-            !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("List search string will be '\(string)'...", noAnsi: options.noAnsi) : Mist.noop()
         }
 
-        !options.quiet ? PrettyPrint.print("Search only for latest (first) result will be '\(options.latest)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Search only for latest (first) result will be '\(options.latest)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Include betas in search results will be '\(options.includeBetas)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...", noAnsi: options.noAnsi) : Mist.noop()
 
         if let path: String = options.exportPath {
 
@@ -88,7 +88,7 @@ struct ListInstallerCommand: ParsableCommand {
                 throw MistError.missingExportPath
             }
 
-            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", noAnsi: options.noAnsi) : Mist.noop()
 
             let url: URL = URL(fileURLWithPath: path)
 
@@ -96,10 +96,10 @@ struct ListInstallerCommand: ParsableCommand {
                 throw MistError.invalidExportFileExtension
             }
 
-            !options.quiet ? PrettyPrint.print("Export path file extension is valid...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Export path file extension is valid...", noAnsi: options.noAnsi) : Mist.noop()
         }
 
-        !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...") : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Output type will be '\(options.outputType)'...", noAnsi: options.noAnsi) : Mist.noop()
     }
 
     /// Export the macOS downloads list.
@@ -119,23 +119,23 @@ struct ListInstallerCommand: ParsableCommand {
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
-            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Creating parent directory '\(directory.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
 
         switch url.pathExtension {
         case "csv":
             try dictionaries.productsCSVString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as CSV: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as CSV: '\(path)'", noAnsi: options.noAnsi) : Mist.noop()
         case "json":
             try dictionaries.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as JSON: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as JSON: '\(path)'", noAnsi: options.noAnsi) : Mist.noop()
         case "plist":
             try dictionaries.propertyListString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as Property List: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as Property List: '\(path)'", noAnsi: options.noAnsi) : Mist.noop()
         case "yaml":
             try dictionaries.yamlString().write(toFile: path, atomically: true, encoding: .utf8)
-            !options.quiet ? PrettyPrint.print("Exported list as YAML: '\(path)'") : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Exported list as YAML: '\(path)'", noAnsi: options.noAnsi) : Mist.noop()
         default:
             break
         }
@@ -170,9 +170,9 @@ struct ListInstallerCommand: ParsableCommand {
             try ListInstallerCommand.run(options: options)
         } catch {
             if let mistError: MistError = error as? MistError {
-                PrettyPrint.print(mistError.description, prefix: .ending, prefixColor: .red)
+                PrettyPrint.print(mistError.description, noAnsi: options.noAnsi, prefix: .ending, prefixColor: .red)
             } else {
-                PrettyPrint.print(error.localizedDescription, prefix: .ending, prefixColor: .red)
+                PrettyPrint.print(error.localizedDescription, noAnsi: options.noAnsi, prefix: .ending, prefixColor: .red)
             }
         }
     }
