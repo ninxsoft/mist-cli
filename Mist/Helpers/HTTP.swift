@@ -131,7 +131,7 @@ struct HTTP {
     static func firmware(from firmwares: [Firmware], searchString: String) -> Firmware? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased().contains(searchString) }
+        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased() == searchString }
         let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().contains(searchString) }
         return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
     }
@@ -390,7 +390,7 @@ struct HTTP {
     static func product(from products: [Product], searchString: String) -> Product? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredProductsByVersion: [Product] = products.filter { $0.version.lowercased().contains(searchString) }
+        let filteredProductsByVersion: [Product] = products.filter { $0.version.lowercased() == searchString }
         let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased().contains(searchString) }
         return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first
     }
