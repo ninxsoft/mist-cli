@@ -39,7 +39,7 @@ struct Installer {
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(product.temporaryDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "attach", imageURL.path, "-noverify", "-mountpoint", product.temporaryDiskImageMountPointURL.path]
+        arguments = ["hdiutil", "attach", imageURL.path, "-noverify", "-nobrowse", "-mountpoint", product.temporaryDiskImageMountPointURL.path]
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Creating new installer '\(product.temporaryInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
