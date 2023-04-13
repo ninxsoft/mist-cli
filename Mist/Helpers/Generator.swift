@@ -208,7 +208,7 @@ struct Generator {
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(product.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-mountpoint", product.temporaryISOMountPointURL    .path]
+        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-nobrowse", "-mountpoint", product.temporaryISOMountPointURL    .path]
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(product.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
