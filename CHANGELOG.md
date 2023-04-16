@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.11](https://github.com/ninxsoft/mist-cli/releases/tag/v1.11) - 2023-04-16
+
+- Specifying a macOS version with only one decimal no longer results in downloading a partial / incorrect match - thanks Kyle Robertson ([kylerobertson0404](https://github.com/kylerobertson0404))!
+- Using the `--no-ansi` flag when downloading now only outputs progress once per percentage increase, resulting in less verbose logging - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
+- `mist` no longer displays mounted volumes in the Finder during disk image creation - thanks Richard Smith ([wakco](https://github.com/wakco))!
+- Improved free disk space detection - thanks Adam Newhouse ([anewhouse](https://github.com/anewhouse))!
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.2.2**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **5.0.5**
+
 ## [1.10](https://github.com/ninxsoft/mist-cli/releases/tag/v1.10) - 2022-12-29
 
 - When exporting a package for macOS 11 or newer, `mist` now saves time by re-using the Apple-provided Installer package when exporting a package - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
