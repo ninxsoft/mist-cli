@@ -8,7 +8,7 @@ temp = /private/tmp/$(identifier)
 version = $(shell mist --version | awk '{ print $$1 }')
 min_os_version = 10.15
 package_dir = build
-package = $(package_dir)/mist-cli $(version).pkg
+package = $(package_dir)/mist-cli.$(version).pkg
 
 build:
 	swift build --configuration release --arch arm64 --arch x86_64
