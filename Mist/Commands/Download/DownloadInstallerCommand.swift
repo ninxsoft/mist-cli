@@ -341,16 +341,16 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         for volume in volumes {
 
-            guard let attributes: [FileAttributeKey: Any] = try? FileManager.default.attributesOfFileSystem(forPath: volume.path),
-                let number: NSNumber = attributes[.systemFreeSize] as? NSNumber else {
-                throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
+            let required: Int64 = product.size * volume.count
+            let url: URL = URL(fileURLWithPath: volume.path)
+            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+
+            guard let free: Int64 = values.volumeAvailableCapacityForImportantUsage else {
+                throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
             }
 
-            let required: Int64 = product.size * volume.count
-            let free: Int64 = number.int64Value
-
             guard required < free else {
-                throw MistError.notEnoughFreeSpace(volume: volume.path, free: free, required: required)
+                throw MistError.notEnoughFreeSpace(volume: url.path, free: free, required: required)
             }
         }
     }
