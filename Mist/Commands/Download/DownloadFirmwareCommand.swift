@@ -187,19 +187,18 @@ struct DownloadFirmwareCommand: ParsableCommand {
 
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
+        let required: Int64 = firmware.size
 
-        for path in [outputURL.path, temporaryURL.path] {
+        for url in [outputURL, temporaryURL] {
 
-            guard let attributes: [FileAttributeKey: Any] = try? FileManager.default.attributesOfFileSystem(forPath: path),
-                let number: NSNumber = attributes[.systemFreeSize] as? NSNumber else {
-                throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
+            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+
+            guard let free: Int64 = values.volumeAvailableCapacityForImportantUsage else {
+                throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
             }
 
-            let required: Int64 = firmware.size
-            let free: Int64 = number.int64Value
-
             guard required < free else {
-                throw MistError.notEnoughFreeSpace(volume: path, free: free, required: required)
+                throw MistError.notEnoughFreeSpace(volume: url.path, free: free, required: required)
             }
         }
     }
