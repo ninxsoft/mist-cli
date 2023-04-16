@@ -111,22 +111,22 @@ mist download installer "macOS Ventura" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "13.1" application
+mist download installer "13.3.1" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # with a custom name:
-mist download installer "13.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
+mist download installer "13.3.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a Disk Image with a custom name:
-mist download installer "13.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+mist download installer "13.3.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build for Inte Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a codesigned Disk Image output to a custom directory:
-mist download installer "22C65" image \
+mist download installer "22E261" image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
@@ -148,7 +148,7 @@ mist download installer "macOS Ventura" application image iso package \
 
 ## Build Requirements
 
-- Swift **5.7**.
+- Swift **5.8**.
 - Runs on **macOS Catalina 10.15** and later.
 
 ## Download

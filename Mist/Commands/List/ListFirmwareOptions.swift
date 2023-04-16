@@ -17,7 +17,7 @@ struct ListFirmwareOptions: ParsableArguments {
     * 13.x (macOS Ventura)
     * 12.x (macOS Monterey)
     * 11.x (macOS Big Sur)
-    * 22C (macOS Ventura 13.1.x)
+    * 22E (macOS Ventura 13.3.x)
     * 21G (macOS Monterey 12.6.x)
     * 20G (macOS Big Sur 11.6.x)
     """)
