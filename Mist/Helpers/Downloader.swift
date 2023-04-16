@@ -21,7 +21,7 @@ class Downloader: NSObject {
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
     private var noAnsi: Bool = false
     private var quiet: Bool = false
-    private var previousTime: Date = Date()
+    private var previousPercentage: Int = 0
 
     /// Downloads a macOS Firmware.
     ///
@@ -261,11 +261,11 @@ extension Downloader: URLSessionDownloadDelegate {
         total = totalBytesExpectedToWrite
 
         if noAnsi {
-            let currentTime: Date = Date()
+            let percentage: Int = Int(total > 0 ? Double(current) / Double(total) * 100 : 0)
 
-            if currentTime.timeIntervalSince1970 - previousTime.timeIntervalSince1970 > 1.0 {
+            if percentage > previousPercentage {
                 updateProgress()
-                previousTime = currentTime
+                previousPercentage = percentage
             }
         } else {
             updateProgress()
