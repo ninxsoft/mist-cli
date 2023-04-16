@@ -521,3 +521,4 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
     }
 }
+// swiftlint:enable type_body_length

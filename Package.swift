@@ -4,7 +4,7 @@
 import PackageDescription
 
 /// Package configuration
-let package = Package(
+let package: Package = Package(
     name: "Mist",
     platforms: [
         .macOS(.v10_15)

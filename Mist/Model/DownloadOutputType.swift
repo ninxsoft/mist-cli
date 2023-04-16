@@ -13,6 +13,7 @@ enum DownloadOutputType: String, ExpressibleByArgument {
     case image = "image"
     case iso = "iso"
     case package = "package"
+    // swiftlint:enable redundant_string_enum_value
 
     var description: String {
         self.rawValue

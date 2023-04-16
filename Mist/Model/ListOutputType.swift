@@ -14,4 +14,5 @@ enum ListOutputType: String, ExpressibleByArgument {
     case json = "json"
     case plist = "plist"
     case yaml = "yaml"
+    // swiftlint:enable redundant_string_enum_value
 }
