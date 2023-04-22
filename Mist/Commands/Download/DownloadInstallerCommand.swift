@@ -343,10 +343,24 @@ struct DownloadInstallerCommand: ParsableCommand {
 
             let required: Int64 = product.size * volume.count
             let url: URL = URL(fileURLWithPath: volume.path)
-            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+            let free: Int64
 
-            guard let free: Int64 = values.volumeAvailableCapacityForImportantUsage else {
-                throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
+            if NSUserName() == "root" {
+                let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityKey])
+
+                guard let volumeAvailableCapacity: Int = values.volumeAvailableCapacity else {
+                    throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
+                }
+
+                free = Int64(volumeAvailableCapacity)
+            } else {
+                let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
+
+                guard let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage else {
+                    throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
+                }
+
+                free = volumeAvailableCapacityForImportantUsage
             }
 
             guard required < free else {
