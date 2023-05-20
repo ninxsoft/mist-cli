@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12](https://github.com/ninxsoft/mist-cli/releases/tag/v1.12) - 2023-05-20
+
+- The percentage progress now displays correctly when the `--no-ansi` flag is used - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
+- Improved how available free space is calculated - thanks Pico Mitchell ([PicoMitchell](https://github.com/PicoMitchell))!
+- Searching for a major macOS release number (ie. **13**) will now download the latest Firmware / Installer of said version - thanks Balz Aschwanden ([aschwanb](https://github.com/aschwanb))!
+- Attempting to generate a macOS Catalina 10.15 or older Bootable Disk Image on Apple Silicon Macs will inform the user and exit (rather than failing after the download) - thanks Karol Woźniak ([KenjiTakahashi](https://github.com/KenjiTakahashi))!
+
 ## [1.11](https://github.com/ninxsoft/mist-cli/releases/tag/v1.11) - 2023-04-16
 
 - Specifying a macOS version with only one decimal no longer results in downloading a partial / incorrect match - thanks Kyle Robertson ([kylerobertson0404](https://github.com/kylerobertson0404))!
