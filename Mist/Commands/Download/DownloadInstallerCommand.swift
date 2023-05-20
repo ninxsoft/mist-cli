@@ -340,27 +340,17 @@ struct DownloadInstallerCommand: ParsableCommand {
         volumes.insert(bootVolume, at: 0)
 
         for volume in volumes {
-
             let required: Int64 = product.size * volume.count
             let url: URL = URL(fileURLWithPath: volume.path)
+            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
 
-            if NSUserName() == "root" {
-                let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityKey])
-
-                guard let volumeAvailableCapacity: Int = values.volumeAvailableCapacity else {
-                    throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
-                }
-
+            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage {
+                free = volumeAvailableCapacityForImportantUsage
+            } else if let volumeAvailableCapacity: Int = values.volumeAvailableCapacity {
                 free = Int64(volumeAvailableCapacity)
             } else {
-                let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-
-                guard let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage else {
-                    throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
-                }
-
-                free = volumeAvailableCapacityForImportantUsage
+                throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
             }
 
             guard required < free else {
