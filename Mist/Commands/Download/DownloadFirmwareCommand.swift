@@ -190,10 +190,14 @@ struct DownloadFirmwareCommand: ParsableCommand {
         let required: Int64 = firmware.size
 
         for url in [outputURL, temporaryURL] {
+            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
+            let free: Int64
 
-            let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey])
-
-            guard let free: Int64 = values.volumeAvailableCapacityForImportantUsage else {
+            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage {
+                free = volumeAvailableCapacityForImportantUsage
+            } else if let volumeAvailableCapacity: Int = values.volumeAvailableCapacity {
+                free = Int64(volumeAvailableCapacity)
+            } else {
                 throw MistError.notEnoughFreeSpace(volume: url.path, free: 0, required: required)
             }
 
