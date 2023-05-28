@@ -1,10 +1,9 @@
 ---
-name: Feature request
-about: File a feature request to help improve the app
-title: ''
+name: Feature Request
+about: Submit a feature request to help improve this project
+title: ""
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
 ### :bulb: Description
