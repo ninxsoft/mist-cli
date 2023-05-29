@@ -19,15 +19,10 @@ struct Installer {
     /// - Throws: A `MistError` if the downloaded macOS Installer fails to install.
     static func install(_ product: Product, options: DownloadInstallerOptions) throws {
 
-        guard let url: URL = URL(string: product.distribution) else {
-            throw MistError.invalidURL(url: product.distribution)
-        }
-
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
-        let imageURL: URL = DownloadInstallerCommand.temporaryImage(for: product, options: options)
-        let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
-
         !options.quiet ? PrettyPrint.printHeader("INSTALL", noAnsi: options.noAnsi) : Mist.noop()
+
+        let imageURL: URL = DownloadInstallerCommand.temporaryImage(for: product, options: options)
+        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
 
         if FileManager.default.fileExists(atPath: imageURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old image '\(imageURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
@@ -42,10 +37,36 @@ struct Installer {
         arguments = ["hdiutil", "attach", imageURL.path, "-noverify", "-nobrowse", "-mountpoint", product.temporaryDiskImageMountPointURL.path]
         _ = try Shell.execute(arguments)
 
-        !options.quiet ? PrettyPrint.print("Creating new installer '\(product.temporaryInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["installer", "-pkg", distributionURL.path, "-target", product.temporaryDiskImageMountPointURL.path]
-        let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
-        _ = try Shell.execute(arguments, environment: variables)
+        if product.sierraOrOlder,
+            let package: Package = product.packages.first {
+            let legacyDiskImageURL: URL = temporaryURL.appendingPathComponent(package.filename)
+            let legacyDiskImageMountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)")
+            let packageURL: URL = URL(fileURLWithPath: "/Volumes/Install \(product.name)").appendingPathComponent(package.filename.replacingOccurrences(of: ".dmg", with: ".pkg"))
+
+            !options.quiet ? PrettyPrint.print("Mounting Installer disk image at mount point '\(legacyDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "attach", legacyDiskImageURL.path, "-noverify", "-nobrowse", "-mountpoint", legacyDiskImageMountPointURL.path]
+            _ = try Shell.execute(arguments)
+
+            !options.quiet ? PrettyPrint.print("Creating Installer in disk image at mount point '\(legacyDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["installer", "-pkg", packageURL.path, "-target", product.temporaryDiskImageMountPointURL.path]
+            let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
+            _ = try Shell.execute(arguments, environment: variables)
+
+            !options.quiet ? PrettyPrint.print("Unmounting Installer disk image at mount point '\(legacyDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            let arguments: [String] = ["hdiutil", "detach", legacyDiskImageMountPointURL.path, "-force"]
+            _ = try Shell.execute(arguments)
+        } else {
+            guard let url: URL = URL(string: product.distribution) else {
+                throw MistError.invalidURL(url: product.distribution)
+            }
+
+            let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
+
+            !options.quiet ? PrettyPrint.print("Creating new installer '\(product.temporaryInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["installer", "-pkg", distributionURL.path, "-target", product.temporaryDiskImageMountPointURL.path]
+            let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
+            _ = try Shell.execute(arguments, environment: variables)
+        }
 
         if product.catalinaOrNewer {
             arguments = ["ditto", "\(product.temporaryDiskImageMountPointURL.path)Applications", "\(product.temporaryDiskImageMountPointURL.path)/Applications"]

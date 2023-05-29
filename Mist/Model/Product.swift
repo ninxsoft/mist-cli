@@ -21,6 +21,106 @@ struct Product: Decodable {
         case unsupportedModelIdentifiers = "UnsupportedModelIdentifiers"
     }
 
+    static var legacyProducts: [Product] {
+        [
+            Product(
+                identifier: "10.12.6-16G29",
+                name: "macOS Sierra",
+                version: "10.12.6",
+                build: "16G29",
+                date: "2017-07-15",
+                distribution: "",
+                packages: [
+                    Package(
+                        url: "http://updates-http.cdn-apple.com/2019/cert/061-39476-20191023-48f365f4-0015-4c41-9f44-39d3d2aca067/InstallOS.dmg",
+                        size: 5_007_882_126,
+                        integrityDataURL: nil,
+                        integrityDataSize: nil
+                    )
+                ],
+                boardIDs: [],
+                deviceIDs: [],
+                unsupportedModelIdentifiers: []
+            ),
+            Product(
+                identifier: "10.11.6-15G31",
+                name: "OS X El Capitan",
+                version: "10.11.6",
+                build: "15G31",
+                date: "2016-05-18",
+                distribution: "",
+                packages: [
+                    Package(
+                        url: "http://updates-http.cdn-apple.com/2019/cert/061-41424-20191024-218af9ec-cf50-4516-9011-228c78eda3d2/InstallMacOSX.dmg",
+                        size: 6_204_629_298,
+                        integrityDataURL: nil,
+                        integrityDataSize: nil
+                    )
+                ],
+                boardIDs: [],
+                deviceIDs: [],
+                unsupportedModelIdentifiers: []
+            ),
+            Product(
+                identifier: "10.10.5-14F27",
+                name: "OS X Yosemite",
+                version: "10.10.5",
+                build: "14F27",
+                date: "2015-08-05",
+                distribution: "",
+                packages: [
+                    Package(
+                        url: "http://updates-http.cdn-apple.com/2019/cert/061-41343-20191023-02465f92-3ab5-4c92-bfe2-b725447a070d/InstallMacOSX.dmg",
+                        size: 5_718_074_248,
+                        integrityDataURL: nil,
+                        integrityDataSize: nil
+                    )
+                ],
+                boardIDs: [],
+                deviceIDs: [],
+                unsupportedModelIdentifiers: []
+            ),
+            Product(
+                identifier: "10.8.5-12F45",
+                name: "OS X Mountain Lion",
+                version: "10.8.5",
+                build: "12F45",
+                date: "2013-09-27",
+                distribution: "",
+                packages: [
+                    Package(
+                        url: "https://updates.cdn-apple.com/2021/macos/031-0627-20210614-90D11F33-1A65-42DD-BBEA-E1D9F43A6B3F/InstallMacOSX.dmg",
+                        size: 4_449_317_520,
+                        integrityDataURL: nil,
+                        integrityDataSize: nil
+                    )
+                ],
+                boardIDs: [],
+                deviceIDs: [],
+                unsupportedModelIdentifiers: []
+            ),
+            Product(
+                identifier: "10.7.5-11G63",
+                name: "Mac OS X Lion",
+                version: "10.7.5",
+                build: "11G63",
+                date: "2012-09-28",
+                distribution: "",
+                packages: [
+                    Package(
+                        url: "https://updates.cdn-apple.com/2021/macos/041-7683-20210614-E610947E-C7CE-46EB-8860-D26D71F0D3EA/InstallMacOSX.dmg",
+                        size: 4_720_237_409,
+                        integrityDataURL: nil,
+                        integrityDataSize: nil
+                    )
+                ],
+                boardIDs: [],
+                deviceIDs: [],
+                unsupportedModelIdentifiers: []
+            )
+        ]
+    }
+
     let identifier: String
     let name: String
     let version: String
@@ -67,7 +167,7 @@ struct Product: Decodable {
         return true
     }
     var allDownloads: [Package] {
-        [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)] + packages.sorted { $0.filename < $1.filename }
+        (sierraOrOlder ? [] : [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)]) + packages.sorted { $0.filename < $1.filename }
     }
     var temporaryDiskImageMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/\(identifier)")
@@ -102,6 +202,9 @@ struct Product: Decodable {
             "packages": packages.map { $0.dictionary },
             "beta": beta
         ]
+    }
+    var sierraOrOlder: Bool {
+        version.range(of: "^10\\.([7-9]|1[0-2])\\.", options: .regularExpression) != nil
     }
     var catalinaOrNewer: Bool {
         bigSurOrNewer || version.range(of: "^10\\.15\\.", options: .regularExpression) != nil

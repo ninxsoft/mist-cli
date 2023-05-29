@@ -193,6 +193,8 @@ struct HTTP {
             }
         }
 
+        products.append(contentsOf: Product.legacyProducts)
+
         if !includeBetas {
             products = products.filter { !$0.beta }
         }
@@ -201,7 +203,7 @@ struct HTTP {
             products = products.filter { $0.compatible }
         }
 
-        products.sort { $0.version == $1.version ? $0.date > $1.date : $0.version > $1.version }
+        products.sort { $0.version == $1.version ? $0.date > $1.date : $0.version.compare($1.version, options: .numeric) == .orderedDescending }
         return products
     }
 
