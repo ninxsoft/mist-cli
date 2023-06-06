@@ -12,7 +12,7 @@ struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion, version: version(), subcommands: [ListCommand.self, DownloadCommand.self])
 
     /// Current version.
-    private static let currentVersion: String = "1.2-beta"
+    private static let currentVersion: String = "2.0-beta"
     /// Current version with error message when unable to lookup latest version.
     private static var versionWithErrorMessage: String {
         "\(currentVersion) (Unable to check for latest version)"
