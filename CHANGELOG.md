@@ -9,6 +9,7 @@
   - OS X Yosemite 10.10.5
   - OS X Mountain Lion 10.8.5
   - Mac OS X Lion 10.7.5
+  - Thanks Nate Felton ([n8felton](https://github.com/n8felton))!
 
 ## [1.12](https://github.com/ninxsoft/mist-cli/releases/tag/v1.12) - 2023-05-20
 
