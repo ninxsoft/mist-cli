@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0 Beta](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0-beta) - 2023-06-06
+
+- Added preliminary support for macOS Sonoma 14
+- Added support for the following legacy operating systems:
+  - macOS Sierra 10.12.6
+  - OS X El Capitan 10.11.6
+  - OS X Yosemite 10.10.5
+  - OS X Mountain Lion 10.8.5
+  - Mac OS X Lion 10.7.5
+
 ## [1.12](https://github.com/ninxsoft/mist-cli/releases/tag/v1.12) - 2023-05-20
 
 - The percentage progress now displays correctly when the `--no-ansi` flag is used - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
