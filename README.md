@@ -87,6 +87,10 @@ mist list firmware
 # including Universal Installers for macOS Big Sur and later:
 mist list installer
 
+# List all macOS Installers that are compatible with this Mac,
+# including Universal Installers for macOS Big Sur and later:
+mist list installer --compatible
+
 # List all available macOS Installers for Intel Macs, including betas,
 # also including Universal Installers for macOS Big Sur and later:
 mist list installer --include-betas
