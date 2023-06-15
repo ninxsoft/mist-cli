@@ -90,8 +90,8 @@ struct Firmware: Decodable {
     /// - Returns: An array of Firmware build strings.
     static func supportedBuilds() -> [String] {
 
-        guard let architecture: String = Hardware.architecture,
-            architecture.contains("arm64"),
+        guard let architecture: Architecture = Hardware.architecture,
+            architecture == .appleSilicon,
             let modelIdentifier: String = Hardware.modelIdentifier,
             let url: URL = URL(string: Firmware.deviceURLTemplate.replacingOccurrences(of: "MODELIDENTIFIER", with: modelIdentifier)) else {
             return []
