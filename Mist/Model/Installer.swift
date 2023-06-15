@@ -560,7 +560,7 @@ struct Installer: Decodable {
         URL(fileURLWithPath: "/Volumes/\(identifier)")
     }
     var temporaryInstallerURL: URL {
-        temporaryDiskImageMountPointURL.appendingPathComponent("/Applications/Install \(name).app")
+        temporaryDiskImageMountPointURL.appendingPathComponent("Applications/Install \(name).app")
     }
     var temporaryISOMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/Install \(name)")
