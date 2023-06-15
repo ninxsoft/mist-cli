@@ -51,8 +51,9 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         if let architecture: Architecture = Hardware.architecture {
 
-            guard !(!product.bigSurOrNewer && options.outputType.contains(.iso) && architecture == .appleSilicon) else {
-                !options.quiet ? PrettyPrint.print("macOS Catalina 10.15 and older cannot generate Bootable Disk Images on Apple Silicon Macs...", noAnsi: options.noAnsi) : Mist.noop()
+            if options.outputType.contains(.iso) && ((architecture == .appleSilicon && !product.bigSurOrNewer) || (architecture == .intel && !product.mavericksOrNewer)) {
+                let operatingSystem: String = architecture == .appleSilicon ? "macOS Catalina 10.15" : "OS X Mountain Lion 10.8.5"
+                !options.quiet ? PrettyPrint.print("\(operatingSystem) and older cannot generate Bootable Disk Images on \(architecture.description) Macs...", noAnsi: options.noAnsi) : Mist.noop()
                 !options.quiet ? PrettyPrint.print("Replace 'iso' with another output type or select a newer version of macOS, exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
                 return
             }
