@@ -87,6 +87,10 @@ struct Generator {
         if options.outputType.contains(.package) {
             try generatePackage(installer: installer, options: options)
         }
+
+        if options.outputType.contains(.bootableInstaller) {
+            try generateBootableInstaller(installer: installer, options: options)
+        }
     }
 
     /// Generates a macOS Installer Application Bundle.
@@ -314,5 +318,31 @@ struct Generator {
             _ = try Shell.execute(arguments)
             !options.quiet ? PrettyPrint.print("Created package '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
         }
+    }
+
+    /// Generates a Bootable macOS Installer volume.
+    ///
+    /// - Parameters:
+    ///   - installer: The selected macOS Installer that was downloaded.
+    ///   - options:   Download options for macOS Installers.
+    ///
+    /// - Throws: A `MistError` if the Bootable macOS Installer volume fails to generate.
+    private static func generateBootableInstaller(installer: Installer, options: DownloadInstallerOptions) throws {
+
+        guard let volume: String = options.bootableInstallerVolume else {
+            return
+        }
+
+        !options.quiet ? PrettyPrint.printHeader("BOOTABLE INSTALLER VOLUME", noAnsi: options.noAnsi) : Mist.noop()
+
+        var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
+
+        if installer.sierraOrOlder {
+            arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
+        }
+
+        !options.quiet ? PrettyPrint.print("Creating bootable macOS Installer at mount point '\(volume)'...", noAnsi: options.noAnsi) : Mist.noop()
+        _ = try Shell.execute(arguments)
+        !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(volume)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 }

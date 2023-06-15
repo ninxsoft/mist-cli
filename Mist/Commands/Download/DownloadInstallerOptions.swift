@@ -128,7 +128,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Note: The volume must be formatted as 'Mac OS Extended (Journaled)'. Use Disk Utility to format volumes as required.
     Note: The volume will be erased automatically. Ensure you have backed up any necessary data before proceeding.
     """)
-    var createInstallMediaVolume: String?
+    var bootableInstallerVolume: String?
 
     @Option(name: .long, help: """
     Specify a keychain path to search for signing identities.

@@ -128,7 +128,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         try inputValidationImage(options)
         try inputValidationISO(options)
         try inputValidationPackage(options)
-        try inputValidationCreateInstallMedia(options)
+        try inputValidationBootableInstaller(options)
     }
 
     /// Performs a series of input validations specific to macOS Application output.
@@ -233,39 +233,40 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
-    private static func inputValidationCreateInstallMedia(_ options: DownloadInstallerOptions) throws {
+    private static func inputValidationBootableInstaller(_ options: DownloadInstallerOptions) throws {
 
-        if options.outputType.contains(.createInstallMedia),
-            let createInstallMediaVolume = options.createInstallMediaVolume {
-
-            guard !createInstallMediaVolume.isEmpty else {
-                throw MistError.missingCreateInstallMediaVolume
-            }
-
-            let keys: [URLResourceKey] = [.volumeLocalizedFormatDescriptionKey, .volumeIsReadOnlyKey]
-
-            guard let urls: [URL] = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]),
-                let url: URL = urls.first(where: { $0.path == createInstallMediaVolume }) else {
-                throw MistError.createInstallMediaVolumeNotFound(createInstallMediaVolume)
-            }
-
-            let resourceValues: URLResourceValues = try url.resourceValues(forKeys: Set(keys))
-
-            guard let volumeLocalizedFormatDescription: String = resourceValues.volumeLocalizedFormatDescription else {
-                throw MistError.createInstallMediaVolumeUnknownFormat(createInstallMediaVolume)
-            }
-
-            guard volumeLocalizedFormatDescription == "Mac OS Extended (Journaled)" else {
-                throw MistError.createInstallMediaVolumeInvalidFormat(volume: createInstallMediaVolume, format: volumeLocalizedFormatDescription)
-            }
-
-            guard let volumeIsReadOnly: Bool = resourceValues.volumeIsReadOnly,
-                !volumeIsReadOnly else {
-                throw MistError.createInstallMediaVolumeIsReadOnly(createInstallMediaVolume)
-            }
-
-            !options.quiet ? PrettyPrint.print("Bootable macOS Installer will be created on volume '\(createInstallMediaVolume)'...", noAnsi: options.noAnsi) : Mist.noop()
+        guard options.outputType.contains(.bootableInstaller),
+            let bootableInstallerVolume = options.bootableInstallerVolume else {
+            return
         }
+
+        guard !bootableInstallerVolume.isEmpty else {
+            throw MistError.missingBootableInstallerVolume
+        }
+
+        let keys: [URLResourceKey] = [.volumeLocalizedFormatDescriptionKey, .volumeIsReadOnlyKey]
+
+        guard let urls: [URL] = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]),
+            let url: URL = urls.first(where: { $0.path == bootableInstallerVolume }) else {
+            throw MistError.bootableInstallerVolumeNotFound(bootableInstallerVolume)
+        }
+
+        let resourceValues: URLResourceValues = try url.resourceValues(forKeys: Set(keys))
+
+        guard let volumeLocalizedFormatDescription: String = resourceValues.volumeLocalizedFormatDescription else {
+            throw MistError.bootableInstallerVolumeUnknownFormat(bootableInstallerVolume)
+        }
+
+        guard volumeLocalizedFormatDescription == "Mac OS Extended (Journaled)" else {
+            throw MistError.bootableInstallerVolumeInvalidFormat(volume: bootableInstallerVolume, format: volumeLocalizedFormatDescription)
+        }
+
+        guard let volumeIsReadOnly: Bool = resourceValues.volumeIsReadOnly,
+            !volumeIsReadOnly else {
+            throw MistError.bootableInstallerVolumeIsReadOnly(bootableInstallerVolume)
+        }
+
+        !options.quiet ? PrettyPrint.print("Bootable macOS Installer will be created on volume '\(bootableInstallerVolume)'...", noAnsi: options.noAnsi) : Mist.noop()
     }
 
     /// Verifies if macOS Installer files already exist.
@@ -506,7 +507,7 @@ struct DownloadInstallerCommand: ParsableCommand {
             "packagePath": packagePath(for: installer, options: options),
             "packageIdentifier": packageIdentifier(for: installer, options: options),
             "packageSigningIdentity": options.packageSigningIdentity ?? "",
-            "createInstallMediaVolume": options.createInstallMediaVolume ?? "",
+            "bootableInstallerVolume": options.bootableInstallerVolume ?? "",
             "keychain": options.keychain ?? "",
             "outputDirectory": outputDirectory(for: installer, options: options),
             "temporaryDirectory": temporaryDirectory(for: installer, options: options),
