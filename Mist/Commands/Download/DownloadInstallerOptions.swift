@@ -40,7 +40,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     Note: This option will fail when targeting macOS Catalina 10.15 and older on Apple Silicon Macs.
     Note: This option will fail when targeting OS X Mountain Lion 10.8.5 and older on Intel-based Macs.
     * package to generate a macOS Installer Package (.pkg).
-    * createinstallmedia to create a Bootable macOS Installer on a mounted volume
+    * bootableinstaller to create a Bootable macOS Installer on a mounted volume
     """)
     var outputType: [InstallerOutputType]
 

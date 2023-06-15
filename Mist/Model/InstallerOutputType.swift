@@ -13,7 +13,7 @@ enum InstallerOutputType: String, ExpressibleByArgument {
     case image = "image"
     case iso = "iso"
     case package = "package"
-    case bootableInstaller = "bootableInstaller"
+    case bootableInstaller = "bootableinstaller"
     // swiftlint:enable redundant_string_enum_value
 
     var description: String {
