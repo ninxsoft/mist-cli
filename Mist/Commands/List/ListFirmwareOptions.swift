@@ -11,15 +11,16 @@ struct ListFirmwareOptions: ParsableArguments {
 
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
-    * macOS Ventura
-    * macOS Monterey
-    * macOS Big Sur
-    * 13.x (macOS Ventura)
-    * 12.x (macOS Monterey)
-    * 11.x (macOS Big Sur)
-    * 22E (macOS Ventura 13.3.x)
-    * 21G (macOS Monterey 12.6.x)
-    * 20G (macOS Big Sur 11.6.x)
+
+    Name               │ Version │ Build
+    ───────────────────┼─────────┼──────
+    macOS Sonoma       │ 14.x    │ 23xyz
+    macOS Ventura      │ 13.x    │ 22xyz
+    macOS Monterey     │ 12.x    │ 21xyz
+    macOS Big Sur      │ 11.x    │ 20xyz
+
+    Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
+    Note: Specifying a macOS version will assume the latest build of that particular macOS.
     """)
     var searchString: String?
 
