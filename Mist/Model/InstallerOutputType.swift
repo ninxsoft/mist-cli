@@ -1,5 +1,5 @@
 //
-//  DownloadOutputType.swift
+//  InstallerOutputType.swift
 //  Mist
 //
 //  Created by Nindi Gill on 29/5/2022.
@@ -7,7 +7,7 @@
 
 import ArgumentParser
 
-enum DownloadOutputType: String, ExpressibleByArgument {
+enum InstallerOutputType: String, ExpressibleByArgument {
     case application = "application"
     case image = "image"
     case iso = "iso"

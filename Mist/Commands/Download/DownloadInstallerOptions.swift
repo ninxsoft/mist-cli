@@ -42,7 +42,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     * package to generate a macOS Installer Package (.pkg).
     * createinstallmedia to create a Bootable macOS Installer on a mounted volume
     """)
-    var outputType: [DownloadOutputType]
+    var outputType: [InstallerOutputType]
 
     @Flag(name: [.customShort("b"), .long], help: """
     Include beta macOS Installers in search results.
