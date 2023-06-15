@@ -336,6 +336,7 @@ struct Generator {
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE INSTALLER VOLUME", noAnsi: options.noAnsi) : Mist.noop()
 
         var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
+        let destinationURL: URL = URL(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
 
         if installer.sierraOrOlder {
             arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
@@ -343,6 +344,6 @@ struct Generator {
 
         !options.quiet ? PrettyPrint.print("Creating bootable macOS Installer at mount point '\(volume)'...", noAnsi: options.noAnsi) : Mist.noop()
         _ = try Shell.execute(arguments)
-        !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(volume)'", noAnsi: options.noAnsi) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 }
