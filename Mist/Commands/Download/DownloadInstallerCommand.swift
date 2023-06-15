@@ -355,7 +355,8 @@ struct DownloadInstallerCommand: ParsableCommand {
             let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
 
-            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage {
+            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage,
+                volumeAvailableCapacityForImportantUsage > 0 {
                 free = volumeAvailableCapacityForImportantUsage
             } else if let volumeAvailableCapacity: Int = values.volumeAvailableCapacity {
                 free = Int64(volumeAvailableCapacity)
