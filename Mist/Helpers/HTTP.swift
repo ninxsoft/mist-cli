@@ -182,8 +182,8 @@ struct HTTP {
                 var format: PropertyListSerialization.PropertyListFormat = .xml
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
-                    let installersDictionary: [String: Any] = catalog["Installers"] as? [String: Any] else {
-                    !quiet ? PrettyPrint.print("Unable to get 'Installers' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
+                    let installersDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
+                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
                 }
 
