@@ -94,16 +94,16 @@ class Downloader: NSObject {
     /// Downloads a macOS Installer.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer that was downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the macOS Installer fails to download.
-    func download(_ product: Product, options: DownloadInstallerOptions) throws {
+    func download(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
         noAnsi = options.noAnsi
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
-        temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: product, options: options))
+        temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
         let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
 
         guard let temporaryURL: URL = temporaryURL else {
@@ -112,9 +112,9 @@ class Downloader: NSObject {
 
         var index: Int = 0
 
-        while index < product.allDownloads.count {
+        while index < installer.allDownloads.count {
 
-            let package: Package = product.allDownloads[index]
+            let package: Package = installer.allDownloads[index]
 
             guard let source: URL = URL(string: package.url) else {
                 throw MistError.invalidURL(package.url)
@@ -122,8 +122,8 @@ class Downloader: NSObject {
 
             sourceURL = source
             let destination: URL = temporaryURL.appendingPathComponent(source.lastPathComponent)
-            let currentString: String = "\(index + 1 < 10 && product.allDownloads.count >= 10 ? "0" : "")\(index + 1)"
-            prefixString = "[ \(currentString) / \(product.allDownloads.count) ] \(source.lastPathComponent)"
+            let currentString: String = "\(index + 1 < 10 && installer.allDownloads.count >= 10 ? "0" : "")\(index + 1)"
+            prefixString = "[ \(currentString) / \(installer.allDownloads.count) ] \(source.lastPathComponent)"
             current = 0
             previousPercentage = 0
 
@@ -140,7 +140,7 @@ class Downloader: NSObject {
             updateProgress(replacing: false)
 
             if !FileManager.default.fileExists(atPath: destination.path) {
-                let resumeDataURL: URL = DownloadInstallerCommand.resumeDataURL(for: package, in: product, options: options)
+                let resumeDataURL: URL = DownloadInstallerCommand.resumeDataURL(for: package, in: installer, options: options)
                 let task: URLSessionDownloadTask
 
                 if FileManager.default.fileExists(atPath: resumeDataURL.path) {
@@ -187,7 +187,7 @@ class Downloader: NSObject {
             current = total
             updateProgress()
 
-            if verify(package, at: destination, current: currentString, total: product.allDownloads.count) {
+            if verify(package, at: destination, current: currentString, total: installer.allDownloads.count) {
                 index += 1
             }
         }

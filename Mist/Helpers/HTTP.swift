@@ -161,8 +161,8 @@ struct HTTP {
     ///   - quiet:        Set to `true` to suppress verbose output.
     ///
     /// - Returns: An array of macOS Installers.
-    static func retrieveProducts(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, noAnsi: Bool, quiet: Bool = false) -> [Product] {
-        var products: [Product] = []
+    static func retrieveInstallers(from catalogURLs: [String], includeBetas: Bool, compatible: Bool, noAnsi: Bool, quiet: Bool = false) -> [Installer] {
+        var installers: [Installer] = []
 
         for catalogURL in catalogURLs {
 
@@ -182,29 +182,29 @@ struct HTTP {
                 var format: PropertyListSerialization.PropertyListFormat = .xml
 
                 guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
-                    let productsDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
-                    !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
+                    let installersDictionary: [String: Any] = catalog["Installers"] as? [String: Any] else {
+                    !quiet ? PrettyPrint.print("Unable to get 'Installers' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
                 }
 
-                products.append(contentsOf: getProducts(from: productsDictionary, noAnsi: noAnsi, quiet: quiet).filter { !products.map { $0.identifier }.contains($0.identifier) })
+                installers.append(contentsOf: getInstallers(from: installersDictionary, noAnsi: noAnsi, quiet: quiet).filter { !installers.map { $0.identifier }.contains($0.identifier) })
             } catch {
                 !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
         }
 
-        products.append(contentsOf: Product.legacyProducts)
+        installers.append(contentsOf: Installer.legacyInstallers)
 
         if !includeBetas {
-            products = products.filter { !$0.beta }
+            installers = installers.filter { !$0.beta }
         }
 
         if compatible {
-            products = products.filter { $0.compatible }
+            installers = installers.filter { $0.compatible }
         }
 
-        products.sort { $0.version == $1.version ? $0.date > $1.date : $0.version.compare($1.version, options: .numeric) == .orderedDescending }
-        return products
+        installers.sort { $0.version == $1.version ? $0.date > $1.date : $0.version.compare($1.version, options: .numeric) == .orderedDescending }
+        return installers
     }
 
     /// Filters and extracts a list of macOS Installers from the Apple Software Update Catalog Property List.
@@ -215,9 +215,9 @@ struct HTTP {
     ///   - quiet:      Set to `true` to suppress verbose output.
     ///
     /// - Returns: The filtered list of macOS Installers.
-    private static func getProducts(from dictionary: [String: Any], noAnsi: Bool, quiet: Bool) -> [Product] {
+    private static func getInstallers(from dictionary: [String: Any], noAnsi: Bool, quiet: Bool) -> [Installer] {
 
-        var products: [Product] = []
+        var installers: [Installer] = []
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
@@ -261,15 +261,15 @@ struct HTTP {
                 // JSON object creation freaks out with the default DeferredSUEnablementDate date format
                 value.removeValue(forKey: "DeferredSUEnablementDate")
 
-                let productData: Data = try JSONSerialization.data(withJSONObject: value, options: .prettyPrinted)
-                let product: Product = try JSONDecoder().decode(Product.self, from: productData)
-                products.append(product)
+                let installerData: Data = try JSONSerialization.data(withJSONObject: value, options: .prettyPrinted)
+                let installer: Installer = try JSONDecoder().decode(Installer.self, from: installerData)
+                installers.append(installer)
             } catch {
                 !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
         }
 
-        return products
+        return installers
     }
 
     /// Returns the macOS Installer **Name** value from the provided distribution file string.
@@ -385,30 +385,30 @@ struct HTTP {
     /// Retrieves the first macOS Installer download match for the provided search string.
     ///
     /// - Parameters:
-    ///   - products:     The array of possible macOS Installers that can be downloaded.
+    ///   - installers:   The array of possible macOS Installers that can be downloaded.
     ///   - searchString: The download search string.
     ///
     /// - Returns: The first match of a macOS Installer, otherwise `nil`.
-    static func product(from products: [Product], searchString: String) -> Product? {
+    static func installer(from installers: [Installer], searchString: String) -> Installer? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
-        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredProductsByVersion: [Product] = products.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().contains(searchString) }
-        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased().contains(searchString) }
-        return filteredProductsByName.first ?? filteredProductsByVersion.first ?? filteredProductsByBuild.first
+        let filteredInstallersByName: [Installer] = installers.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredInstallersByVersion: [Installer] = installers.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().contains(searchString) }
+        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().contains(searchString) }
+        return filteredInstallersByName.first ?? filteredInstallersByVersion.first ?? filteredInstallersByBuild.first
     }
 
     /// Retrieves macOS Installer downloads matching the provided search string.
     ///
     /// - Parameters:
-    ///   - products:     The array of possible macOS Installers that can be downloaded.
+    ///   - installers:   The array of possible macOS Installers that can be downloaded.
     ///   - searchString: The download search string.
     ///
     /// - Returns: An array of macOS Installer matches.
-    static func products(from products: [Product], searchString: String) -> [Product] {
+    static func installers(from installers: [Installer], searchString: String) -> [Installer] {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
-        let filteredProductsByName: [Product] = products.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredProductsByVersion: [Product] = products.filter { $0.version.lowercased().contains(searchString) }
-        let filteredProductsByBuild: [Product] = products.filter { $0.build.lowercased().contains(searchString) }
-        return filteredProductsByName + filteredProductsByVersion + filteredProductsByBuild
+        let filteredInstallersByName: [Installer] = installers.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
+        let filteredInstallersByVersion: [Installer] = installers.filter { $0.version.lowercased().contains(searchString) }
+        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().contains(searchString) }
+        return filteredInstallersByName + filteredInstallersByVersion + filteredInstallersByBuild
     }
 }
