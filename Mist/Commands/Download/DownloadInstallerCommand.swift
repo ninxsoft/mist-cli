@@ -235,12 +235,12 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationBootableInstaller(_ options: DownloadInstallerOptions) throws {
 
-        guard options.outputType.contains(.bootableInstaller),
-            let bootableInstallerVolume = options.bootableInstallerVolume else {
+        guard options.outputType.contains(.bootableInstaller) else {
             return
         }
 
-        guard !bootableInstallerVolume.isEmpty else {
+        guard let bootableInstallerVolume = options.bootableInstallerVolume,
+            !bootableInstallerVolume.isEmpty else {
             throw MistError.missingBootableInstallerVolume
         }
 
