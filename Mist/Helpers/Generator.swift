@@ -34,7 +34,7 @@ struct Generator {
         let temporaryURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let firmwareURL: URL = URL(string: firmware.url) else {
-            throw MistError.invalidURL(url: firmware.url)
+            throw MistError.invalidURL(firmware.url)
         }
 
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)

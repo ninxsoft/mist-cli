@@ -57,7 +57,7 @@ struct Installer {
             _ = try Shell.execute(arguments)
         } else {
             guard let url: URL = URL(string: product.distribution) else {
-                throw MistError.invalidURL(url: product.distribution)
+                throw MistError.invalidURL(product.distribution)
             }
 
             let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)

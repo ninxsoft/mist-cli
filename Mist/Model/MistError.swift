@@ -33,7 +33,7 @@ enum MistError: Error {
     case invalidExitStatus(code: Int32, message: String)
     case invalidFileSize(invalid: UInt64, valid: UInt64)
     case invalidShasum(invalid: String, valid: String)
-    case invalidURL(url: String)
+    case invalidURL(_ url: String)
 
     var description: String {
         switch self {
