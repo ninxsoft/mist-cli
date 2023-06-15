@@ -40,8 +40,9 @@ struct DownloadInstallerOptions: ParsableArguments {
     Note: This option will fail when targeting macOS Catalina 10.15 and older on Apple Silicon Macs.
     Note: This option will fail when targeting OS X Mountain Lion 10.8.5 and older on Intel-based Macs.
     * package to generate a macOS Installer Package (.pkg).
+    * bootableinstaller to create a Bootable macOS Installer on a mounted volume
     """)
-    var outputType: [DownloadOutputType]
+    var outputType: [InstallerOutputType]
 
     @Flag(name: [.customShort("b"), .long], help: """
     Include beta macOS Installers in search results.
@@ -121,6 +122,13 @@ struct DownloadInstallerOptions: ParsableArguments {
     Specify a signing identity name, eg. "Developer ID Installer: Name (Team ID)".
     """)
     var packageSigningIdentity: String?
+
+    @Option(name: .long, help: """
+    Path to the mounted volume that will be used to create the Bootable macOS Installer.
+    Note: The volume must be formatted as 'Mac OS Extended (Journaled)'. Use Disk Utility to format volumes as required.
+    Note: The volume will be erased automatically. Ensure you have backed up any necessary data before proceeding.
+    """)
+    var bootableInstallerVolume: String?
 
     @Option(name: .long, help: """
     Specify a keychain path to search for signing identities.

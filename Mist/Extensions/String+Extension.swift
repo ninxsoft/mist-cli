@@ -53,10 +53,10 @@ extension String {
             .replacingOccurrences(of: "//", with: "/")
     }
 
-    func stringWithSubstitutions(using product: Product) -> String {
-        self.replacingOccurrences(of: "%NAME%", with: product.name)
-            .replacingOccurrences(of: "%VERSION%", with: product.version)
-            .replacingOccurrences(of: "%BUILD%", with: product.build)
+    func stringWithSubstitutions(using installer: Installer) -> String {
+        self.replacingOccurrences(of: "%NAME%", with: installer.name)
+            .replacingOccurrences(of: "%VERSION%", with: installer.version)
+            .replacingOccurrences(of: "%BUILD%", with: installer.build)
             .replacingOccurrences(of: "//", with: "/")
     }
 }

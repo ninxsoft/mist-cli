@@ -40,18 +40,18 @@ struct DownloadInstallerCommand: ParsableCommand {
             catalogURLs = [catalogURL]
         }
 
-        let retrievedProducts: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, noAnsi: options.noAnsi)
+        let retrievedInstallers: [Installer] = HTTP.retrieveInstallers(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, noAnsi: options.noAnsi)
 
-        guard let product: Product = HTTP.product(from: retrievedProducts, searchString: options.searchString) else {
+        guard let installer: Installer = HTTP.installer(from: retrievedInstallers, searchString: options.searchString) else {
             !options.quiet ? PrettyPrint.print("No macOS Installer found with '\(options.searchString)', exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
             return
         }
 
-        !options.quiet ? PrettyPrint.print("Found [\(product.identifier)] \(product.name) \(product.version) (\(product.build)) [\(product.date)]", noAnsi: options.noAnsi) : Mist.noop()
+        !options.quiet ? PrettyPrint.print("Found [\(installer.identifier)] \(installer.name) \(installer.version) (\(installer.build)) [\(installer.date)]", noAnsi: options.noAnsi) : Mist.noop()
 
         if let architecture: Architecture = Hardware.architecture {
 
-            if options.outputType.contains(.iso) && ((architecture == .appleSilicon && !product.bigSurOrNewer) || (architecture == .intel && !product.mavericksOrNewer)) {
+            if options.outputType.contains(.iso) && ((architecture == .appleSilicon && !installer.bigSurOrNewer) || (architecture == .intel && !installer.mavericksOrNewer)) {
                 let operatingSystem: String = architecture == .appleSilicon ? "macOS Catalina 10.15" : "OS X Mountain Lion 10.8.5"
                 !options.quiet ? PrettyPrint.print("\(operatingSystem) and older cannot generate Bootable Disk Images on \(architecture.description) Macs...", noAnsi: options.noAnsi) : Mist.noop()
                 !options.quiet ? PrettyPrint.print("Replace 'iso' with another output type or select a newer version of macOS, exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
@@ -59,18 +59,18 @@ struct DownloadInstallerCommand: ParsableCommand {
             }
         }
 
-        try verifyExistingFiles(product, options: options)
-        try setup(product, options: options)
-        try verifyFreeSpace(product, options: options)
-        try Downloader().download(product, options: options)
+        try verifyExistingFiles(installer, options: options)
+        try setup(installer, options: options)
+        try verifyFreeSpace(installer, options: options)
+        try Downloader().download(installer, options: options)
 
-        if !product.bigSurOrNewer || options.outputType != [.package] {
-            try Installer.install(product, options: options)
+        if !installer.bigSurOrNewer || options.outputType != [.package] {
+            try InstallerCreator.create(installer, options: options)
         }
 
-        try Generator.generate(product, options: options)
-        try teardown(product, options: options)
-        try export(product, options: options)
+        try Generator.generate(installer, options: options)
+        try teardown(installer, options: options)
+        try export(installer, options: options)
     }
 
     /// Performs a series of validations on input data, throwing an error if the input data is invalid.
@@ -128,6 +128,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         try inputValidationImage(options)
         try inputValidationISO(options)
         try inputValidationPackage(options)
+        try inputValidationBootableInstaller(options)
     }
 
     /// Performs a series of input validations specific to macOS Application output.
@@ -226,21 +227,63 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
     }
 
+    /// Performs a series of input validations specific to Bootable macOS Installer output.
+    ///
+    /// - Parameters:
+    ///   - options: Download options for macOS Installers.
+    ///
+    /// - Throws: A `MistError` if any of the input validations fail.
+    private static func inputValidationBootableInstaller(_ options: DownloadInstallerOptions) throws {
+
+        guard options.outputType.contains(.bootableInstaller) else {
+            return
+        }
+
+        guard let bootableInstallerVolume = options.bootableInstallerVolume,
+            !bootableInstallerVolume.isEmpty else {
+            throw MistError.missingBootableInstallerVolume
+        }
+
+        let keys: [URLResourceKey] = [.volumeLocalizedFormatDescriptionKey, .volumeIsReadOnlyKey]
+
+        guard let urls: [URL] = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]),
+            let url: URL = urls.first(where: { $0.path == bootableInstallerVolume }) else {
+            throw MistError.bootableInstallerVolumeNotFound(bootableInstallerVolume)
+        }
+
+        let resourceValues: URLResourceValues = try url.resourceValues(forKeys: Set(keys))
+
+        guard let volumeLocalizedFormatDescription: String = resourceValues.volumeLocalizedFormatDescription else {
+            throw MistError.bootableInstallerVolumeUnknownFormat(bootableInstallerVolume)
+        }
+
+        guard volumeLocalizedFormatDescription == "Mac OS Extended (Journaled)" else {
+            throw MistError.bootableInstallerVolumeInvalidFormat(volume: bootableInstallerVolume, format: volumeLocalizedFormatDescription)
+        }
+
+        guard let volumeIsReadOnly: Bool = resourceValues.volumeIsReadOnly,
+            !volumeIsReadOnly else {
+            throw MistError.bootableInstallerVolumeIsReadOnly(bootableInstallerVolume)
+        }
+
+        !options.quiet ? PrettyPrint.print("Bootable macOS Installer will be created on volume '\(bootableInstallerVolume)'...", noAnsi: options.noAnsi) : Mist.noop()
+    }
+
     /// Verifies if macOS Installer files already exist.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer to be downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if an existing file is found.
-    private static func verifyExistingFiles(_ product: Product, options: DownloadInstallerOptions) throws {
+    private static func verifyExistingFiles(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
         guard !options.force else {
             return
         }
 
         if options.outputType.contains(.application) {
-            let path: String = applicationPath(for: product, options: options)
+            let path: String = applicationPath(for: installer, options: options)
 
             guard !FileManager.default.fileExists(atPath: path) else {
                 throw MistError.existingFile(path: path)
@@ -248,7 +291,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         if options.outputType.contains(.image) {
-            let path: String = imagePath(for: product, options: options)
+            let path: String = imagePath(for: installer, options: options)
 
             guard !FileManager.default.fileExists(atPath: path) else {
                 throw MistError.existingFile(path: path)
@@ -256,7 +299,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         if options.outputType.contains(.iso) {
-            let path: String = isoPath(for: product, options: options)
+            let path: String = isoPath(for: installer, options: options)
 
             guard !FileManager.default.fileExists(atPath: path) else {
                 throw MistError.existingFile(path: path)
@@ -264,7 +307,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         if options.outputType.contains(.package) {
-            let path: String = packagePath(for: product, options: options)
+            let path: String = packagePath(for: installer, options: options)
 
             guard !FileManager.default.fileExists(atPath: path) else {
                 throw MistError.existingFile(path: path)
@@ -275,14 +318,14 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// Sets up directory structure for macOS Installer downloads.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer to be downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
-    private static func setup(_ product: Product, options: DownloadInstallerOptions) throws {
+    private static func setup(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: product, options: options))
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
+        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
+        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
         var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("SETUP", noAnsi: options.noAnsi) : Mist.noop()
@@ -313,13 +356,13 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// Verifies free space for macOS Installer downloads.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer to be downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer to be downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if there is not enough free space.
-    private static func verifyFreeSpace(_ product: Product, options: DownloadInstallerOptions) throws {
+    private static func verifyFreeSpace(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: product, options: options))
+        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
@@ -351,7 +394,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         volumes.insert(bootVolume, at: 0)
 
         for volume in volumes {
-            let required: Int64 = product.size * volume.count
+            let required: Int64 = installer.size * volume.count
             let url: URL = URL(fileURLWithPath: volume.path)
             let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
@@ -374,21 +417,21 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// Tears down temporary directory structure for macOS Installer downloads.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer that was downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
-    private static func teardown(_ product: Product, options: DownloadInstallerOptions) throws {
+    private static func teardown(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: product, options: options))
-        let imageURL: URL = temporaryImage(for: product, options: options)
+        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
+        let imageURL: URL = temporaryImage(for: installer, options: options)
         var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN", noAnsi: options.noAnsi) : Mist.noop()
 
-        if !product.bigSurOrNewer || options.outputType != [.package] {
-            !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(product.temporaryDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-            let arguments: [String] = ["hdiutil", "detach", product.temporaryDiskImageMountPointURL.path, "-force"]
+        if !installer.bigSurOrNewer || options.outputType != [.package] {
+            !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            let arguments: [String] = ["hdiutil", "detach", installer.temporaryDiskImageMountPointURL.path, "-force"]
             _ = try Shell.execute(arguments)
             processing = true
         }
@@ -411,13 +454,13 @@ struct DownloadInstallerCommand: ParsableCommand {
     /// Exports the results for macOS Installer downloads.
     ///
     /// - Parameters:
-    ///   - product: The selected macOS Installer that was downloaded.
-    ///   - options: Download options for macOS Installers.
+    ///   - installer: The selected macOS Installer that was downloaded.
+    ///   - options:   Download options for macOS Installers.
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
-    private static func export(_ product: Product, options: DownloadInstallerOptions) throws {
+    private static func export(_ installer: Installer, options: DownloadInstallerOptions) throws {
 
-        guard let path: String = exportPath(for: product, options: options) else {
+        guard let path: String = exportPath(for: installer, options: options) else {
             return
         }
 
@@ -432,8 +475,8 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         let dictionary: [String: Any] = [
-            "installer": product.exportDictionary,
-            "options": exportDictionary(for: product, options: options)
+            "installer": installer.exportDictionary,
+            "options": exportDictionary(for: installer, options: options)
         ]
 
         switch url.pathExtension {
@@ -451,74 +494,75 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
     }
 
-    private static func exportDictionary(for product: Product, options: DownloadInstallerOptions) -> [String: Any] {
+    private static func exportDictionary(for installer: Installer, options: DownloadInstallerOptions) -> [String: Any] {
         [
             "outputTypes": options.outputType.map { $0.description },
             "includeBetas": options.includeBetas,
             "catalogURL": options.catalogURL ?? "",
             "force": options.force,
-            "applicationPath": applicationPath(for: product, options: options),
-            "imagePath": imagePath(for: product, options: options),
+            "applicationPath": applicationPath(for: installer, options: options),
+            "imagePath": imagePath(for: installer, options: options),
             "imageSigningIdentity": options.imageSigningIdentity ?? "",
-            "isoPath": isoPath(for: product, options: options),
-            "packagePath": packagePath(for: product, options: options),
-            "packageIdentifier": packageIdentifier(for: product, options: options),
+            "isoPath": isoPath(for: installer, options: options),
+            "packagePath": packagePath(for: installer, options: options),
+            "packageIdentifier": packageIdentifier(for: installer, options: options),
             "packageSigningIdentity": options.packageSigningIdentity ?? "",
+            "bootableInstallerVolume": options.bootableInstallerVolume ?? "",
             "keychain": options.keychain ?? "",
-            "outputDirectory": outputDirectory(for: product, options: options),
-            "temporaryDirectory": temporaryDirectory(for: product, options: options),
-            "exportPath": exportPath(for: product, options: options) ?? "",
+            "outputDirectory": outputDirectory(for: installer, options: options),
+            "temporaryDirectory": temporaryDirectory(for: installer, options: options),
+            "exportPath": exportPath(for: installer, options: options) ?? "",
             "quiet": options.quiet
         ]
     }
 
-    static func applicationPath(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.outputDirectory)/\(options.applicationName)".stringWithSubstitutions(using: product)
+    static func applicationPath(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        "\(options.outputDirectory)/\(options.applicationName)".stringWithSubstitutions(using: installer)
     }
 
-    private static func exportPath(for product: Product, options: DownloadInstallerOptions) -> String? {
+    private static func exportPath(for installer: Installer, options: DownloadInstallerOptions) -> String? {
 
         guard let path: String = options.exportPath else {
             return nil
         }
 
-        return path.stringWithSubstitutions(using: product)
+        return path.stringWithSubstitutions(using: installer)
     }
 
-    static func imagePath(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.outputDirectory)/\(options.imageName)".stringWithSubstitutions(using: product)
+    static func imagePath(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        "\(options.outputDirectory)/\(options.imageName)".stringWithSubstitutions(using: installer)
     }
 
-    static func isoPath(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.outputDirectory)/\(options.isoName)".stringWithSubstitutions(using: product)
+    static func isoPath(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        "\(options.outputDirectory)/\(options.isoName)".stringWithSubstitutions(using: installer)
     }
 
-    static func packagePath(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.outputDirectory)/\(options.packageName)".stringWithSubstitutions(using: product)
+    static func packagePath(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        "\(options.outputDirectory)/\(options.packageName)".stringWithSubstitutions(using: installer)
     }
 
-    static func packageIdentifier(for product: Product, options: DownloadInstallerOptions) -> String {
+    static func packageIdentifier(for installer: Installer, options: DownloadInstallerOptions) -> String {
         options.packageIdentifier
-            .stringWithSubstitutions(using: product)
+            .stringWithSubstitutions(using: installer)
             .replacingOccurrences(of: " ", with: "-")
             .lowercased()
     }
 
-    private static func outputDirectory(for product: Product, options: DownloadInstallerOptions) -> String {
-        options.outputDirectory.stringWithSubstitutions(using: product)
+    private static func outputDirectory(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        options.outputDirectory.stringWithSubstitutions(using: installer)
     }
 
-    static func temporaryDirectory(for product: Product, options: DownloadInstallerOptions) -> String {
-        "\(options.temporaryDirectory)/\(product.identifier)"
+    static func temporaryDirectory(for installer: Installer, options: DownloadInstallerOptions) -> String {
+        "\(options.temporaryDirectory)/\(installer.identifier)"
             .replacingOccurrences(of: "//", with: "/")
     }
 
-    static func temporaryImage(for product: Product, options: DownloadInstallerOptions) -> URL {
-        URL(fileURLWithPath: "\(temporaryDirectory(for: product, options: options))/\(product.identifier).dmg")
+    static func temporaryImage(for installer: Installer, options: DownloadInstallerOptions) -> URL {
+        URL(fileURLWithPath: "\(temporaryDirectory(for: installer, options: options))/\(installer.identifier).dmg")
     }
 
-    static func resumeDataURL(for package: Package, in product: Product, options: DownloadInstallerOptions) -> URL {
-        let temporaryDirectory: String = temporaryDirectory(for: product, options: options)
+    static func resumeDataURL(for package: Package, in installer: Installer, options: DownloadInstallerOptions) -> URL {
+        let temporaryDirectory: String = temporaryDirectory(for: installer, options: options)
         let string: String = "\(temporaryDirectory)/\(package.filename).resumeData"
         let url: URL = URL(fileURLWithPath: string)
         return url

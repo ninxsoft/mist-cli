@@ -37,23 +37,23 @@ struct ListInstallerCommand: ParsableCommand {
             catalogURLs = [catalogURL]
         }
 
-        var products: [Product] = HTTP.retrieveProducts(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, noAnsi: options.noAnsi, quiet: options.quiet)
+        var installers: [Installer] = HTTP.retrieveInstallers(from: catalogURLs, includeBetas: options.includeBetas, compatible: options.compatible, noAnsi: options.noAnsi, quiet: options.quiet)
 
         if let searchString: String = options.searchString {
-            products = HTTP.products(from: products, searchString: searchString)
+            installers = HTTP.installers(from: installers, searchString: searchString)
         }
 
         if options.latest {
-            if let product: Product = products.first {
-                products = [product]
+            if let installer: Installer = installers.first {
+                installers = [installer]
             }
         }
 
-        try export(products.map { $0.dictionary }, options: options)
-        !options.quiet ? PrettyPrint.print("Found \(products.count) macOS Installer(s) available for download\n", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
+        try export(installers.map { $0.dictionary }, options: options)
+        !options.quiet ? PrettyPrint.print("Found \(installers.count) macOS Installer(s) available for download\n", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
 
-        if !products.isEmpty {
-            try list(products.map { $0.dictionary }, options: options)
+        if !installers.isEmpty {
+            try list(installers.map { $0.dictionary }, options: options)
         }
     }
 
@@ -125,7 +125,7 @@ struct ListInstallerCommand: ParsableCommand {
 
         switch url.pathExtension {
         case "csv":
-            try dictionaries.productsCSVString().write(toFile: path, atomically: true, encoding: .utf8)
+            try dictionaries.installersCSVString().write(toFile: path, atomically: true, encoding: .utf8)
             !options.quiet ? PrettyPrint.print("Exported list as CSV: '\(path)'", noAnsi: options.noAnsi) : Mist.noop()
         case "json":
             try dictionaries.jsonString().write(toFile: path, atomically: true, encoding: .utf8)
@@ -152,9 +152,9 @@ struct ListInstallerCommand: ParsableCommand {
 
         switch options.outputType {
         case .ascii:
-            print(dictionaries.productsASCIIString())
+            print(dictionaries.installersASCIIString())
         case .csv:
-            print(dictionaries.productsCSVString())
+            print(dictionaries.installersCSVString())
         case .json:
             try print(dictionaries.jsonString())
         case .plist:
