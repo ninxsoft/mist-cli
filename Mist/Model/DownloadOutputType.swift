@@ -8,12 +8,11 @@
 import ArgumentParser
 
 enum DownloadOutputType: String, ExpressibleByArgument {
-    // swiftlint:disable redundant_string_enum_value
     case application = "application"
     case image = "image"
     case iso = "iso"
     case package = "package"
-    // swiftlint:enable redundant_string_enum_value
+    case createInstallMedia = "createinstallmedia"
 
     var description: String {
         self.rawValue

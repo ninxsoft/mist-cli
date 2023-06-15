@@ -37,7 +37,7 @@ class Downloader: NSObject {
         temporaryURL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let source: URL = URL(string: firmware.url) else {
-            throw MistError.invalidURL(url: firmware.url)
+            throw MistError.invalidURL(firmware.url)
         }
 
         sourceURL = source
@@ -117,7 +117,7 @@ class Downloader: NSObject {
             let package: Package = product.allDownloads[index]
 
             guard let source: URL = URL(string: package.url) else {
-                throw MistError.invalidURL(url: package.url)
+                throw MistError.invalidURL(package.url)
             }
 
             sourceURL = source
