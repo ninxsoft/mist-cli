@@ -23,6 +23,11 @@ enum MistError: Error {
     case missingPackageName
     case missingPackageIdentifier
     case missingPackageSigningIdentity
+    case missingBootableInstallerVolume
+    case bootableInstallerVolumeNotFound(_ volume: String)
+    case bootableInstallerVolumeUnknownFormat(_ volume: String)
+    case bootableInstallerVolumeInvalidFormat(volume: String, format: String)
+    case bootableInstallerVolumeIsReadOnly(_ volume: String)
     case missingOutputDirectory
     case maximumRetriesReached
     case notEnoughFreeSpace(volume: String, free: Int64, required: Int64)
@@ -33,7 +38,7 @@ enum MistError: Error {
     case invalidExitStatus(code: Int32, message: String)
     case invalidFileSize(invalid: UInt64, valid: UInt64)
     case invalidShasum(invalid: String, valid: String)
-    case invalidURL(url: String)
+    case invalidURL(_ url: String)
 
     var description: String {
         switch self {
@@ -67,6 +72,16 @@ enum MistError: Error {
             return "[--package-identifier] macOS Installer Package identifier is missing or empty."
         case .missingPackageSigningIdentity:
             return "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
+        case .missingBootableInstallerVolume:
+            return "[--bootable-installer-volume] Bootable macOS Installer volume is missing or empty."
+        case .bootableInstallerVolumeNotFound(let volume):
+            return "Unable to find Bootable macOS Installer volume '\(volume)'."
+        case .bootableInstallerVolumeUnknownFormat(let volume):
+            return "Unable to determine format of Bootable macOS Installer volume '\(volume)'."
+        case .bootableInstallerVolumeInvalidFormat(let volume, let format):
+            return "Bootable macOS Installer volume '\(volume)' has invalid format '\(format)'. Format to 'Mac OS Extended (Journaled)' using Disk Utility."
+        case .bootableInstallerVolumeIsReadOnly(let volume):
+            return "Bootable macOS Installer volume '\(volume)' is read-only. Format using Disk Utility."
         case .missingOutputDirectory:
             return "[-o, --output-directory] Output directory is missing or empty."
         case .maximumRetriesReached:

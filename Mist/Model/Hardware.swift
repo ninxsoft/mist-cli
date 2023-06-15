@@ -10,36 +10,31 @@ import Foundation
 /// Hardware Struct used to retrieve Hardware information.
 struct Hardware {
 
-    /// Hardware Architecture (arm64 or x86_64).
-    static var architecture: String? {
-
-        guard let cString: UnsafePointer<CChar> = NXGetLocalArchInfo().pointee.name else {
+    /// Hardware Architecture (Apple Silicon or Intel).
+    static var architecture: Architecture? {
+        #if arch(arm64)
+            return .appleSilicon
+        #elseif arch(x86_64)
+            return .intel
+        #else
             return nil
-        }
-
-        return String(cString: cString)
+        #endif
     }
 
     /// Hardware Board ID (Intel).
     static var boardID: String? {
-
-        guard let architecture: String = architecture else {
-            return nil
-        }
-
-        return architecture.contains("x86_64") ? registryProperty(for: "board-id") : nil
+        architecture == .intel ? registryProperty(for: "board-id") : nil
     }
     /// Hardware Device ID (Apple Silicon or Intel T2).
     static var deviceID: String? {
 
-        guard let architecture: String = architecture else {
-            return nil
-        }
-
-        if architecture.contains("x86_64") {
-            return registryProperty(for: "bridge-model")?.uppercased()
-        } else {
+        switch architecture {
+        case .appleSilicon:
             return registryProperty(for: "compatible")?.components(separatedBy: "\0").first?.uppercased()
+        case .intel:
+            return registryProperty(for: "bridge-model")?.uppercased()
+        default:
+            return nil
         }
     }
     /// Hardware Model Identifier (Apple Silicon or Intel).

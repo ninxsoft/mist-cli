@@ -1,5 +1,5 @@
 //
-//  DownloadOutputType.swift
+//  InstallerOutputType.swift
 //  Mist
 //
 //  Created by Nindi Gill on 29/5/2022.
@@ -7,13 +7,12 @@
 
 import ArgumentParser
 
-enum DownloadOutputType: String, ExpressibleByArgument {
-    // swiftlint:disable redundant_string_enum_value
+enum InstallerOutputType: String, ExpressibleByArgument {
     case application = "application"
     case image = "image"
     case iso = "iso"
     case package = "package"
-    // swiftlint:enable redundant_string_enum_value
+    case bootableInstaller = "bootableinstaller"
 
     var description: String {
         self.rawValue

@@ -1,5 +1,5 @@
 //
-//  Product.swift
+//  Installer.swift
 //  Mist
 //
 //  Created by Nindi Gill on 10/3/21.
@@ -9,7 +9,7 @@ import Foundation
 
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
-struct Product: Decodable {
+struct Installer: Decodable {
     enum CodingKeys: String, CodingKey {
         case identifier = "Identifier"
         case name = "Name"
@@ -23,9 +23,9 @@ struct Product: Decodable {
         case unsupportedModelIdentifiers = "UnsupportedModelIdentifiers"
     }
 
-    static var legacyProducts: [Product] {
+    static var legacyInstallers: [Installer] {
         [
-            Product(
+            Installer(
                 identifier: "10.12.6-16G29",
                 name: "macOS Sierra",
                 version: "10.12.6",
@@ -118,7 +118,7 @@ struct Product: Decodable {
                 deviceIDs: [],
                 unsupportedModelIdentifiers: []
             ),
-            Product(
+            Installer(
                 identifier: "10.11.6-15G31",
                 name: "OS X El Capitan",
                 version: "10.11.6",
@@ -226,7 +226,7 @@ struct Product: Decodable {
                 deviceIDs: [],
                 unsupportedModelIdentifiers: []
             ),
-            Product(
+            Installer(
                 identifier: "10.10.5-14F27",
                 name: "OS X Yosemite",
                 version: "10.10.5",
@@ -328,7 +328,7 @@ struct Product: Decodable {
                 deviceIDs: [],
                 unsupportedModelIdentifiers: []
             ),
-            Product(
+            Installer(
                 identifier: "10.8.5-12F45",
                 name: "OS X Mountain Lion",
                 version: "10.8.5",
@@ -414,7 +414,7 @@ struct Product: Decodable {
                 deviceIDs: [],
                 unsupportedModelIdentifiers: []
             ),
-            Product(
+            Installer(
                 identifier: "10.7.5-11G63",
                 name: "Mac OS X Lion",
                 version: "10.7.5",

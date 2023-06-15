@@ -84,7 +84,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     }
 
     // swiftlint:disable:next function_body_length
-    func productsASCIIString() -> String {
+    func installersASCIIString() -> String {
 
         let identifierHeading: String = "Identifier"
         let nameHeading: String = "Name"
@@ -208,8 +208,8 @@ extension Sequence where Iterator.Element == [String: Any] {
         "Signed,Name,Version,Build,Size,Date,Compatible\n" + self.map { $0.firmwareCSVString() }.joined()
     }
 
-    func productsCSVString() -> String {
-        "Identifier,Name,Version,Build,Size,Date,Compatible\n" + self.map { $0.productCSVString() }.joined()
+    func installersCSVString() -> String {
+        "Identifier,Name,Version,Build,Size,Date,Compatible\n" + self.map { $0.installerCSVString() }.joined()
     }
 
     func jsonString() throws -> String {

@@ -25,7 +25,7 @@ extension Dictionary where Key == String {
         return string
     }
 
-    func productCSVString() -> String {
+    func installerCSVString() -> String {
 
         guard let identifier: String = self["identifier"] as? String,
             let name: String = self["name"] as? String,
