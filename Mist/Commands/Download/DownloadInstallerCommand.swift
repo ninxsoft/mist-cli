@@ -65,7 +65,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         try Downloader().download(product, options: options)
 
         if !product.bigSurOrNewer || options.outputType != [.package] {
-            try Installer.install(product, options: options)
+            try InstallerCreator.create(product, options: options)
         }
 
         try Generator.generate(product, options: options)

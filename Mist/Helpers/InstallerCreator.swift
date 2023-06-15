@@ -1,5 +1,5 @@
 //
-//  Installer.swift
+//  InstallerCreator.swift
 //  Mist
 //
 //  Created by Nindi Gill on 11/3/21.
@@ -8,16 +8,16 @@
 import Foundation
 
 /// Helper Struct used to install macOS Installers.
-struct Installer {
+struct InstallerCreator {
 
-    /// Installs a recently downloaded macOS Installer.
+    /// Creates a recently downloaded macOS Installer.
     ///
     /// - Parameters:
     ///   - product: The selected macOS Installer that was downloaded.
     ///   - options: Download options for macOS Installers.
     ///
     /// - Throws: A `MistError` if the downloaded macOS Installer fails to install.
-    static func install(_ product: Product, options: DownloadInstallerOptions) throws {
+    static func create(_ product: Product, options: DownloadInstallerOptions) throws {
 
         !options.quiet ? PrettyPrint.printHeader("INSTALL", noAnsi: options.noAnsi) : Mist.noop()
 
