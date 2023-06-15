@@ -213,6 +213,11 @@ struct Generator {
 
         !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(product.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
         arguments = ["\(product.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", product.temporaryISOMountPointURL.path, "--nointeraction"]
+
+        if product.sierraOrOlder {
+            arguments += ["--applicationpath", product.temporaryInstallerURL.path]
+        }
+
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(product.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
