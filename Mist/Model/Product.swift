@@ -7,6 +7,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+// swiftlint:disable:next type_body_length
 struct Product: Decodable {
     enum CodingKeys: String, CodingKey {
         case identifier = "Identifier"
