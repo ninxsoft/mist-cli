@@ -197,6 +197,7 @@ struct Generator {
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).cdr")
+        let resizedDMGURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).resized.dmg")
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: installer, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
@@ -224,9 +225,16 @@ struct Generator {
 
         _ = try Shell.execute(arguments)
 
+        !options.quiet ? PrettyPrint.print("Creating resized disk image '\(resizedDMGURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+        arguments = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", installer.temporaryISOMountPointURL.path, "-volname", "Install \(installer.name)", resizedDMGURL.path]
+        _ = try Shell.execute(arguments)
+
         !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
         arguments = ["hdiutil", "detach", installer.temporaryISOMountPointURL.path, "-force"]
         _ = try Shell.execute(arguments)
+
+        !options.quiet ? PrettyPrint.print("Deleting disk image '\(dmgURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+        try FileManager.default.removeItem(at: dmgURL)
 
         if !options.force {
 
@@ -241,7 +249,7 @@ struct Generator {
         }
 
         !options.quiet ? PrettyPrint.print("Converting disk image '\(cdrURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "convert", dmgURL.path, "-format", "UDTO", "-o", cdrURL.path]
+        arguments = ["hdiutil", "convert", resizedDMGURL.path, "-format", "UDTO", "-o", cdrURL.path]
         _ = try Shell.execute(arguments)
 
         !options.quiet ? PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
