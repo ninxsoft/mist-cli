@@ -1,0 +1,72 @@
+name: Draft New Release
+on: workflow_dispatch
+jobs:
+  build:
+    name: Draft New Release
+    runs-on: macos-13
+    env:
+      APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE }}
+      APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD }}
+      APPLE_DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY: "Developer ID Application: Nindi Gill (7K3HVCLV7Z)"
+      APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE }}
+      APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD }}
+      APPLE_DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY: "Developer ID Installer: Nindi Gill (7K3HVCLV7Z)"
+      APPLE_DEVELOPER_CERTIFICATE_AUTHORITY: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_AUTHORITY }}
+      APPLE_DEVELOPER_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_DEVELOPER_KEYCHAIN_PASSWORD }}
+      APPLE_DEVELOPER_APPLE_ID: ${{ secrets.APPLE_DEVELOPER_APPLE_ID }}
+      APPLE_DEVELOPER_APPLE_ID_PASSWORD: ${{ secrets.APPLE_DEVELOPER_APPLE_ID_PASSWORD }}
+      APPLE_DEVELOPER_TEAM_ID: "7K3HVCLV7Z"
+      KEYCHAIN_FILE: "apple-developer.keychain-db"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: swift-actions/setup-swift@v1
+      - name: Install Apple Developer ID Certificates
+        run: |
+          APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-id-application-certificate.p12"
+          APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-id-installer-certificate.p12"
+          APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH="$RUNNER_TEMP/apple-developer-certificate-authority.cer"
+          echo -n "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE" | base64 --decode -i - -o "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH"
+          echo -n "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE" | base64 --decode -i - -o "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PATH"
+          echo -n "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY" | base64 --decode -i - -o "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH"
+          security create-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security set-keychain-settings -lut 21600 "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security unlock-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security import "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security import "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security import "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs7 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          security list-keychain -d user -s "$RUNNER_TEMP/$KEYCHAIN_FILE"
+      - name: Build mist
+        run: swift build --configuration release --arch arm64 --arch x86_64
+      - name: Codesign mist
+        run: |
+          codesign --keychain "$RUNNER_TEMP/$KEYCHAIN_FILE" --sign "$APPLE_DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY" --options runtime ".build/apple/Products/release/mist"
+      - name: Package mist
+        run: |
+          PACKAGE_IDENTIFIER="com.ninxsoft.pkg.mist-cli"
+          PACKAGE_TEMP="$RUNNER_TEMP/$PACKAGE_IDENTIFIER"
+          PACKAGE_VERSION="$(.build/apple/Products/release/mist --version | head -n 1 | awk '{ print $$1 }')"
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+          PACKAGE_FILENAME="mist-cli.$PACKAGE_VERSION.pkg"
+          echo "PACKAGE_FILENAME=$PACKAGE_FILENAME" >> "$GITHUB_ENV"
+          mkdir -p "$PACKAGE_TEMP/usr/local/bin"
+          cp ".build/apple/Products/release/mist" "$PACKAGE_TEMP/usr/local/bin/mist"
+          pkgbuild --root "$PACKAGE_TEMP" \
+                   --identifier "$PACKAGE_IDENTIFIER" \
+                   --version "$PACKAGE_VERSION" \
+                   --min-os-version "10.15" \
+                   --sign "$APPLE_DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY" \
+                   "$PACKAGE_FILENAME"
+      - name: Notarize mist
+        run: |
+          xcrun notarytool submit "${{ env.PACKAGE_FILENAME }}" --apple-id "$APPLE_DEVELOPER_APPLE_ID" --password "$APPLE_DEVELOPER_APPLE_ID_PASSWORD" --team-id "$APPLE_DEVELOPER_TEAM_ID" --wait
+          xcrun stapler staple "${{ env.PACKAGE_FILENAME }}"
+      - name: Draft New Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: "${{ env.PACKAGE_VERSION }}"
+          tag_name: "v${{ env.PACKAGE_VERSION }}"
+          draft: true
+          files: "${{ env.PACKAGE_FILENAME }}"
+      - name: Remove Apple Developer Keychain
+        if: ${{ always() }}
+        run: security delete-keychain $RUNNER_TEMP/apple-developer.keychain-db
