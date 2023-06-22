@@ -36,8 +36,12 @@ class Downloader: NSObject {
         !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
-        guard let source: URL = URL(string: firmware.url) else {
+        guard var source: URL = URL(string: firmware.url) else {
             throw MistError.invalidURL(firmware.url)
+        }
+
+        if let url: URL = DownloadFirmwareCommand.cachingServerURL(for: source, options: options) {
+            source = url
         }
 
         sourceURL = source
@@ -116,8 +120,12 @@ class Downloader: NSObject {
 
             let package: Package = installer.allDownloads[index]
 
-            guard let source: URL = URL(string: package.url) else {
+            guard var source: URL = URL(string: package.url) else {
                 throw MistError.invalidURL(package.url)
+            }
+
+            if let url: URL = DownloadInstallerCommand.cachingServerURL(for: source, options: options) {
+                source = url
             }
 
             sourceURL = source

@@ -68,6 +68,12 @@ struct DownloadFirmwareOptions: ParsableArguments {
     """)
     var temporaryDirectory: String = .temporaryDirectory
 
+    @Option(name: .long, help: """
+    Optionally specify the URL:port to an Apple Content Caching Server to help speed up downloads
+    Note: Content Caching is only supported over HTTP, not HTTPS
+    """)
+    var cachingServer: String?
+
     @Option(name: [.customShort("e"), .customLong("export")], help: """
     Specify the path to export the download results to one of the following formats:
     * /path/to/export.json (JSON file)
