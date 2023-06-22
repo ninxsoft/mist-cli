@@ -152,7 +152,7 @@ struct DownloadInstallerOptions: ParsableArguments {
     var temporaryDirectory: String = .temporaryDirectory
 
     @Option(name: .long, help: """
-    Optionally specify the URL:port to an Apple Content Caching Server to help speed up downloads
+    Optionally specify the <url:port> to an Apple Content Caching Server to help speed up downloads
     Note: Content Caching is only supported over HTTP, not HTTPS
     """)
     var cachingServer: String?

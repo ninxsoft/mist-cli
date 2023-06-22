@@ -3,13 +3,32 @@
 ## [2.0 Beta](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0-beta) - 2023-06-06
 
 - Added preliminary support for macOS Sonoma 14
+
+## [1.13](https://github.com/ninxsoft/mist-cli/releases/tag/v1.13) - 2023-06-22
+
 - Added support for the following legacy operating systems:
   - macOS Sierra 10.12.6
   - OS X El Capitan 10.11.6
   - OS X Yosemite 10.10.5
   - OS X Mountain Lion 10.8.5
   - Mac OS X Lion 10.7.5
-  - Thanks Nate Felton ([n8felton](https://github.com/n8felton))!
+  - Thanks [n8felton](https://github.com/n8felton)!
+- Added support for creating Bootable Installers!
+  - Specify the `bootableinstaller` argument for the `<output-type>`
+  - Provide a `--bootable-installer-volume` argument for the mounted volume that will be used to create the Bootable Installer
+  - **Note:** The volume must be formatted as **Mac OS Extended (Journaled)**. Use **Disk Utility** to format volumes as required.
+  - **Note:** The volume will be erased automatically. Ensure you have backed up any necessary data before proceeding.
+  - Available for **macOS Big Sur 11** and newer on **Apple Silicon Macs**
+  - Available for **OS X Yosemite 10.10.5** and newer on **Intel-based Macs**
+  - Thanks [5T33Z0](https://github.com/5T33Z0)!
+- Added support for downloading Firmwares and Installers from an [Apple Content Caching Server](https://support.apple.com/en-us/guide/deployment/depde72e125f/web)!
+  - Provide a `--caching-server` argument for the `<url:port>` that points to a Content Caching Server on the local network
+  - **Note:** The cached content is served over HTTP, **not** HTTPS
+  - Thanks [carlashley](https://github.com/carlashley)!
+- Bootable Disk Image (ISO) sizes are now calculated dynamically, with minimal free space
+  - Thanks [devZer0](https://github.com/devZer0) and [carlashley](https://github.com/carlashley)!
+- Improved free disk space validation when running `mist` as `root` (ie. at the login screen) - thanks [TSPARR](https://github.com/TSPARR) and [PicoMitchell](https://github.com/PicoMitchell)!
+- Improved / updated several `--help` descriptions
 
 ## [1.12](https://github.com/ninxsoft/mist-cli/releases/tag/v1.12) - 2023-05-20
 
