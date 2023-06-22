@@ -40,9 +40,9 @@ jobs:
       - name: Package mist
         run: |
           PACKAGE_IDENTIFIER="com.ninxsoft.pkg.mist-cli"
-          PACKAGE_TEMP="$RUNNER_TEMP/$IDENTIFIER"
+          PACKAGE_TEMP="$RUNNER_TEMP/$PACKAGE_IDENTIFIER"
           PACKAGE_VERSION="$(.build/apple/Products/release/mist --version | head -n 1 | awk '{ print $$1 }')"
-          PACKAGE_FILENAME="mist-cli.$MIST_VERSION.pkg"
+          PACKAGE_FILENAME="mist-cli.$PACKAGE_VERSION.pkg"
           SIGNING_IDENTITY="Developer ID Installer: Nindi Gill (7K3HVCLV7Z)"
           mkdir -p "$PACKAGE_TEMP/usr/local/bin"
           cp ".build/apple/Products/release/mist" "$PACKAGE_TEMP/usr/local/bin/mist"
