@@ -10,7 +10,6 @@
   - Mac OS X Lion 10.7.5
   - Thanks [n8felton](https://github.com/n8felton)!
 - Added support for creating Bootable Installers!
-
   - Specify the `bootableinstaller` argument for the `<output-type>`
   - Provide a `--bootable-installer-volume` argument for the mounted volume that will be used to create the Bootable Installer
   - **Note:** The volume must be formatted as **Mac OS Extended (Journaled)**. Use **Disk Utility** to format volumes as required.
@@ -18,7 +17,6 @@
   - Available for **macOS Big Sur 11** and newer on **Apple Silicon Macs**
   - Available for **OS X Yosemite 10.10.5** and newer on **Intel-based Macs**
   - Thanks [5T33Z0](https://github.com/5T33Z0)!
-
 - Added support for downloading Firmwares and Installers from an [Apple Content Caching Server](https://support.apple.com/en-us/guide/deployment/depde72e125f/web)!
   - Provide a `--caching-server` argument for the `<url:port>` that points to a Content Caching Server on the local network
   - **Note:** The cached content is served over HTTP, **not** HTTPS
