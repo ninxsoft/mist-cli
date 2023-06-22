@@ -196,8 +196,8 @@ struct Generator {
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE", noAnsi: options.noAnsi) : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).dmg")
-        let cdrURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).cdr")
         let resizedDMGURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).resized.dmg")
+        let cdrURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).cdr")
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: installer, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
