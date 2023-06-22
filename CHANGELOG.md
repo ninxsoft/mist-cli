@@ -2,37 +2,37 @@
 
 ## [1.12](https://github.com/ninxsoft/mist-cli/releases/tag/v1.12) - 2023-05-20
 
-- The percentage progress now displays correctly when the `--no-ansi` flag is used - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
-- Improved how available free space is calculated - thanks Pico Mitchell ([PicoMitchell](https://github.com/PicoMitchell))!
-- Searching for a major macOS release number (ie. **13**) will now download the latest Firmware / Installer of said version - thanks Balz Aschwanden ([aschwanb](https://github.com/aschwanb))!
-- Attempting to generate a macOS Catalina 10.15 or older Bootable Disk Image on Apple Silicon Macs will inform the user and exit (rather than failing after the download) - thanks Karol Woźniak ([KenjiTakahashi](https://github.com/KenjiTakahashi))!
+- The percentage progress now displays correctly when the `--no-ansi` flag is used - thanks [grahampugh](https://github.com/grahampugh)!
+- Improved how available free space is calculated - thanks [PicoMitchell](https://github.com/PicoMitchell)!
+- Searching for a major macOS release number (ie. **13**) will now download the latest Firmware / Installer of said version - thanks [aschwanb](https://github.com/aschwanb)!
+- Attempting to generate a macOS Catalina 10.15 or older Bootable Disk Image on Apple Silicon Macs will inform the user and exit (rather than failing after the download) - thanks [KenjiTakahashi](https://github.com/KenjiTakahashi)!
 
 ## [1.11](https://github.com/ninxsoft/mist-cli/releases/tag/v1.11) - 2023-04-16
 
-- Specifying a macOS version with only one decimal no longer results in downloading a partial / incorrect match - thanks Kyle Robertson ([kylerobertson0404](https://github.com/kylerobertson0404))!
-- Using the `--no-ansi` flag when downloading now only outputs progress once per percentage increase, resulting in less verbose logging - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
-- `mist` no longer displays mounted volumes in the Finder during disk image creation - thanks Richard Smith ([wakco](https://github.com/wakco))!
-- Improved free disk space detection - thanks Adam Newhouse ([anewhouse](https://github.com/anewhouse))!
+- Specifying a macOS version with only one decimal no longer results in downloading a partial / incorrect match - thanks [kylerobertson0404](https://github.com/kylerobertson0404)!
+- Using the `--no-ansi` flag when downloading now only outputs progress once per percentage increase, resulting in less verbose logging - thanks [grahampugh](https://github.com/grahampugh)!
+- `mist` no longer displays mounted volumes in the Finder during disk image creation - thanks [wakco](https://github.com/wakco)!
+- Improved free disk space detection - thanks [anewhouse](https://github.com/anewhouse)!
 - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.2.2**
 - Bumped [Yams](https://github.com/jpsim/Yams) version to **5.0.5**
 
 ## [1.10](https://github.com/ninxsoft/mist-cli/releases/tag/v1.10) - 2022-12-29
 
-- When exporting a package for macOS 11 or newer, `mist` now saves time by re-using the Apple-provided Installer package when exporting a package - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
-- macOS Firmware and Installer downloads that error (eg. due to timeouts) can now be resumed when `mist` is run again - thanks Guisch ([Guisch](https://github.com/Guisch))!
+- When exporting a package for macOS 11 or newer, `mist` now saves time by re-using the Apple-provided Installer package when exporting a package - thanks [grahampugh](https://github.com/grahampugh)!
+- macOS Firmware and Installer downloads that error (eg. due to timeouts) can now be resumed when `mist` is run again - thanks [Guisch](https://github.com/Guisch)!
   - Use the `--cache-downloads` flag to cache incomplete downloads
-- Listing or downloading macOS Firmwares now caches the metadata from the [IPSW Downloads API](https://ipswdownloads.docs.apiary.io/) - thanks Nathan Pierce ([NorseGaud](https://github.com/NorseGaud))!
+- Listing or downloading macOS Firmwares now caches the metadata from the [IPSW Downloads API](https://ipswdownloads.docs.apiary.io/) - thanks [NorseGaud](https://github.com/NorseGaud)!
   - Use the `--metadata-cache` option to specify a custom macOS Firmware metadata cache path
-- `mist` output can now be redirected to a log file without ANSI escape sequences - thanks NinjaFez ([NinjaFez](https://github.com/NinjaFez)) and Nate Felton ([n8felton](https://github.com/n8felton))!
+- `mist` output can now be redirected to a log file without ANSI escape sequences - thanks [NinjaFez](https://github.com/NinjaFez) and [n8felton](https://github.com/n8felton)!
   - Use the `--no-ansi` flag to remove all ANSI escape sequences, as well as limit the download progress output to once per second
-- `mist` now defaults to creating a macOS Installer in a temporary disk image under-the-hood (no longer creating a macOS Installer in the `/Applications` directory) - thanks Graham Pugh ([grahampugh](https://github.com/grahampugh))!
+- `mist` now defaults to creating a macOS Installer in a temporary disk image under-the-hood (no longer creating a macOS Installer in the `/Applications` directory) - thanks [grahampugh](https://github.com/grahampugh)!
 - `mist` no longer outputs error messages twice - once is enough!
 - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.2.0**
 - Removed unused declarations and imports (ie. dead code)
 
 ## [1.9.1](https://github.com/ninxsoft/mist-cli/releases/tag/v1.9.1) - 2022-10-08
 
-- Firmware SHA-1 checksum validation is now working correctly again - thanks Nathan Pierce ([Norse Gaud](https://github.com/NorseGaud))!
+- Firmware SHA-1 checksum validation is now working correctly again - thanks [NorseGaud](https://github.com/NorseGaud)!
 
 ## [1.9](https://github.com/ninxsoft/mist-cli/releases/tag/v1.9) - 2022-09-26
 
@@ -42,7 +42,7 @@
 - macOS Firmware / Installer lists are now sorted by version, then by date
 - Firmwares with invalid SHA-1 checksums are now ignored and unavailable for download
 - SHA-1 checksum validation logic is now implemented in Swift (no longer shells out to `shasum`)
-- stdout stream buffering is disabled to improve output frequency - thanks Nate Felton ([n8felton](https://github.com/n8felton))!
+- stdout stream buffering is disabled to improve output frequency - thanks [n8felton](https://github.com/n8felton)!
 - Checking for mist updates now points to the recently renamed [mist-cli](https://github.com/ninxsoft/mist-cli) repository URL
 - Looking up the version of mist-cli is now performed using the built-in `mist --version` command
 - General code refactoring
