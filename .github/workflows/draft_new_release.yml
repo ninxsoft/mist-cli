@@ -14,6 +14,9 @@ jobs:
       APPLE_DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY: "Developer ID Installer: Nindi Gill (7K3HVCLV7Z)"
       APPLE_DEVELOPER_CERTIFICATE_AUTHORITY: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_AUTHORITY }}
       APPLE_DEVELOPER_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_DEVELOPER_KEYCHAIN_PASSWORD }}
+      APPLE_DEVELOPER_APPLE_ID: ${{ secrets.APPLE_DEVELOPER_APPLE_ID }}
+      APPLE_DEVELOPER_APPLE_ID_PASSWORD: ${{ secrets.APPLE_DEVELOPER_APPLE_ID_PASSWORD }}
+      APPLE_DEVELOPER_TEAM_ID: "7K3HVCLV7Z"
     steps:
       - uses: actions/checkout@v3
       - uses: swift-actions/setup-swift@v1
@@ -54,7 +57,9 @@ jobs:
                    --sign "$APPLE_DEVELOPER_ID_INSTALLER_SIGNING_IDENTITY" \
                    "$PACKAGE_FILENAME"
       - name: Notarize mist
-        run: echo "Notarizing..."
+        run: |
+          xcrun notarytool submit "${{ env.PACKAGE_FILENAME }}" --apple-id "$APPLE_DEVELOPER_APPLE_ID" --password "$APPLE_DEVELOPER_APPLE_ID_PASSWORD" --team-id "$APPLE_DEVELOPER_TEAM_ID" --wait
+          xcrun stapler staple "${{ env.PACKAGE_FILENAME }}"
       - name: Draft New Release
         uses: softprops/action-gh-release@v1
         with:
