@@ -12,6 +12,7 @@ jobs:
     runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
+      - uses: swift-actions/setup-swift@v1
       - name: Print SwiftLint version
         run: swiftlint --version
       - name: Run SwiftLint
