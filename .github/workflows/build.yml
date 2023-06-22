@@ -14,30 +14,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: swift-actions/setup-swift@v1
-      - name: Install Apple Developer Application Certificate
+      - name: Install Apple Developer ID Application Certificate
         env:
-          APPLE_DEVELOPER_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE }}
-          APPLE_DEVELOPER_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_PASSWORD }}
+          APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE }}
+          APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD }}
           APPLE_DEVELOPER_CERTIFICATE_AUTHORITY: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_AUTHORITY }}
           APPLE_DEVELOPER_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_DEVELOPER_KEYCHAIN_PASSWORD }}
         run: |
-          CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-application-certificate.p12"
-          CERTIFICATE_AUTHORITY_PATH="$RUNNER_TEMP/apple-developer-certificate-authority.cer"
+          APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-id-application-certificate.p12"
+          APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH="$RUNNER_TEMP/apple-developer-certificate-authority.cer"
           KEYCHAIN_PATH="$RUNNER_TEMP/apple-developer.keychain-db"
-          echo -n "$APPLE_DEVELOPER_CERTIFICATE" | base64 --decode -i - -o "$CERTIFICATE_PATH"
-          echo -n "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY" | base64 --decode -i - -o "$CERTIFICATE_AUTHORITY_PATH"
+          echo -n "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE" | base64 --decode -i - -o "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH"
+          echo -n "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY" | base64 --decode -i - -o "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH"
           security create-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security import "$CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security import "$CERTIFICATE_AUTHORITY_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs7 -k "$KEYCHAIN_PATH"
+          security import "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security import "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs7 -k "$KEYCHAIN_PATH"
           security list-keychain -d user -s "$KEYCHAIN_PATH"
       - name: Build mist
         run: swift build --configuration release --arch arm64 --arch x86_64
       - name: Codesign mist
         run: |
           KEYCHAIN_PATH="$RUNNER_TEMP/apple-developer.keychain-db"
-          codesign --keychain "$KEYCHAIN_PATH" --sign "Developer ID Application: Nindi Gill (7K3HVCLV7Z)" --options runtime ".build/apple/Products/release/mist"
+          SIGNING_IDENTITY="Developer ID Application: Nindi Gill (7K3HVCLV7Z)"
+          codesign --keychain "$KEYCHAIN_PATH" --sign "$SIGNING_IDENTITY" --options runtime ".build/apple/Products/release/mist"
       - name: Add mist to $PATH
         run: echo "$GITHUB_WORKSPACE/.build/apple/Products/release" >> $GITHUB_PATH
       - name: Print mist version
