@@ -104,6 +104,21 @@ struct DownloadInstallerCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print("Cache downloads will be '\(options.cacheDownloads)'...", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Output directory will be '\(options.outputDirectory)'...", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", noAnsi: options.noAnsi) : Mist.noop()
+
+        if let cachingServer: String = options.cachingServer {
+
+            guard let url: URL = URL(string: cachingServer) else {
+                throw MistError.invalidURL(cachingServer)
+            }
+
+            guard let scheme: String = url.scheme,
+                scheme == "http" else {
+                throw MistError.invalidCachingServerProtocol(url)
+            }
+
+            !options.quiet ? PrettyPrint.print("Content Caching Server URL will be '\(url.absoluteString)'...", noAnsi: options.noAnsi) : Mist.noop()
+        }
+
         let string: String = "Force flag\(options.force ? " " : " has not been ")set, existing files will\(options.force ? " " : " not ")be overwritten..."
         !options.quiet ? PrettyPrint.print(string, noAnsi: options.noAnsi) : Mist.noop()
 
@@ -559,6 +574,23 @@ struct DownloadInstallerCommand: ParsableCommand {
 
     static func temporaryImage(for installer: Installer, options: DownloadInstallerOptions) -> URL {
         URL(fileURLWithPath: "\(temporaryDirectory(for: installer, options: options))/\(installer.identifier).dmg")
+    }
+
+    static func cachingServerURL(for source: URL, options: DownloadInstallerOptions) -> URL? {
+
+        guard let cachingServerHost: String = options.cachingServer,
+            let sourceHost: String = source.host else {
+            return nil
+        }
+
+        let cachingServerPath: String = source.path.replacingOccurrences(of: sourceHost, with: "")
+        let cachingServerString: String = "\(cachingServerHost)\(cachingServerPath)?source=\(sourceHost)&sourceScheme=https"
+
+        guard let cachingServerURL: URL = URL(string: cachingServerString) else {
+            return nil
+        }
+
+        return cachingServerURL
     }
 
     static func resumeDataURL(for package: Package, in installer: Installer, options: DownloadInstallerOptions) -> URL {
