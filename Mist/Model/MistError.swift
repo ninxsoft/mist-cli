@@ -39,6 +39,7 @@ enum MistError: Error {
     case invalidFileSize(invalid: UInt64, valid: UInt64)
     case invalidShasum(invalid: String, valid: String)
     case invalidURL(_ url: String)
+    case invalidCachingServerProtocol(_ url: URL)
 
     var description: String {
         switch self {
@@ -104,6 +105,8 @@ enum MistError: Error {
             return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
         case .invalidURL(let url):
             return "Invalid URL: '\(url)'"
+        case .invalidCachingServerProtocol(let url):
+            return "Invalid Content Caching Server protocol in URL: '\(url.absoluteString)', should be HTTP."
         }
     }
 }
