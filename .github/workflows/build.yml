@@ -6,6 +6,7 @@ on:
   pull_request:
     paths: ["**.swift"]
     branches: [main]
+  workflow_dispatch:
 jobs:
   build:
     name: Build
@@ -23,8 +24,8 @@ jobs:
           CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-application-certificate.p12"
           CERTIFICATE_AUTHORITY_PATH="$RUNNER_TEMP/apple-developer-certificate-authority.cer"
           KEYCHAIN_PATH="$RUNNER_TEMP/apple-developer.keychain-db"
-          echo -n "$APPLE_DEVELOPER_CERTIFICATE" | base64 --decode --output "$CERTIFICATE_PATH"
-          echo -n "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY" | base64 --decode --output "$CERTIFICATE_AUTHORITY_PATH"
+          echo -n "$APPLE_DEVELOPER_CERTIFICATE" | base64 --decode -i - -o "$CERTIFICATE_PATH"
+          echo -n "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY" | base64 --decode -i - -o "$CERTIFICATE_AUTHORITY_PATH"
           security create-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
@@ -36,7 +37,7 @@ jobs:
       - name: Codesign mist
         run: |
           KEYCHAIN_PATH="$RUNNER_TEMP/apple-developer.keychain-db"
-          # 'codesign --keychain "$KEYCHAIN_PATH" --sign "Developer ID Installer: Nindi Gill (7K3HVCLV7Z)" --options runtime ".build/apple/Products/release/mist"'
+          codesign --keychain "$KEYCHAIN_PATH" --sign "Developer ID Application: Nindi Gill (7K3HVCLV7Z)" --options runtime ".build/apple/Products/release/mist"
       - name: Add mist to $PATH
         run: echo "$GITHUB_WORKSPACE/.build/apple/Products/release" >> $GITHUB_PATH
       - name: Print mist version
