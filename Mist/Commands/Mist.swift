@@ -55,6 +55,19 @@ struct Mist: ParsableCommand {
         string += "\n\(visitURLString)"
         return string
     }
+
+    static func checkForNewVersion(noAnsi: Bool) {
+
+        guard let latestVersion: String = getLatestVersion(),
+            currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
+            return
+        }
+
+        PrettyPrint.printHeader("UPDATE AVAILABLE", noAnsi: noAnsi)
+        let updateAvailableString: String = "There is a \(String.appName) update available (Current version: \(currentVersion), Latest version: \(latestVersion))".color(noAnsi ? .reset : .yellow)
+        let visitURLString: String = visitURLString.color(noAnsi ? .reset : .yellow)
+        PrettyPrint.print(updateAvailableString, noAnsi: noAnsi)
+        PrettyPrint.print(visitURLString, noAnsi: noAnsi)
     }
 
     mutating func run() {
