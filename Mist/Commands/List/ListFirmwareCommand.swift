@@ -158,7 +158,7 @@ struct ListFirmwareCommand: ParsableCommand {
 
         switch options.outputType {
         case .ascii:
-            print(dictionaries.firmwaresASCIIString())
+            print(dictionaries.firmwaresASCIIString(noAnsi: options.noAnsi))
         case .csv:
             print(dictionaries.firmwaresCSVString())
         case .json:

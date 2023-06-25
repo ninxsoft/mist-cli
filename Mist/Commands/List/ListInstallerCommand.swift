@@ -153,7 +153,7 @@ struct ListInstallerCommand: ParsableCommand {
 
         switch options.outputType {
         case .ascii:
-            print(dictionaries.installersASCIIString())
+            print(dictionaries.installersASCIIString(noAnsi: options.noAnsi))
         case .csv:
             print(dictionaries.installersCSVString())
         case .json:
