@@ -11,7 +11,7 @@ import Yams
 extension Sequence where Iterator.Element == [String: Any] {
 
     // swiftlint:disable:next function_body_length
-    func firmwaresASCIIString() -> String {
+    func firmwaresASCIIString(noAnsi: Bool) -> String {
 
         let signedHeading: String = "Signed"
         let nameHeading: String = "Name"
@@ -47,7 +47,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             (string: compatibleHeading, padding: compatiblePadding)
         ]
 
-        var string: String = headerASCIIString(columns: columns)
+        var string: String = headerASCIIString(columns: columns, noAnsi: noAnsi)
 
         for item in self {
 
@@ -77,14 +77,14 @@ extension Sequence where Iterator.Element == [String: Any] {
                 (string: compatible, padding: compatiblePadding)
             ]
 
-            string += rowASCIIString(columns: columns)
+            string += rowASCIIString(columns: columns, noAnsi: noAnsi)
         }
 
         return string
     }
 
     // swiftlint:disable:next function_body_length
-    func installersASCIIString() -> String {
+    func installersASCIIString(noAnsi: Bool) -> String {
 
         let identifierHeading: String = "Identifier"
         let nameHeading: String = "Name"
@@ -120,7 +120,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             (string: compatibleHeading, padding: compatiblePadding)
         ]
 
-        var string: String = headerASCIIString(columns: columns)
+        var string: String = headerASCIIString(columns: columns, noAnsi: noAnsi)
 
         for item in self {
 
@@ -150,7 +150,7 @@ extension Sequence where Iterator.Element == [String: Any] {
                 (string: compatible, padding: compatiblePadding)
             ]
 
-            string += rowASCIIString(columns: columns)
+            string += rowASCIIString(columns: columns, noAnsi: noAnsi)
         }
 
         return string
@@ -160,20 +160,21 @@ extension Sequence where Iterator.Element == [String: Any] {
     ///
     /// - Parameters:
     ///   - columns: An array of column tuples, each containing a column string and padding integer.
+    ///   - noAnsi:  Set to `true` to print the string without any color or formatting.
     ///
     /// - Returns: The Header ASCII string.
-    private func headerASCIIString(columns: [(string: String, padding: Int)]) -> String {
+    private func headerASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
 
         var string: String = ""
 
         for (index, column) in columns.enumerated() {
             string += column.string + [String](repeating: " ", count: column.padding).joined()
-            string += index < columns.count - 1 ? " │ " : "\n"
+            string += index < columns.count - 1 ? " │ ".color(noAnsi ? .reset : .blue) : "\n"
         }
 
         for (index, column) in columns.enumerated() {
-            string += [String](repeating: "─", count: column.string.count + column.padding).joined()
-            string += index < columns.count - 1 ? "─┼─" : "\n"
+            string += [String](repeating: "─".color(noAnsi ? .reset : .blue), count: column.string.count + column.padding).joined()
+            string += index < columns.count - 1 ? "─┼─".color(noAnsi ? .reset : .blue) : "\n"
         }
 
         return string
@@ -183,9 +184,10 @@ extension Sequence where Iterator.Element == [String: Any] {
     ///
     /// - Parameters:
     ///   - columns: An array of column tuples, each containing a column string and padding integer.
+    ///   - noAnsi:  Set to `true` to print the string without any color or formatting.
     ///
     /// - Returns: The Row ASCII string.
-    private func rowASCIIString(columns: [(string: String, padding: Int)]) -> String {
+    private func rowASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
 
         var string: String = ""
 
@@ -198,7 +200,7 @@ extension Sequence where Iterator.Element == [String: Any] {
                 string += column.string + [String](repeating: " ", count: column.padding).joined()
             }
 
-            string += index < columns.count - 1 ? " │ " : "\n"
+            string += index < columns.count - 1 ? " │ ".color(noAnsi ? .reset : .blue) : "\n"
         }
 
         return string

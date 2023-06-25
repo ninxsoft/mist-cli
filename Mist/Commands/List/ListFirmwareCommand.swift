@@ -27,6 +27,7 @@ struct ListFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListFirmwareOptions) throws {
+        Mist.checkForNewVersion(noAnsi: options.noAnsi)
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...", noAnsi: options.noAnsi) : Mist.noop()
@@ -157,7 +158,7 @@ struct ListFirmwareCommand: ParsableCommand {
 
         switch options.outputType {
         case .ascii:
-            print(dictionaries.firmwaresASCIIString())
+            print(dictionaries.firmwaresASCIIString(noAnsi: options.noAnsi))
         case .csv:
             print(dictionaries.firmwaresCSVString())
         case .json:

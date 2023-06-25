@@ -28,6 +28,7 @@ struct ListInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListInstallerOptions) throws {
+        Mist.checkForNewVersion(noAnsi: options.noAnsi)
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...", noAnsi: options.noAnsi) : Mist.noop()
@@ -152,7 +153,7 @@ struct ListInstallerCommand: ParsableCommand {
 
         switch options.outputType {
         case .ascii:
-            print(dictionaries.installersASCIIString())
+            print(dictionaries.installersASCIIString(noAnsi: options.noAnsi))
         case .csv:
             print(dictionaries.installersCSVString())
         case .json:
