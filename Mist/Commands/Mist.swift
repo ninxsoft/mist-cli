@@ -13,17 +13,15 @@ struct Mist: ParsableCommand {
 
     /// Current version.
     private static let currentVersion: String = "1.13"
-    /// Current version with error message when unable to lookup latest version.
-    private static var versionWithErrorMessage: String {
-        "\(currentVersion) (Unable to check for latest version)"
-    }
+    /// Visit URL string.
+    private static let visitURLString: String = "Visit \(String.repositoryURL) to grab the latest release of \(String.appName)"
 
     static func noop() { }
 
-    static func version() -> String {
+    private static func getLatestVersion() -> String? {
 
         guard let url: URL = URL(string: .latestReleaseURL) else {
-            return versionWithErrorMessage
+            return nil
         }
 
         do {
@@ -32,21 +30,44 @@ struct Mist: ParsableCommand {
             guard let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let tag: String = dictionary["tag_name"] as? String else {
-                return versionWithErrorMessage
+                return nil
             }
 
             let latestVersion: String = tag.replacingOccurrences(of: "v", with: "")
-            var versionString: String = "\(currentVersion) (Latest: \(latestVersion))"
-
-            guard currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
-                return versionString
-            }
-
-            versionString += "\nVisit \(String.repositoryURL) to grab the latest release of \(String.appName)"
-            return versionString
+            return latestVersion
         } catch {
-            return versionWithErrorMessage
+            return nil
         }
+    }
+
+    static func version() -> String {
+
+        guard let latestVersion: String = getLatestVersion() else {
+            return "\(currentVersion) (Unable to check for latest version)"
+        }
+
+        var string: String = "\(currentVersion) (Latest: \(latestVersion))"
+
+        guard currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
+            return string
+        }
+
+        string += "\n\(visitURLString)"
+        return string
+    }
+
+    static func checkForNewVersion(noAnsi: Bool) {
+
+        guard let latestVersion: String = getLatestVersion(),
+            currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
+            return
+        }
+
+        PrettyPrint.printHeader("UPDATE AVAILABLE", noAnsi: noAnsi)
+        let updateAvailableString: String = "There is a \(String.appName) update available (Current version: \(currentVersion), Latest version: \(latestVersion))".color(noAnsi ? .reset : .yellow)
+        let visitURLString: String = visitURLString.color(noAnsi ? .reset : .yellow)
+        PrettyPrint.print(updateAvailableString, noAnsi: noAnsi)
+        PrettyPrint.print(visitURLString, noAnsi: noAnsi)
     }
 
     mutating func run() {

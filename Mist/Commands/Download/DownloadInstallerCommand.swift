@@ -31,6 +31,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if a macOS version fails to download.
     static func run(options: DownloadInstallerOptions) throws {
+        Mist.checkForNewVersion(noAnsi: options.noAnsi)
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", noAnsi: options.noAnsi) : Mist.noop()
