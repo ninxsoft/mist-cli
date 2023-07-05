@@ -162,15 +162,15 @@ mist download installer "macOS Ventura" application image iso package \
 
 ## Build Requirements
 
-- Runs on **macOS Catalina 10.15** and later.
 - Swift **5.4**.
+- Runs on **macOS Big Sur 11** and later.
 
 ## Download
 
 - Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/Mist/releases).
 - Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist`
-- **Note:** Version **1.8** requires **macOS Catalina 10.15** or later.
-  - If you need to run **mist** on an older operating system, you can still use version **1.7**.
+- **Note:** Version **1.15** requires **macOS Big Sur 11** or later.
+  - If you need to run **mist** on an older operating system, you can still use version **1.14**.
 
 ## Credits / Thank You
 
