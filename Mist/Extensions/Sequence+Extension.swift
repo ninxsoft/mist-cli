@@ -13,13 +13,13 @@ extension Sequence where Iterator.Element == [String: Any] {
     // swiftlint:disable:next function_body_length
     func firmwaresASCIIString(noAnsi: Bool) -> String {
 
-        let signedHeading: String = "Signed"
-        let nameHeading: String = "Name"
-        let versionHeading: String = "Version"
-        let buildHeading: String = "Build"
-        let sizeHeading: String = "Size"
-        let dateHeading: String = "Date"
-        let compatibleHeading: String = "Compatible"
+        let signedHeading: String = "SIGNED"
+        let nameHeading: String = "NAME"
+        let versionHeading: String = "VERSION"
+        let buildHeading: String = "BUILD"
+        let sizeHeading: String = "SIZE"
+        let dateHeading: String = "DATE"
+        let compatibleHeading: String = "COMPATIBLE"
 
         let maximumSignedLength: Int = self.compactMap { $0["signed"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: signedHeading)
         let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
@@ -80,19 +80,20 @@ extension Sequence where Iterator.Element == [String: Any] {
             string += rowASCIIString(columns: columns, noAnsi: noAnsi)
         }
 
+        string += footerASCIIString(columns: columns, noAnsi: noAnsi)
         return string
     }
 
     // swiftlint:disable:next function_body_length
     func installersASCIIString(noAnsi: Bool) -> String {
 
-        let identifierHeading: String = "Identifier"
-        let nameHeading: String = "Name"
-        let versionHeading: String = "Version"
-        let buildHeading: String = "Build"
-        let sizeHeading: String = "Size"
-        let dateHeading: String = "Date"
-        let compatibleHeading: String = "Compatible"
+        let identifierHeading: String = "IDENTIFIER"
+        let nameHeading: String = "NAME"
+        let versionHeading: String = "VERSION"
+        let buildHeading: String = "BUILD"
+        let sizeHeading: String = "SIZE"
+        let dateHeading: String = "DATE"
+        let compatibleHeading: String = "COMPATIBLE"
 
         let maximumIdentifierLength: Int = self.compactMap { $0["identifier"] as? String }.maximumStringLength(comparing: identifierHeading)
         let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
@@ -153,6 +154,7 @@ extension Sequence where Iterator.Element == [String: Any] {
             string += rowASCIIString(columns: columns, noAnsi: noAnsi)
         }
 
+        string += footerASCIIString(columns: columns, noAnsi: noAnsi)
         return string
     }
 
@@ -165,19 +167,28 @@ extension Sequence where Iterator.Element == [String: Any] {
     /// - Returns: The Header ASCII string.
     private func headerASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
 
-        var string: String = ""
+        var string: String = "┌─"
+
+        for (index, column) in columns.enumerated() {
+            string += [String](repeating: "─", count: column.string.count + column.padding).joined()
+            string += index < columns.count - 1 ? "─┬─" : "─┐\n"
+        }
+
+        string += "│ "
 
         for (index, column) in columns.enumerated() {
             string += column.string + [String](repeating: " ", count: column.padding).joined()
-            string += index < columns.count - 1 ? " │ ".color(noAnsi ? .reset : .blue) : "\n"
+            string += index < columns.count - 1 ? " │ " : " │\n"
         }
+
+        string += "├─"
 
         for (index, column) in columns.enumerated() {
-            string += [String](repeating: "─".color(noAnsi ? .reset : .blue), count: column.string.count + column.padding).joined()
-            string += index < columns.count - 1 ? "─┼─".color(noAnsi ? .reset : .blue) : "\n"
+            string += [String](repeating: "─", count: column.string.count + column.padding).joined()
+            string += index < columns.count - 1 ? "─┼─" : "─┤\n"
         }
 
-        return string
+        return string.color(noAnsi ? .reset : .blue)
     }
 
     /// Generates a Row ASCII string based on the provided columns.
@@ -189,7 +200,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     /// - Returns: The Row ASCII string.
     private func rowASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
 
-        var string: String = ""
+        var string: String = "│ ".color(noAnsi ? .reset : .blue)
 
         for (index, column) in columns.enumerated() {
 
@@ -200,10 +211,29 @@ extension Sequence where Iterator.Element == [String: Any] {
                 string += column.string + [String](repeating: " ", count: column.padding).joined()
             }
 
-            string += index < columns.count - 1 ? " │ ".color(noAnsi ? .reset : .blue) : "\n"
+            string += (index < columns.count - 1 ? " │ " : " │\n").color(noAnsi ? .reset : .blue)
         }
 
         return string
+    }
+
+    /// Generates a Footer ASCII string based on the provided columns.
+    ///
+    /// - Parameters:
+    ///   - columns: An array of column tuples, each containing a column string and padding integer.
+    ///   - noAnsi:  Set to `true` to print the string without any color or formatting.
+    ///
+    /// - Returns: The Header ASCII string.
+    private func footerASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
+
+        var string: String = "└─"
+
+        for (index, column) in columns.enumerated() {
+            string += [String](repeating: "─", count: column.string.count + column.padding).joined()
+            string += index < columns.count - 1 ? "─┴─" : "─┘\n"
+        }
+
+        return string.color(noAnsi ? .reset : .blue)
     }
 
     func firmwaresCSVString() -> String {

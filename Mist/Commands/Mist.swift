@@ -13,6 +13,7 @@ struct Mist: ParsableCommand {
 
     /// Current version.
     private static let currentVersion: String = "2.0-beta"
+
     /// Visit URL string.
     private static let visitURLString: String = "Visit \(String.repositoryURL) to grab the latest release of \(String.appName)"
 
@@ -46,7 +47,7 @@ struct Mist: ParsableCommand {
             return "\(currentVersion) (Unable to check for latest version)"
         }
 
-        var string: String = "\(currentVersion) (Latest: \(latestVersion))"
+        var string: String = "\(currentVersion) (latest: \(latestVersion))"
 
         guard currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
             return string
@@ -64,7 +65,7 @@ struct Mist: ParsableCommand {
         }
 
         PrettyPrint.printHeader("UPDATE AVAILABLE", noAnsi: noAnsi)
-        let updateAvailableString: String = "There is a \(String.appName) update available (Current version: \(currentVersion), Latest version: \(latestVersion))".color(noAnsi ? .reset : .yellow)
+        let updateAvailableString: String = "There is a \(String.appName) update available (current version: \(currentVersion), latest version: \(latestVersion))".color(noAnsi ? .reset : .yellow)
         let visitURLString: String = visitURLString.color(noAnsi ? .reset : .yellow)
         PrettyPrint.print(updateAvailableString, noAnsi: noAnsi)
         PrettyPrint.print(visitURLString, noAnsi: noAnsi)

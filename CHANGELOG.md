@@ -4,6 +4,11 @@
 
 - Added preliminary support for macOS Sonoma 14
 
+## [1.14](https://github.com/ninxsoft/mist-cli/releases/tag/v1.14) - 2023-06-26
+
+- `mist` will now inform you when a new update is available!
+- Added colored borders to the ASCII table output when running `mist list`
+
 ## [1.13](https://github.com/ninxsoft/mist-cli/releases/tag/v1.13) - 2023-06-22
 
 - Added support for the following legacy operating systems:
