@@ -73,7 +73,7 @@ SUBCOMMANDS:
   See 'mist help <subcommand>' for detailed help.
 ```
 
-**Note:** Depending on what **Mist** downloads, you may require allowing **Full Disk Access** for your **Terminal** application of choice via [System Settings](https://support.apple.com/en-us/guide/mac-help/mh15217/13.0/mac/13.0):
+**Note:** Depending on what **mist** downloads, you may require allowing **Full Disk Access** for your **Terminal** application of choice via [System Settings](https://support.apple.com/en-us/guide/mac-help/mh15217/13.0/mac/13.0):
 
 ![Full Disk Access](README%20Resources/Full%20Disk%20Access.png)
 
@@ -167,8 +167,8 @@ mist download installer "macOS Ventura" application image iso package \
 
 ## Download
 
-- Grab the latest version of **Mist** from the [releases page](https://github.com/ninxsoft/Mist/releases).
-- Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist`
+- Grab the latest version of **mist** from the [releases page](https://github.com/ninxsoft/mist-cli/releases).
+- Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist-cli`
 - **Note:** Version **1.15** requires **macOS Big Sur 11** or later.
   - If you need to run **mist** on an older operating system, you can still use version **1.14**.
 
