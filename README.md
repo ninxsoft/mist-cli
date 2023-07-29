@@ -1,13 +1,3 @@
-### :mega: Looking for work!
-
-I am a seasoned Mac Sys Admin who also makes Mac apps in Swift :hammer_and_wrench:
-
-If you feel I would be a great fit for any job opportunities, please don't hesitate to reach out: [nindi@ninxsoft.com](mailto:nindi@ninxsoft.com) | [LinkedIn](https://www.linkedin.com/in/nindigill/)
-
-Thank you :bow:
-
----
-
 # MIST - macOS Installer Super Tool
 
 ![Latest Release](https://img.shields.io/github/v/release/ninxsoft/mist-cli?display_name=tag&label=Latest%20Release&sort=semver) ![Downloads](https://img.shields.io/github/downloads/ninxsoft/mist-cli/total?label=Downloads) [![Linting](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/linting.yml) [![Unit Tests](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/unit_tests.yml) [![Build](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml/badge.svg)](https://github.com/ninxsoft/mist-cli/actions/workflows/build.yml)
