@@ -671,7 +671,7 @@
 			repositoryURL = "https://github.com/apple/swift-argument-parser";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.2;
+				minimumVersion = 1.2.3;
 			};
 		};
 		57D135B625FEEE48003467B2 /* XCRemoteSwiftPackageReference "Yams" */ = {
@@ -679,7 +679,7 @@
 			repositoryURL = "https://github.com/jpsim/Yams";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.5;
+				minimumVersion = 5.0.6;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -152,7 +152,7 @@ mist download installer "macOS Ventura" application image iso package \
 
 ## Build Requirements
 
-- Swift **5.4**.
+- Swift **5.8**.
 - Runs on **macOS Big Sur 11** and later.
 
 ## Download
