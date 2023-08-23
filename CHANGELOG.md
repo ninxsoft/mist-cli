@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.15](https://github.com/ninxsoft/mist-cli/releases/tag/v1.15) - 2023-08-23
+
+- Added a temporary POSIX permissions fix to Installer applications that are being set incorrectly - thanks [meta-github](https://github.com/meta-github), [graham](https://github.com/grahampugh), [PicoMitchell](https://github.com/PicoMitchell) and [k0nker](https://github.com/k0nker)!
+- Rolled back the Bootable Disk Image (ISO) shrinking logic that was preventing the ISOs from booting correctly
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.2.3**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **5.0.6**
+
+**Note:** Version **1.15** requires **macOS Big Sur 11** or later. If you need to run **mist** on an older operating system, you can still use version **1.14**.
+
 ## [1.14](https://github.com/ninxsoft/mist-cli/releases/tag/v1.14) - 2023-06-26
 
 - `mist` will now inform you when a new update is available!
