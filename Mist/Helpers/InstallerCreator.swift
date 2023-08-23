@@ -75,6 +75,10 @@ struct InstallerCreator {
             _ = try Shell.execute(arguments)
         }
 
+        // temporary fix for applying correct posix permissions
+        arguments = ["chmod", "-R", "755", installer.temporaryInstallerURL.path]
+        _ = try Shell.execute(arguments)
+
         !options.quiet ? PrettyPrint.print("Created new installer '\(installer.temporaryInstallerURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 }
