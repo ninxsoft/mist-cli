@@ -32,7 +32,7 @@ struct ListInstallerCommand: ParsableCommand {
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Installer versions...", noAnsi: options.noAnsi) : Mist.noop()
-        var catalogURLs: [String] = Catalog.urls
+        var catalogURLs: [String] = options.includeBetas ? Catalog.urls : [Catalog.standard.url]
 
         if let catalogURL: String = options.catalogURL {
             catalogURLs = [catalogURL]
