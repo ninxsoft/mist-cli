@@ -131,8 +131,8 @@ struct HTTP {
     static func firmware(from firmwares: [Firmware], searchString: String) -> Firmware? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().contains(searchString) }
-        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().contains(searchString) }
+        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().starts(with: searchString) }
+        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().starts(with: searchString) }
         return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
     }
 
@@ -146,8 +146,8 @@ struct HTTP {
     static func firmwares(from firmwares: [Firmware], searchString: String) -> [Firmware] {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased().contains(searchString) }
-        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().contains(searchString) }
+        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { $0.version.lowercased().starts(with: searchString) }
+        let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().starts(with: searchString) }
         return filteredFirmwaresByName + filteredFirmwaresByVersion + filteredFirmwaresByBuild
     }
 
@@ -392,8 +392,8 @@ struct HTTP {
     static func installer(from installers: [Installer], searchString: String) -> Installer? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredInstallersByName: [Installer] = installers.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredInstallersByVersion: [Installer] = installers.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().contains(searchString) }
-        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().contains(searchString) }
+        let filteredInstallersByVersion: [Installer] = installers.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().starts(with: searchString) }
+        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().starts(with: searchString) }
         return filteredInstallersByName.first ?? filteredInstallersByVersion.first ?? filteredInstallersByBuild.first
     }
 
@@ -407,8 +407,8 @@ struct HTTP {
     static func installers(from installers: [Installer], searchString: String) -> [Installer] {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredInstallersByName: [Installer] = installers.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredInstallersByVersion: [Installer] = installers.filter { $0.version.lowercased().contains(searchString) }
-        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().contains(searchString) }
+        let filteredInstallersByVersion: [Installer] = installers.filter { $0.version.lowercased().starts(with: searchString) }
+        let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().starts(with: searchString) }
         return filteredInstallersByName + filteredInstallersByVersion + filteredInstallersByBuild
     }
 }
