@@ -6,7 +6,7 @@ source = .build/apple/Products/release/$(binary)
 destination = /usr/local/bin/$(binary)
 temp = /private/tmp/$(identifier)
 version = $(shell mist --version | head -n 1 | awk '{ print $$1 }')
-min_os_version = 10.15
+min_os_version = 11.0
 package_dir = build
 package = $(package_dir)/mist-cli.$(version).pkg
 

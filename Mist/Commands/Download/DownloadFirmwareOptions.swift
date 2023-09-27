@@ -20,7 +20,7 @@ struct DownloadFirmwareOptions: ParsableArguments {
     macOS Big Sur      │ 11.x    │ 20xyz
 
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
-    Note: Specifying a macOS version will assume the latest build of that particular macOS.
+    Note: Specifying a macOS version will look for an exact match, otherwise assume the latest build of that particular macOS.
     """)
     var searchString: String
 
@@ -47,17 +47,17 @@ struct DownloadFirmwareOptions: ParsableArguments {
 
     @Option(name: .long, help: """
     Specify the macOS Firmware output filename. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     """)
     var firmwareName: String = .filenameTemplate + ".ipsw"
 
     @Option(name: .shortAndLong, help: """
     Specify the output directory. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     Note: Parent directories will be created automatically.
     """)
     var outputDirectory: String = .outputDirectory
@@ -80,9 +80,9 @@ struct DownloadFirmwareOptions: ParsableArguments {
     * /path/to/export.plist (Property List file)
     * /path/to/export.yaml (YAML file)
     The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     Note: The file extension will determine the output file format.
     Note: Parent directories will be created automatically.
     """)
