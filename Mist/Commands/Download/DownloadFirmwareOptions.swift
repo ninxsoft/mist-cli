@@ -20,7 +20,7 @@ struct DownloadFirmwareOptions: ParsableArguments {
     macOS Big Sur      │ 11.x    │ 20xyz
 
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
-    Note: Specifying a macOS version will assume the latest build of that particular macOS.
+    Note: Specifying a macOS version will look for an exact match, otherwise assume the latest build of that particular macOS.
     """)
     var searchString: String
 

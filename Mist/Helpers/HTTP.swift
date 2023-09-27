@@ -131,9 +131,10 @@ struct HTTP {
     static func firmware(from firmwares: [Firmware], searchString: String) -> Firmware? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredFirmwaresByName: [Firmware] = firmwares.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredFirmwaresByVersion: [Firmware] = firmwares.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().starts(with: searchString) }
+        let filteredFirmwaresByVersionExact: [Firmware] = firmwares.filter { $0.version.lowercased() == searchString }
+        let filteredFirmwaresByVersionStartsWith: [Firmware] = firmwares.filter { $0.version.lowercased().starts(with: searchString) }
         let filteredFirmwaresByBuild: [Firmware] = firmwares.filter { $0.build.lowercased().starts(with: searchString) }
-        return filteredFirmwaresByName.first ?? filteredFirmwaresByVersion.first ?? filteredFirmwaresByBuild.first
+        return filteredFirmwaresByName.first ?? filteredFirmwaresByVersionExact.first ?? filteredFirmwaresByVersionStartsWith.first ?? filteredFirmwaresByBuild.first
     }
 
     /// Retrieves macOS Firmware downloads matching the provided search string.
@@ -392,9 +393,10 @@ struct HTTP {
     static func installer(from installers: [Installer], searchString: String) -> Installer? {
         let searchString: String = searchString.lowercased().replacingOccurrences(of: "macos ", with: "")
         let filteredInstallersByName: [Installer] = installers.filter { $0.name.lowercased().replacingOccurrences(of: "macos ", with: "").contains(searchString) }
-        let filteredInstallersByVersion: [Installer] = installers.filter { searchString.contains(".") ? $0.version.lowercased() == searchString : $0.version.lowercased().starts(with: searchString) }
+        let filteredInstallersByVersionExact: [Installer] = installers.filter { $0.version.lowercased() == searchString }
+        let filteredInstallersByVersionStartsWith: [Installer] = installers.filter { $0.version.lowercased().starts(with: searchString) }
         let filteredInstallersByBuild: [Installer] = installers.filter { $0.build.lowercased().starts(with: searchString) }
-        return filteredInstallersByName.first ?? filteredInstallersByVersion.first ?? filteredInstallersByBuild.first
+        return filteredInstallersByName.first ?? filteredInstallersByVersionExact.first ?? filteredInstallersByVersionStartsWith.first ?? filteredInstallersByBuild.first
     }
 
     /// Retrieves macOS Installer downloads matching the provided search string.
