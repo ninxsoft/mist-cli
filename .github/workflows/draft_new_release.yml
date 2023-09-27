@@ -44,7 +44,7 @@ jobs:
         run: |
           PACKAGE_IDENTIFIER="com.ninxsoft.pkg.mist-cli"
           PACKAGE_TEMP="$RUNNER_TEMP/$PACKAGE_IDENTIFIER"
-          PACKAGE_VERSION="$(.build/apple/Products/release/mist --version | head -n 1 | awk '{ print $$1 }')"
+          PACKAGE_VERSION="$(.build/apple/Products/release/mist --version | head -n 1 | awk '{ print $1 }')"
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
           PACKAGE_FILENAME="mist-cli.$PACKAGE_VERSION.pkg"
           echo "PACKAGE_FILENAME=$PACKAGE_FILENAME" >> "$GITHUB_ENV"
