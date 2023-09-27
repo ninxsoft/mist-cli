@@ -1,8 +1,20 @@
 # Changelog
 
-## [2.0 Beta](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0-beta) - 2023-06-06
+## [2.0](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0) - 2023-09-27
 
-- Added preliminary support for macOS Sonoma 14
+- Added support for **macOS Sonoma 14** :tada:
+- `mist` will now only search the standard Software Update Catalog by default
+  - Use the `--include-betas` flag to include additional Software Update Catalog seeds for macOS betas and release candidates
+  - Thanks [grahampugh](https://github.com/grahampugh)!
+- Searching for a macOS Firmware / Installer by version is now more accurate:
+
+  - **Example:** A search string of `13.5` will find an exact match of `macOS Ventura 13.5 (22G74)`
+  - **Example:** A search string of `13.5.2` will find an exact match of `macOS Ventura 13.5.2 (22G91)`
+  - **Example:** A search string of `13.5.` will find the most recent match from the list of matching releases, `macOS Ventura 13.5.2 (22G91)`
+  - **Example:** A search string of `13` will find the most recent match from the list of matching releases, `macOS Ventura 13.6 (22G120)`
+  - Thanks [grahampugh](https://github.com/grahampugh)!
+
+  **Note:** Version **2.0** requires **macOS Big Sur 11** or later. If you need to run **mist** on an older operating system, you can still use version **1.14**.
 
 ## [1.15](https://github.com/ninxsoft/mist-cli/releases/tag/v1.15) - 2023-08-23
 

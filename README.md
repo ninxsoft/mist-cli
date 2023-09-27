@@ -85,13 +85,13 @@ mist list installer --compatible
 # also including Universal Installers for macOS Big Sur and later:
 mist list installer --include-betas
 
-# List only macOS Ventura Installers for Intel Macs,
+# List only macOS Sonoma Installers for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist list installer "macOS Ventura"
+mist list installer "macOS Sonoma"
 
-# List only the latest macOS Ventura Installer for Intel Macs,
+# List only the latest macOS Sonoma Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist list installer --latest "macOS Ventura"
+mist list installer --latest "macOS Sonoma"
 
 # List + Export macOS Installers to a CSV file:
 mist list installer --export "/path/to/export.csv"
@@ -105,41 +105,41 @@ mist list installer --export "/path/to/export.plist"
 # List + Export macOS Installers to a YAML file:
 mist list installer --export "/path/to/export.yaml"
 
-# Download the latest macOS Ventura Firmware for
+# Download the latest macOS Sonoma Firmware for
 # Apple Silicon Macs, with a custom name:
-mist download firmware "macOS Ventura" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
+mist download firmware "macOS Sonoma" --firmware-name "Install %NAME% %VERSION%-%BUILD%.ipsw"
 
-# Download the latest macOS Ventura Installer for Intel Macs,
+# Download the latest macOS Sonoma Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "macOS Ventura" application
+mist download installer "macOS Sonoma" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later:
-mist download installer "13.3.1" application
+mist download installer "13.5.2" application
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # with a custom name:
-mist download installer "13.3.1" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
+mist download installer "13.5.2" application --application-name "Install %NAME% %VERSION%-%BUILD%.app"
 
 # Download a specific macOS Installer version for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a Disk Image with a custom name:
-mist download installer "13.3.1" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
+mist download installer "13.5.2" image --image-name "Install %NAME% %VERSION%-%BUILD%.dmg"
 
 # Download a specific macOS Installer build for Inte Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate a codesigned Disk Image output to a custom directory:
-mist download installer "22E261" image \
+mist download installer "22G91" image \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
      --output-directory "/path/to/custom/directory"
 
-# Download the latest macOS Ventura Installer for Intel Macs,
+# Download the latest macOS Sonoma Installer for Intel Macs,
 # including Universal Installers for macOS Big Sur and later,
 # and generate an Installer Application bundle, a Disk Image,
 # a Bootable Disk Image, a macOS Installer Package,
 # all with custom names, codesigned, output to a custom directory:
-mist download installer "macOS Ventura" application image iso package \
+mist download installer "macOS Sonoma" application image iso package \
      --application-name "Install %NAME% %VERSION%-%BUILD%.app" \
      --image-name "Install %NAME% %VERSION%-%BUILD%.dmg" \
      --image-signing-identity "Developer ID Application: Name (Team ID)" \
@@ -159,7 +159,7 @@ mist download installer "macOS Ventura" application image iso package \
 
 - Grab the latest version of **mist** from the [releases page](https://github.com/ninxsoft/mist-cli/releases).
 - Alternatively, install via [Homebrew](https://brew.sh) by running `brew install mist-cli`
-- **Note:** Version **1.15** requires **macOS Big Sur 11** or later.
+- **Note:** Version **1.15** and newer requires **macOS Big Sur 11** or later.
   - If you need to run **mist** on an older operating system, you can still use version **1.14**.
 
 ## Credits / Thank You

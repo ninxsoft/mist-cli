@@ -12,7 +12,7 @@ struct Mist: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion, version: version(), subcommands: [ListCommand.self, DownloadCommand.self])
 
     /// Current version.
-    private static let currentVersion: String = "2.0-beta"
+    private static let currentVersion: String = "2.0"
 
     /// Visit URL string.
     private static let visitURLString: String = "Visit \(String.repositoryURL) to grab the latest release of \(String.appName)"
