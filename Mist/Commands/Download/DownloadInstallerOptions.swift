@@ -72,17 +72,17 @@ struct DownloadInstallerOptions: ParsableArguments {
 
     @Option(name: .long, help: """
     Specify the macOS Installer output filename. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     """)
     var applicationName: String = .filenameTemplate + ".app"
 
     @Option(name: .long, help: """
     Specify the macOS Disk Image output filename. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     """)
     var imageName: String = .filenameTemplate + ".dmg"
 
@@ -94,25 +94,25 @@ struct DownloadInstallerOptions: ParsableArguments {
 
     @Option(name: .long, help: """
     Specify the Bootable macOS Disk Image output filename. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     """)
     var isoName: String = .filenameTemplate + ".iso"
 
     @Option(name: .long, help: """
     Specify the macOS Installer Package output filename. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     """)
     var packageName: String = .filenameTemplate + ".pkg"
 
     @Option(name: .long, help: """
     Specify the macOS Installer Package identifier. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     * Spaces will be replaced with hyphens -
     """)
     var packageIdentifier: String = .packageIdentifierTemplate
@@ -138,9 +138,9 @@ struct DownloadInstallerOptions: ParsableArguments {
 
     @Option(name: .shortAndLong, help: """
     Specify the output directory. The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     Note: Parent directories will be created automatically.
     """)
     var outputDirectory: String = .outputDirectory
@@ -163,9 +163,9 @@ struct DownloadInstallerOptions: ParsableArguments {
     * /path/to/export.plist (Property List file)
     * /path/to/export.yaml (YAML file)
     The following variables will be dynamically substituted:
-    * %NAME% will be replaced with 'macOS Monterey'
-    * %VERSION% will be replaced with '12.0'
-    * %BUILD% will be replaced with '21A5304g'
+    * %NAME% will be replaced with 'macOS Sonoma'
+    * %VERSION% will be replaced with '14.0'
+    * %BUILD% will be replaced with '23A344'
     Note: The file extension will determine the output file format.
     Note: Parent directories will be created automatically.
     """)
