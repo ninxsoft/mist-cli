@@ -215,6 +215,12 @@ struct Generator {
         arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-nobrowse", "-mountpoint", installer.temporaryISOMountPointURL.path]
         _ = try Shell.execute(arguments)
 
+        // Workaround to make macOS Sierra 10.12 createinstallmedia work
+        if installer.version.hasPrefix("10.12") {
+            let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
+            try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
+        }
+
         !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
         arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
 
@@ -335,6 +341,12 @@ struct Generator {
 
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE INSTALLER VOLUME", noAnsi: options.noAnsi) : Mist.noop()
 
+        // Workaround to make macOS Sierra 10.12 createinstallmedia work
+        if installer.version.hasPrefix("10.12") {
+            let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
+            try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
+        }
+
         var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
         let destinationURL: URL = URL(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
 
@@ -345,5 +357,38 @@ struct Generator {
         !options.quiet ? PrettyPrint.print("Creating bootable macOS Installer at mount point '\(volume)'...", noAnsi: options.noAnsi) : Mist.noop()
         _ = try Shell.execute(arguments)
         !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
+    }
+
+    /// Update a key-pair value in a Property List.
+    ///
+    /// - Parameters:
+    ///   - url:   The URL of the property list to be updated.
+    ///   - key:   The key in the property list to be updated.
+    ///   - value: The value to update within the property list.
+    ///
+    /// - Throws: An `Error` if the command failed to execute.
+    private static func updatePropertyList(_ url: URL, key: String, value: AnyHashable) throws {
+
+        let input: String = try String(contentsOf: url, encoding: .utf8)
+
+        guard var data: Data = input.data(using: .utf8) else {
+            throw MistError.invalidData
+        }
+
+        var format: PropertyListSerialization.PropertyListFormat = .xml
+
+        guard var propertyList: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any] else {
+            throw MistError.invalidData
+        }
+
+        propertyList[key] = value
+
+        data = try PropertyListSerialization.data(fromPropertyList: propertyList, format: .xml, options: .bitWidth)
+
+        guard let output = String(data: data, encoding: .utf8) else {
+            throw MistError.invalidData
+        }
+
+        try output.write(to: url, atomically: true, encoding: .utf8)
     }
 }
