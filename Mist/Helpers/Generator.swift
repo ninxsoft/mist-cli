@@ -7,6 +7,8 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+
 /// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 struct Generator {
 
