@@ -198,6 +198,14 @@ struct Generator {
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).cdr")
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: installer, options: options))
+        var arguments: [String] = []
+
+        if !options.force {
+
+            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
+                throw MistError.existingFile(path: destinationURL.path)
+            }
+        }
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
@@ -207,56 +215,70 @@ struct Generator {
         !options.quiet ? PrettyPrint.print("Creating new temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
         try FileManager.default.createDirectory(at: temporaryURL, withIntermediateDirectories: true, attributes: nil)
 
-        !options.quiet ? PrettyPrint.print("Creating disk image '\(dmgURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        var arguments: [String] = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(installer.isoSize)g", dmgURL.path]
-        _ = try Shell.execute(arguments)
+        if installer.mavericksOrNewer {
+            !options.quiet ? PrettyPrint.print("Creating disk image '\(dmgURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "create", "-fs", "JHFS+", "-layout", "SPUD", "-size", "\(installer.isoSize)g", dmgURL.path]
+            _ = try Shell.execute(arguments)
 
-        !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-nobrowse", "-mountpoint", installer.temporaryISOMountPointURL.path]
-        _ = try Shell.execute(arguments)
+            !options.quiet ? PrettyPrint.print("Mounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "attach", dmgURL.path, "-noverify", "-nobrowse", "-mountpoint", installer.temporaryISOMountPointURL.path]
+            _ = try Shell.execute(arguments)
 
-        // Workaround to make macOS Sierra 10.12 createinstallmedia work
-        if installer.version.hasPrefix("10.12") {
-            let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
-            try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
-        }
-
-        !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
-
-        if installer.sierraOrOlder {
-            arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
-        }
-
-        _ = try Shell.execute(arguments)
-
-        !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "detach", installer.temporaryISOMountPointURL.path, "-force"]
-        _ = try Shell.execute(arguments)
-
-        if !options.force {
-
-            guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
-                throw MistError.existingFile(path: destinationURL.path)
+            // Workaround to make macOS Sierra 10.12 createinstallmedia work
+            if installer.version.hasPrefix("10.12") {
+                let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
+                try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
             }
+
+            !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
+
+            if installer.sierraOrOlder {
+                arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
+            }
+
+            _ = try Shell.execute(arguments)
+
+            !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "detach", installer.temporaryISOMountPointURL.path, "-force"]
+            _ = try Shell.execute(arguments)
+
+            !options.quiet ? PrettyPrint.print("Converting disk image '\(cdrURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "convert", dmgURL.path, "-format", "UDTO", "-o", cdrURL.path]
+            _ = try Shell.execute(arguments)
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting old image '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: destinationURL)
+            }
+
+            !options.quiet ? PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.moveItem(at: cdrURL, to: destinationURL)
+
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.removeItem(at: temporaryURL)
+
+            !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
+        } else {
+            let installESDURL: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/SharedSupport/InstallESD.dmg")
+
+            !options.quiet ? PrettyPrint.print("Converting disk image '\(installESDURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            arguments = ["hdiutil", "convert", installESDURL.path, "-format", "UDTO", "-o", cdrURL.path]
+            _ = try Shell.execute(arguments)
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting old image '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: destinationURL)
+            }
+
+            !options.quiet ? PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.moveItem(at: cdrURL, to: destinationURL)
+
+            !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.removeItem(at: temporaryURL)
+
+            !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
         }
-
-        if FileManager.default.fileExists(atPath: destinationURL.path) {
-            !options.quiet ? PrettyPrint.print("Deleting old image '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-            try FileManager.default.removeItem(at: destinationURL)
-        }
-
-        !options.quiet ? PrettyPrint.print("Converting disk image '\(cdrURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        arguments = ["hdiutil", "convert", dmgURL.path, "-format", "UDTO", "-o", cdrURL.path]
-        _ = try Shell.execute(arguments)
-
-        !options.quiet ? PrettyPrint.print("Moving '\(cdrURL.path)' to '\(destinationURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        try FileManager.default.moveItem(at: cdrURL, to: destinationURL)
-
-        !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-        try FileManager.default.removeItem(at: temporaryURL)
-
-        !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 
     /// Generates a macOS Installer Package, optionally codesigning.
