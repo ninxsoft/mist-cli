@@ -50,14 +50,11 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         !options.quiet ? PrettyPrint.print("Found [\(installer.identifier)] \(installer.name) \(installer.version) (\(installer.build)) [\(installer.date)]", noAnsi: options.noAnsi) : Mist.noop()
 
-        if let architecture: Architecture = Hardware.architecture {
-
-            if options.outputType.contains(.iso) && ((architecture == .appleSilicon && !installer.bigSurOrNewer) || (architecture == .intel && !installer.mavericksOrNewer)) {
-                let operatingSystem: String = architecture == .appleSilicon ? "macOS Catalina 10.15" : "OS X Mountain Lion 10.8.5"
-                !options.quiet ? PrettyPrint.print("\(operatingSystem) and older cannot generate Bootable Disk Images on \(architecture.description) Macs...", noAnsi: options.noAnsi) : Mist.noop()
-                !options.quiet ? PrettyPrint.print("Replace 'iso' with another output type or select a newer version of macOS, exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
-                return
-            }
+        if let architecture: Architecture = Hardware.architecture,
+            architecture == .appleSilicon && !installer.bigSurOrNewer && options.outputType.contains(.iso) {
+            !options.quiet ? PrettyPrint.print("macOS Catalina 10.15 and older cannot generate Bootable Disk Images on \(architecture.description) Macs...", noAnsi: options.noAnsi) : Mist.noop()
+            !options.quiet ? PrettyPrint.print("Replace 'iso' with another output type or select a newer version of macOS, exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
+            return
         }
 
         try verifyExistingFiles(installer, options: options)
