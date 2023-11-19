@@ -123,10 +123,10 @@ struct Firmware: Decodable {
 extension Firmware: Equatable {
     static func == (lhs: Firmware, rhs: Firmware) -> Bool {
         lhs.version == rhs.version &&
-        lhs.build == rhs.build &&
-        lhs.shasum == rhs.shasum &&
-        lhs.size == rhs.size &&
-        lhs.url == rhs.url &&
-        lhs.signed == rhs.signed
+            lhs.build == rhs.build &&
+            lhs.shasum == rhs.shasum &&
+            lhs.size == rhs.size &&
+            lhs.url == rhs.url &&
+            lhs.signed == rhs.signed
     }
 }
