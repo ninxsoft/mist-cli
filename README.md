@@ -13,6 +13,11 @@ A Mac command-line tool that automatically downloads **macOS Firmwares** / **Ins
 ## ![Slack](README%20Resources/Slack.png) Check out [#mist](https://macadmins.slack.com/archives/CF0CFM5B7) on the [Mac Admins Slack](https://macadmins.slack.com) to discuss all things mist-cli!
 
 <!-- markdownlint-enable no-trailing-punctuation -->
+<!-- markdownlint-disable no-inline-html -->
+
+<a href="https://www.buymeacoffee.com/ninxsoft"><img width="214" height="60" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy me a coffee"></a>
+
+<!-- markdownlint-enable no-inline-html -->
 
 ## Features
 
