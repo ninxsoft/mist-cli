@@ -8,7 +8,7 @@
 import Foundation
 
 /// Helper Struct used to install macOS Installers.
-struct InstallerCreator {
+enum InstallerCreator {
     /// Creates a recently downloaded macOS Installer.
     ///
     /// - Parameters:

@@ -9,7 +9,7 @@ import CryptoKit
 import Foundation
 
 /// Helper Struct used to validate macOS Firmware and Installer downloads.
-struct Validator {
+enum Validator {
     /// Validates the macOS Firmware IPSW that was downloaded.
     ///
     /// - Parameters:

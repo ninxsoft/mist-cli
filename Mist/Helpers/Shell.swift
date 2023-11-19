@@ -8,7 +8,7 @@
 import Foundation
 
 /// Helper Struct used to execute shell commands
-struct Shell {
+enum Shell {
     /// Executes custom shell commands.
     ///
     /// - Parameters:

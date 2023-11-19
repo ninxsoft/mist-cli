@@ -10,7 +10,7 @@ import Foundation
 // swiftlint:disable file_length
 
 /// Helper Struct used to perform HTTP queries.
-struct HTTP {
+enum HTTP {
     // swiftlint:disable cyclomatic_complexity
 
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
