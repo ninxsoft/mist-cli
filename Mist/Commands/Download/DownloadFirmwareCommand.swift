@@ -168,7 +168,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
             processing = true
         }
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+        if FileManager.default.fileExists(atPath: temporaryURL.path), !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
             processing = true
@@ -227,7 +227,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN", noAnsi: options.noAnsi) : Mist.noop()
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+        if FileManager.default.fileExists(atPath: temporaryURL.path), !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
         } else {

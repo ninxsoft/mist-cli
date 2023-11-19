@@ -332,7 +332,7 @@ struct DownloadInstallerCommand: ParsableCommand {
             processing = true
         }
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+        if FileManager.default.fileExists(atPath: temporaryURL.path), !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
             processing = true
@@ -430,7 +430,7 @@ struct DownloadInstallerCommand: ParsableCommand {
             processing = true
         }
 
-        if FileManager.default.fileExists(atPath: temporaryURL.path) && !options.cacheDownloads {
+        if FileManager.default.fileExists(atPath: temporaryURL.path), !options.cacheDownloads {
             !options.quiet ? PrettyPrint.print("Deleting temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi, prefix: options.exportPath != nil ? .default : .ending) : Mist.noop()
             try FileManager.default.removeItem(at: temporaryURL)
             processing = true

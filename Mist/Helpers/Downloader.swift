@@ -130,7 +130,7 @@ class Downloader: NSObject {
             current = 0
             previousPercentage = 0
 
-            if FileManager.default.fileExists(atPath: destination.path) && package.size == 0 {
+            if FileManager.default.fileExists(atPath: destination.path), package.size == 0 {
                 let attributes: [FileAttributeKey: Any] = try FileManager.default.attributesOfItem(atPath: destination.path)
 
                 if let size: Int64 = attributes[FileAttributeKey.size] as? Int64 {
