@@ -5,7 +5,7 @@
 //  Created by Nindi Gill on 29/4/2022.
 //
 
-extension Array where Element == UInt8 {
+extension Array<UInt8> {
     func uInt8(at offset: Int) -> UInt8 {
         self[offset]
     }
