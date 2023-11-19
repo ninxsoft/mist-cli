@@ -255,7 +255,7 @@ class Downloader: NSObject {
 }
 
 extension Downloader: URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    func urlSession(_: URLSession, downloadTask _: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         current = totalBytesWritten
         total = totalBytesExpectedToWrite
 
@@ -271,7 +271,7 @@ extension Downloader: URLSessionDownloadDelegate {
         }
     }
 
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         if let expectedContentLength: Int64 = downloadTask.response?.expectedContentLength {
             current = expectedContentLength
             total = expectedContentLength
@@ -299,7 +299,7 @@ extension Downloader: URLSessionDownloadDelegate {
         }
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error: URLError = error as? URLError {
             urlError = error
             semaphore.signal()
