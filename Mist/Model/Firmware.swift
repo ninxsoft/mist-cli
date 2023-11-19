@@ -25,6 +25,7 @@ struct Firmware: Decodable {
     var identifier: String {
         "\(String.identifier).\(version)-\(build)"
     }
+
     var name: String {
         var name: String = ""
 
@@ -43,6 +44,7 @@ struct Firmware: Decodable {
         name = beta ? "\(name) beta" : name
         return name
     }
+
     let version: String
     let build: String
     let shasum: String
@@ -53,13 +55,16 @@ struct Firmware: Decodable {
     var dateDescription: String {
         String(date.prefix(10))
     }
+
     let signed: Bool
     var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
+
     var filename: String {
         url.components(separatedBy: "/").last ?? url
     }
+
     var dictionary: [String: Any] {
         [
             "signed": signed,
@@ -71,6 +76,7 @@ struct Firmware: Decodable {
             "compatible": compatible
         ]
     }
+
     var exportDictionary: [String: Any] {
         [
             "name": name,

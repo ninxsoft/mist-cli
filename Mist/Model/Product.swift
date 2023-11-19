@@ -552,18 +552,23 @@ struct Product: Decodable {
 
         return true
     }
+
     var allDownloads: [Package] {
         (sierraOrOlder ? [] : [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)]) + packages.sorted { $0.filename < $1.filename }
     }
+
     var temporaryDiskImageMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/\(identifier)")
     }
+
     var temporaryInstallerURL: URL {
         temporaryDiskImageMountPointURL.appendingPathComponent("/Applications/Install \(name).app")
     }
+
     var temporaryISOMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/Install \(name)")
     }
+
     var dictionary: [String: Any] {
         [
             "identifier": identifier,
@@ -575,6 +580,7 @@ struct Product: Decodable {
             "compatible": compatible
         ]
     }
+
     var exportDictionary: [String: Any] {
         [
             "identifier": identifier,
@@ -589,27 +595,35 @@ struct Product: Decodable {
             "beta": beta
         ]
     }
+
     var mavericksOrNewer: Bool {
         bigSurOrNewer || version.range(of: "^10\\.(9|1[0-5])\\.", options: .regularExpression) != nil
     }
+
     var sierraOrOlder: Bool {
         version.range(of: "^10\\.([7-9]|1[0-2])\\.", options: .regularExpression) != nil
     }
+
     var catalinaOrNewer: Bool {
         bigSurOrNewer || version.range(of: "^10\\.15\\.", options: .regularExpression) != nil
     }
+
     var bigSurOrNewer: Bool {
         version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
     }
+
     var beta: Bool {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
+
     var size: Int64 {
         Int64(packages.map(\.size).reduce(0, +))
     }
+
     var diskImageSize: Double {
         ceil(Double(size) / Double(Int64.gigabyte)) + 1.5
     }
+
     var isoSize: Double {
         ceil(Double(size) / Double(Int64.gigabyte)) + 1.5
     }
