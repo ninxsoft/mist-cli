@@ -520,7 +520,8 @@ struct Product: Decodable {
     let unsupportedModelIdentifiers: [String]
     var compatible: Bool {
         // Board ID (Intel)
-        if let boardID: String = Hardware.boardID,
+        if
+            let boardID: String = Hardware.boardID,
             !boardIDs.isEmpty,
             !boardIDs.contains(boardID) {
             return false
@@ -528,7 +529,8 @@ struct Product: Decodable {
 
         // Device ID (Apple Silicon or Intel T2)
         // macOS Big Sur 11 or newer
-        if version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil,
+        if
+            version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil,
             let deviceID: String = Hardware.deviceID,
             !deviceIDs.isEmpty,
             !deviceIDs.contains(deviceID) {
@@ -538,12 +540,14 @@ struct Product: Decodable {
         // Model Identifier (Apple Silicon or Intel)
         // macOS Catalina 10.15 or older
         if version.range(of: "^10\\.", options: .regularExpression) != nil {
-            if let architecture: Architecture = Hardware.architecture,
+            if
+                let architecture: Architecture = Hardware.architecture,
                 architecture == .appleSilicon {
                 return false
             }
 
-            if let modelIdentifier: String = Hardware.modelIdentifier,
+            if
+                let modelIdentifier: String = Hardware.modelIdentifier,
                 !unsupportedModelIdentifiers.isEmpty,
                 unsupportedModelIdentifiers.contains(modelIdentifier) {
                 return false

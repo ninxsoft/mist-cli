@@ -31,10 +31,11 @@ struct DownloadFirmwareCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS download '\(options.searchString)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-        guard let firmware: Firmware = HTTP.firmware(
-            from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, metadataCachePath: options.metadataCachePath, noAnsi: options.noAnsi),
-            searchString: options.searchString
-        ) else {
+        guard
+            let firmware: Firmware = HTTP.firmware(
+                from: HTTP.retrieveFirmwares(includeBetas: options.includeBetas, compatible: options.compatible, metadataCachePath: options.metadataCachePath, noAnsi: options.noAnsi),
+                searchString: options.searchString
+            ) else {
             !options.quiet ? PrettyPrint.print("No macOS Firmware found with '\(options.searchString)', exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
             return
         }
@@ -79,7 +80,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
                 throw MistError.invalidURL(cachingServer)
             }
 
-            guard let scheme: String = url.scheme,
+            guard
+                let scheme: String = url.scheme,
                 scheme == "http" else {
                 throw MistError.invalidCachingServerProtocol(url)
             }
@@ -201,7 +203,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
             let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
 
-            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage,
+            if
+                let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage,
                 volumeAvailableCapacityForImportantUsage > 0 {
                 free = volumeAvailableCapacityForImportantUsage
             } else if let volumeAvailableCapacity: Int = values.volumeAvailableCapacity {
@@ -308,7 +311,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
     }
 
     static func cachingServerURL(for source: URL, options: DownloadFirmwareOptions) -> URL? {
-        guard let cachingServerHost: String = options.cachingServer,
+        guard
+            let cachingServerHost: String = options.cachingServer,
             let sourceHost: String = source.host else {
             return nil
         }

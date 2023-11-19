@@ -27,7 +27,8 @@ struct Mist: ParsableCommand {
         do {
             let string: String = try String(contentsOf: url, encoding: .utf8)
 
-            guard let data: Data = string.data(using: .utf8),
+            guard
+                let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let tag: String = dictionary["tag_name"] as? String else {
                 return nil
@@ -56,7 +57,8 @@ struct Mist: ParsableCommand {
     }
 
     static func checkForNewVersion(noAnsi: Bool) {
-        guard let latestVersion: String = getLatestVersion(),
+        guard
+            let latestVersion: String = getLatestVersion(),
             currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
             return
         }

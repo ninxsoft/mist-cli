@@ -95,7 +95,8 @@ struct Firmware: Decodable {
     ///
     /// - Returns: An array of Firmware build strings.
     static func supportedBuilds() -> [String] {
-        guard let architecture: Architecture = Hardware.architecture,
+        guard
+            let architecture: Architecture = Hardware.architecture,
             architecture == .appleSilicon,
             let modelIdentifier: String = Hardware.modelIdentifier,
             let url: URL = URL(string: Firmware.deviceURLTemplate.replacingOccurrences(of: "MODELIDENTIFIER", with: modelIdentifier)) else {
@@ -105,7 +106,8 @@ struct Firmware: Decodable {
         do {
             let string: String = try String(contentsOf: url)
 
-            guard let data: Data = string.data(using: .utf8),
+            guard
+                let data: Data = string.data(using: .utf8),
                 let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
                 let array: [[String: Any]] = dictionary["firmwares"] as? [[String: Any]] else {
                 return []

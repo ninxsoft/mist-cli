@@ -49,7 +49,8 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         !options.quiet ? PrettyPrint.print("Found [\(installer.identifier)] \(installer.name) \(installer.version) (\(installer.build)) [\(installer.date)]", noAnsi: options.noAnsi) : Mist.noop()
 
-        if let architecture: Architecture = Hardware.architecture,
+        if
+            let architecture: Architecture = Hardware.architecture,
             architecture == .appleSilicon && !installer.bigSurOrNewer && options.outputType.contains(.iso) {
             !options.quiet ? PrettyPrint.print("macOS Catalina 10.15 and older cannot generate Bootable Disk Images on \(architecture.description) Macs...", noAnsi: options.noAnsi) : Mist.noop()
             !options.quiet ? PrettyPrint.print("Replace 'iso' with another output type or select a newer version of macOS, exiting...", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
@@ -106,7 +107,8 @@ struct DownloadInstallerCommand: ParsableCommand {
                 throw MistError.invalidURL(cachingServer)
             }
 
-            guard let scheme: String = url.scheme,
+            guard
+                let scheme: String = url.scheme,
                 scheme == "http" else {
                 throw MistError.invalidCachingServerProtocol(url)
             }
@@ -237,14 +239,16 @@ struct DownloadInstallerCommand: ParsableCommand {
             return
         }
 
-        guard let bootableInstallerVolume = options.bootableInstallerVolume,
+        guard
+            let bootableInstallerVolume = options.bootableInstallerVolume,
             !bootableInstallerVolume.isEmpty else {
             throw MistError.missingBootableInstallerVolume
         }
 
         let keys: [URLResourceKey] = [.volumeLocalizedFormatDescriptionKey, .volumeIsReadOnlyKey]
 
-        guard let urls: [URL] = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]),
+        guard
+            let urls: [URL] = FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: keys, options: [.skipHiddenVolumes]),
             let url: URL = urls.first(where: { $0.path == bootableInstallerVolume }) else {
             throw MistError.bootableInstallerVolumeNotFound(bootableInstallerVolume)
         }
@@ -259,7 +263,8 @@ struct DownloadInstallerCommand: ParsableCommand {
             throw MistError.bootableInstallerVolumeInvalidFormat(volume: bootableInstallerVolume, format: volumeLocalizedFormatDescription)
         }
 
-        guard let volumeIsReadOnly: Bool = resourceValues.volumeIsReadOnly,
+        guard
+            let volumeIsReadOnly: Bool = resourceValues.volumeIsReadOnly,
             !volumeIsReadOnly else {
             throw MistError.bootableInstallerVolumeIsReadOnly(bootableInstallerVolume)
         }
@@ -360,7 +365,8 @@ struct DownloadInstallerCommand: ParsableCommand {
         let outputURL: URL = .init(fileURLWithPath: outputDirectory(for: installer, options: options))
         let temporaryURL: URL = .init(fileURLWithPath: options.temporaryDirectory)
 
-        guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
+        guard
+            let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
             let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: temporaryURL.path)?.first,
             let outputVolumePath: String = FileManager.default.componentsToDisplay(forPath: outputURL.path)?.first else {
             throw MistError.notEnoughFreeSpace(volume: "", free: -1, required: -1)
@@ -394,7 +400,8 @@ struct DownloadInstallerCommand: ParsableCommand {
             let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
 
-            if let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage,
+            if
+                let volumeAvailableCapacityForImportantUsage: Int64 = values.volumeAvailableCapacityForImportantUsage,
                 volumeAvailableCapacityForImportantUsage > 0 {
                 free = volumeAvailableCapacityForImportantUsage
             } else if let volumeAvailableCapacity: Int = values.volumeAvailableCapacity {
@@ -554,7 +561,8 @@ struct DownloadInstallerCommand: ParsableCommand {
     }
 
     static func cachingServerURL(for source: URL, options: DownloadInstallerOptions) -> URL? {
-        guard let cachingServerHost: String = options.cachingServer,
+        guard
+            let cachingServerHost: String = options.cachingServer,
             let sourceHost: String = source.host else {
             return nil
         }

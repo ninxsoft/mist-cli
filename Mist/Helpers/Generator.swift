@@ -156,11 +156,13 @@ enum Generator {
         let arguments: [String] = ["hdiutil", "create", "-fs", "HFS+", "-srcFolder", temporaryURL.path, "-volname", "Install \(installer.name)", destinationURL.path]
         _ = try Shell.execute(arguments)
 
-        if let identity: String = options.imageSigningIdentity,
+        if
+            let identity: String = options.imageSigningIdentity,
             !identity.isEmpty {
             var arguments: [String] = ["codesign", "--sign", identity]
 
-            if let keychain: String = options.keychain,
+            if
+                let keychain: String = options.keychain,
                 !keychain.isEmpty {
                 arguments += ["--keychain", keychain]
             }
@@ -306,11 +308,13 @@ enum Generator {
             let version: String = "\(installer.version)-\(installer.build)"
             var arguments: [String] = ["pkgbuild", "--component", installer.temporaryInstallerURL.path, "--identifier", identifier, "--install-location", "/Applications", "--version", version]
 
-            if let identity: String = options.packageSigningIdentity,
+            if
+                let identity: String = options.packageSigningIdentity,
                 !identity.isEmpty {
                 arguments += ["--sign", identity]
 
-                if let keychain: String = options.keychain,
+                if
+                    let keychain: String = options.keychain,
                     !keychain.isEmpty {
                     arguments += ["--keychain", keychain]
                 }

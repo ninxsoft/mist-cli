@@ -70,7 +70,8 @@ class Downloader: NSObject {
 
         while urlError != nil {
             if retries >= options.retries {
-                if let error: URLError = urlError,
+                if
+                    let error: URLError = urlError,
                     let data: Data = error.downloadTaskResumeData {
                     !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                     try data.write(to: resumeDataURL)
@@ -167,7 +168,8 @@ class Downloader: NSObject {
 
                 while urlError != nil {
                     if retries >= options.retries {
-                        if let error: URLError = urlError,
+                        if
+                            let error: URLError = urlError,
                             let data: Data = error.downloadTaskResumeData {
                             !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                             try data.write(to: resumeDataURL)
@@ -223,7 +225,8 @@ class Downloader: NSObject {
     }
 
     private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, using session: URLSession) {
-        guard let urlError: URLError = urlError,
+        guard
+            let urlError: URLError = urlError,
             let data: Data = urlError.downloadTaskResumeData else {
             mistError = MistError.generalError("Unable to retrieve URL Error data")
             return

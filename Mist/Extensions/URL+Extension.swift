@@ -21,7 +21,8 @@ extension URL {
 
             var shasum: Insecure.SHA1 = .init()
 
-            while try autoreleasepool(invoking: {
+            while
+                try autoreleasepool(invoking: {
                 try Task.checkCancellation()
                 let data: Data = fileHandle.readData(ofLength: length)
 

@@ -30,7 +30,8 @@ enum HTTP {
             var devices: [String: Any] = [:]
             let metadataURL: URL = .init(fileURLWithPath: metadataCachePath)
 
-            if let url: URL = URL(string: Firmware.firmwaresURL),
+            if
+                let url: URL = URL(string: Firmware.firmwaresURL),
                 let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, noAnsi: noAnsi, quiet: quiet) {
                 devices = dictionary
                 let directory: URL = metadataURL.deletingLastPathComponent()
@@ -55,7 +56,8 @@ enum HTTP {
             let supportedBuilds: [String] = Firmware.supportedBuilds()
 
             for (identifier, device) in devices {
-                guard identifier.contains("Mac"),
+                guard
+                    identifier.contains("Mac"),
                     let device: [String: Any] = device as? [String: Any],
                     let firmwaresArray: [[String: Any]] = device["firmwares"] as? [[String: Any]] else {
                     continue
@@ -66,7 +68,8 @@ enum HTTP {
                     let firmwareData: Data = try JSONSerialization.data(withJSONObject: firmwareDictionary, options: .prettyPrinted)
                     let firmware: Firmware = try JSONDecoder().decode(Firmware.self, from: firmwareData)
 
-                    if !firmware.shasum.isEmpty,
+                    if
+                        !firmware.shasum.isEmpty,
                         !firmwares.contains(where: { $0 == firmware }) {
                         firmwares.append(firmware)
                     }
@@ -103,7 +106,8 @@ enum HTTP {
     private static func retrieveMetadata(_ url: URL, noAnsi: Bool, quiet: Bool) throws -> (String, [String: Any])? {
         let string: String = try String(contentsOf: url, encoding: .utf8)
 
-        guard let data: Data = string.data(using: .utf8),
+        guard
+            let data: Data = string.data(using: .utf8),
             let dictionary: [String: Any] = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any],
             let devices: [String: Any] = dictionary["devices"] as? [String: Any] else {
             let path: String = url.absoluteString.replacingOccurrences(of: "file://", with: "")
@@ -179,7 +183,8 @@ enum HTTP {
 
                 var format: PropertyListSerialization.PropertyListFormat = .xml
 
-                guard let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
+                guard
+                    let catalog: [String: Any] = try PropertyListSerialization.propertyList(from: data, options: [.mutableContainers], format: &format) as? [String: Any],
                     let installersDictionary: [String: Any] = catalog["Products"] as? [String: Any] else {
                     !quiet ? PrettyPrint.print("Unable to get 'Products' dictionary from catalog, skipping...", noAnsi: noAnsi) : Mist.noop()
                     continue
@@ -219,7 +224,8 @@ enum HTTP {
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
         for (key, value) in dictionary {
-            guard var value: [String: Any] = value as? [String: Any],
+            guard
+                var value: [String: Any] = value as? [String: Any],
                 let date: Date = value["PostDate"] as? Date,
                 let extendedMetaInfo: [String: Any] = value["ExtendedMetaInfo"] as? [String: Any],
                 extendedMetaInfo["InstallAssistantPackageIdentifiers"] as? [String: Any] != nil,
@@ -232,7 +238,8 @@ enum HTTP {
             do {
                 let string: String = try String(contentsOf: url, encoding: .utf8)
 
-                guard let name: String = nameFromDistribution(string),
+                guard
+                    let name: String = nameFromDistribution(string),
                     let version: String = versionFromDistribution(string),
                     let build: String = buildFromDistribution(string),
                     !name.isEmpty, !version.isEmpty, !build.isEmpty else {

@@ -35,7 +35,8 @@ enum InstallerCreator {
         arguments = ["hdiutil", "attach", imageURL.path, "-noverify", "-nobrowse", "-mountpoint", installer.temporaryDiskImageMountPointURL.path]
         _ = try Shell.execute(arguments)
 
-        if installer.sierraOrOlder,
+        if
+            installer.sierraOrOlder,
             let package: Package = installer.packages.first {
             let legacyDiskImageURL: URL = temporaryURL.appendingPathComponent(package.filename)
             let legacyDiskImageMountPointURL: URL = .init(fileURLWithPath: "/Volumes/Install \(installer.name)")
