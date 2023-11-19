@@ -157,7 +157,7 @@ mist download installer "macOS Sonoma" application image iso package \
 
 ## Build Requirements
 
-- Swift **5.8**.
+- Swift **5.9**.
 - Runs on **macOS Big Sur 11** and later.
 
 ## Download
