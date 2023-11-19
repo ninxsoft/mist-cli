@@ -8,7 +8,6 @@
 import ArgumentParser
 
 struct ListInstallerOptions: ParsableArguments {
-
     @Argument(help: """
     Optionally specify a macOS name, version or build to filter the list results:
 

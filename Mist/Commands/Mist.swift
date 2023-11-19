@@ -20,7 +20,6 @@ struct Mist: ParsableCommand {
     static func noop() { }
 
     private static func getLatestVersion() -> String? {
-
         guard let url: URL = URL(string: .latestReleaseURL) else {
             return nil
         }
@@ -42,7 +41,6 @@ struct Mist: ParsableCommand {
     }
 
     static func version() -> String {
-
         guard let latestVersion: String = getLatestVersion() else {
             return "\(currentVersion) (Unable to check for latest version)"
         }
@@ -58,7 +56,6 @@ struct Mist: ParsableCommand {
     }
 
     static func checkForNewVersion(noAnsi: Bool) {
-
         guard let latestVersion: String = getLatestVersion(),
             currentVersion.compare(latestVersion, options: .numeric) == .orderedAscending else {
             return

@@ -9,10 +9,8 @@ import Foundation
 import Yams
 
 extension Sequence where Iterator.Element == [String: Any] {
-
     // swiftlint:disable:next function_body_length
     func firmwaresASCIIString(noAnsi: Bool) -> String {
-
         let signedHeading: String = "SIGNED"
         let nameHeading: String = "NAME"
         let versionHeading: String = "VERSION"
@@ -50,7 +48,6 @@ extension Sequence where Iterator.Element == [String: Any] {
         var string: String = headerASCIIString(columns: columns, noAnsi: noAnsi)
 
         for item in self {
-
             let signed: String = (item["signed"] as? Bool ?? false) ? "True" : "False"
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
@@ -86,7 +83,6 @@ extension Sequence where Iterator.Element == [String: Any] {
 
     // swiftlint:disable:next function_body_length
     func installersASCIIString(noAnsi: Bool) -> String {
-
         let identifierHeading: String = "IDENTIFIER"
         let nameHeading: String = "NAME"
         let versionHeading: String = "VERSION"
@@ -124,7 +120,6 @@ extension Sequence where Iterator.Element == [String: Any] {
         var string: String = headerASCIIString(columns: columns, noAnsi: noAnsi)
 
         for item in self {
-
             let identifier: String = item["identifier"] as? String ?? ""
             let name: String = item["name"] as? String ?? ""
             let version: String = item["version"] as? String ?? ""
@@ -166,7 +161,6 @@ extension Sequence where Iterator.Element == [String: Any] {
     ///
     /// - Returns: The Header ASCII string.
     private func headerASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
-
         var string: String = "┌─"
 
         for (index, column) in columns.enumerated() {
@@ -199,11 +193,9 @@ extension Sequence where Iterator.Element == [String: Any] {
     ///
     /// - Returns: The Row ASCII string.
     private func rowASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
-
         var string: String = "│ ".color(noAnsi ? .reset : .blue)
 
         for (index, column) in columns.enumerated() {
-
             // size column should be right-aligned
             if column.string.lowercased().contains("gb") {
                 string += [String](repeating: " ", count: column.padding).joined() + column.string
@@ -225,7 +217,6 @@ extension Sequence where Iterator.Element == [String: Any] {
     ///
     /// - Returns: The Header ASCII string.
     private func footerASCIIString(columns: [(string: String, padding: Int)], noAnsi: Bool) -> String {
-
         var string: String = "└─"
 
         for (index, column) in columns.enumerated() {
@@ -270,7 +261,6 @@ extension Sequence where Iterator.Element == [String: Any] {
 }
 
 extension Sequence where Iterator.Element == String {
-
     func maximumStringLength(comparing string: String) -> Int {
         Swift.max(self.max { $0.count < $1.count }?.count ?? 0, string.count)
     }

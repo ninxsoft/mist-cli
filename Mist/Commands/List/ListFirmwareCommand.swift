@@ -10,7 +10,6 @@ import Foundation
 
 /// Struct used to perform **List Firmware** operations.
 struct ListFirmwareCommand: ParsableCommand {
-
     static var configuration: CommandConfiguration = CommandConfiguration(
         commandName: "firmware",
         abstract: """
@@ -64,11 +63,9 @@ struct ListFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: ListFirmwareOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", noAnsi: options.noAnsi) : Mist.noop()
 
         if let string: String = options.searchString {
-
             guard !string.isEmpty else {
                 throw MistError.missingListSearchString
             }
@@ -83,7 +80,6 @@ struct ListFirmwareCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print("Only include compatible firmwares will be '\(options.compatible)'...", noAnsi: options.noAnsi) : Mist.noop()
 
         if let path: String = options.exportPath {
-
             guard !path.isEmpty else {
                 throw MistError.missingExportPath
             }
@@ -116,7 +112,6 @@ struct ListFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if the dictionaries are unable to be written to disk.
     private static func export(_ dictionaries: [[String: Any]], options: ListFirmwareOptions) throws {
-
         guard let path: String = options.exportPath else {
             return
         }
@@ -155,7 +150,6 @@ struct ListFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if the list is unable to be printed to standard output.
     private static func list(_ dictionaries: [[String: Any]], options: ListFirmwareOptions) throws {
-
         switch options.outputType {
         case .ascii:
             print(dictionaries.firmwaresASCIIString(noAnsi: options.noAnsi))
@@ -171,7 +165,6 @@ struct ListFirmwareCommand: ParsableCommand {
     }
 
     mutating func run() {
-
         do {
             try ListFirmwareCommand.run(options: options)
         } catch {

@@ -8,7 +8,6 @@
 import ArgumentParser
 
 struct DownloadFirmwareOptions: ParsableArguments {
-
     @Argument(help: """
     Specify a macOS name, version or build to download:
 

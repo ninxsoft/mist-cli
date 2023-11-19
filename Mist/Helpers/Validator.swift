@@ -10,7 +10,6 @@ import Foundation
 
 /// Helper Struct used to validate macOS Firmware and Installer downloads.
 struct Validator {
-
     /// Validates the macOS Firmware IPSW that was downloaded.
     ///
     /// - Parameters:
@@ -19,7 +18,6 @@ struct Validator {
     ///
     /// - Throws: A `MistError` if the macOS Firmware IPSW fails validation.
     static func validate(_ firmware: Firmware, at destination: URL) throws {
-
         guard let shasum: String = destination.shasum() else {
             throw MistError.invalidData
         }
@@ -37,7 +35,6 @@ struct Validator {
     ///
     /// - Throws: A `MistError` if the macOS Installer package fails validation.
     static func validate(_ package: Package, at destination: URL) throws {
-
         guard !package.url.hasSuffix("English.dist") else {
             return
         }

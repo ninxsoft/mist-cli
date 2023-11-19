@@ -8,7 +8,6 @@
 import Foundation
 
 extension Int64 {
-
     /// kilobytes constant
     static let kilobyte: Int64 = 1_000
     /// megabytes constant
@@ -17,7 +16,6 @@ extension Int64 {
     static let gigabyte: Int64 = .megabyte * 1_000
 
     func bytesString() -> String {
-
         if self < .kilobyte {
             return String(format: " %04d  B", self)
         } else if self < .megabyte {

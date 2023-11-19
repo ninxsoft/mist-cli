@@ -9,7 +9,6 @@ import Foundation
 
 /// Helper Class used to download macOS Firmwares and Installers.
 class Downloader: NSObject {
-
     private static let maximumWidth: Int = 80
     private var temporaryURL: URL?
     private var sourceURL: URL?
@@ -70,9 +69,7 @@ class Downloader: NSObject {
         var retries: Int = 0
 
         while urlError != nil {
-
             if retries >= options.retries {
-
                 if let error: URLError = urlError,
                     let data: Data = error.downloadTaskResumeData {
                     !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
@@ -103,7 +100,6 @@ class Downloader: NSObject {
     ///
     /// - Throws: A `MistError` if the macOS Installer fails to download.
     func download(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         noAnsi = options.noAnsi
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
@@ -117,7 +113,6 @@ class Downloader: NSObject {
         var index: Int = 0
 
         while index < installer.allDownloads.count {
-
             let package: Package = installer.allDownloads[index]
 
             guard var source: URL = URL(string: package.url) else {
@@ -171,9 +166,7 @@ class Downloader: NSObject {
                 var retries: Int = 0
 
                 while urlError != nil {
-
                     if retries >= options.retries {
-
                         if let error: URLError = urlError,
                             let data: Data = error.downloadTaskResumeData {
                             !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
@@ -204,7 +197,6 @@ class Downloader: NSObject {
     // swiftlint:enable cyclomatic_complexity function_body_length
 
     private func verify(_ package: Package, at destination: URL, current: String, total: Int) -> Bool {
-
         let paddingLength: Int = "[ \(current) / \(total) ]".count
         let padding: String = String(repeating: " ", count: paddingLength)
         !quiet ? PrettyPrint.print("\(padding) Verifying...", noAnsi: noAnsi, prefix: .continuing) : Mist.noop()
@@ -231,7 +223,6 @@ class Downloader: NSObject {
     }
 
     private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, using session: URLSession) {
-
         guard let urlError: URLError = urlError,
             let data: Data = urlError.downloadTaskResumeData else {
             mistError = MistError.generalError("Unable to retrieve URL Error data")
@@ -264,7 +255,6 @@ class Downloader: NSObject {
 }
 
 extension Downloader: URLSessionDownloadDelegate {
-
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         current = totalBytesWritten
         total = totalBytesExpectedToWrite
@@ -282,7 +272,6 @@ extension Downloader: URLSessionDownloadDelegate {
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-
         if let expectedContentLength: Int64 = downloadTask.response?.expectedContentLength {
             current = expectedContentLength
             total = expectedContentLength
@@ -311,7 +300,6 @@ extension Downloader: URLSessionDownloadDelegate {
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-
         if let error: URLError = error as? URLError {
             urlError = error
             semaphore.signal()

@@ -9,7 +9,6 @@ import Foundation
 
 /// Helper Struct used to install macOS Installers.
 struct InstallerCreator {
-
     /// Creates a recently downloaded macOS Installer.
     ///
     /// - Parameters:
@@ -18,7 +17,6 @@ struct InstallerCreator {
     ///
     /// - Throws: A `MistError` if the downloaded macOS Installer fails to install.
     static func create(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("INSTALL", noAnsi: options.noAnsi) : Mist.noop()
 
         let imageURL: URL = DownloadInstallerCommand.temporaryImage(for: installer, options: options)

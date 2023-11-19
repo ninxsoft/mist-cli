@@ -11,7 +11,6 @@ import Foundation
 
 /// Helper Struct used to perform HTTP queries.
 struct HTTP {
-
     // swiftlint:disable cyclomatic_complexity
 
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
@@ -56,7 +55,6 @@ struct HTTP {
             let supportedBuilds: [String] = Firmware.supportedBuilds()
 
             for (identifier, device) in devices {
-
                 guard identifier.contains("Mac"),
                     let device: [String: Any] = device as? [String: Any],
                     let firmwaresArray: [[String: Any]] = device["firmwares"] as? [[String: Any]] else {
@@ -166,7 +164,6 @@ struct HTTP {
         var installers: [Installer] = []
 
         for catalogURL in catalogURLs {
-
             guard let url: URL = URL(string: catalogURL) else {
                 !quiet ? PrettyPrint.print("There was an error retrieving the catalog from \(catalogURL), skipping...", noAnsi: noAnsi) : Mist.noop()
                 continue
@@ -217,13 +214,11 @@ struct HTTP {
     ///
     /// - Returns: The filtered list of macOS Installers.
     private static func getInstallers(from dictionary: [String: Any], noAnsi: Bool, quiet: Bool) -> [Installer] {
-
         var installers: [Installer] = []
         let dateFormatter: DateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
         for (key, value) in dictionary {
-
             guard var value: [String: Any] = value as? [String: Any],
                 let date: Date = value["PostDate"] as? Date,
                 let extendedMetaInfo: [String: Any] = value["ExtendedMetaInfo"] as? [String: Any],
@@ -280,7 +275,6 @@ struct HTTP {
     ///
     /// - Returns: The macOS Installer **Name** string if present, otherwise `nil`.
     private static func nameFromDistribution(_ string: String) -> String? {
-
         guard string.contains("suDisabledGroupID") else {
             return nil
         }
@@ -297,7 +291,6 @@ struct HTTP {
     ///
     /// - Returns: The macOS Installer **Version** string if present, otherwise `nil`.
     private static func versionFromDistribution(_ string: String) -> String? {
-
         guard string.contains("<key>VERSION</key>") else {
             return nil
         }
@@ -313,7 +306,6 @@ struct HTTP {
     ///
     /// - Returns: The macOS Installer **Build** string if present, otherwise `nil`.
     private static func buildFromDistribution(_ string: String) -> String? {
-
         guard string.contains("<key>BUILD</key>") else {
             return nil
         }
@@ -329,7 +321,6 @@ struct HTTP {
     ///
     /// - Returns: An array of **Board ID** strings.
     private static func boardIDsFromDistribution(_ string: String) -> [String] {
-
         guard string.contains("supportedBoardIDs") || string.contains("boardIds") else {
             return []
         }
@@ -349,7 +340,6 @@ struct HTTP {
     ///
     /// - Returns: An array of **Device ID** strings.
     private static func deviceIDsFromDistribution(_ string: String) -> [String] {
-
         guard string.contains("supportedDeviceIDs") else {
             return []
         }
@@ -370,7 +360,6 @@ struct HTTP {
     ///
     /// - Returns: An array of **Unsupported Model Identifier** strings.
     private static func unsupportedModelIdentifiersFromDistribution(_ string: String) -> [String] {
-
         guard string.contains("nonSupportedModels") else {
             return []
         }

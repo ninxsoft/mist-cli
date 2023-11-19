@@ -9,7 +9,6 @@ import Foundation
 
 /// Helper Struct used to execute shell commands
 struct Shell {
-
     /// Executes custom shell commands.
     ///
     /// - Parameters:

@@ -7,7 +7,6 @@
 
 /// Helper Struct used to format printed messages.
 struct PrettyPrint {
-
     enum Prefix: String {
         case `default` = "  ├─ "
         case continuing = "  │  "

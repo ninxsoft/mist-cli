@@ -8,7 +8,6 @@
 import Foundation
 
 extension UInt64 {
-
     func hexString() -> String {
         String(format: "0x%016X", self)
     }

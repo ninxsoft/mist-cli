@@ -13,7 +13,6 @@ import Foundation
 
 /// Struct used to perform **Download Installer** operations.
 struct DownloadInstallerCommand: ParsableCommand {
-
     static var configuration: CommandConfiguration = CommandConfiguration(
         commandName: "installer",
         abstract: """
@@ -78,7 +77,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", noAnsi: options.noAnsi) : Mist.noop()
 
         guard NSUserName() == "root" else {
@@ -104,7 +102,6 @@ struct DownloadInstallerCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", noAnsi: options.noAnsi) : Mist.noop()
 
         if let cachingServer: String = options.cachingServer {
-
             guard let url: URL = URL(string: cachingServer) else {
                 throw MistError.invalidURL(cachingServer)
             }
@@ -121,7 +118,6 @@ struct DownloadInstallerCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print(string, noAnsi: options.noAnsi) : Mist.noop()
 
         if let path: String = options.exportPath {
-
             guard !path.isEmpty else {
                 throw MistError.missingExportPath
             }
@@ -151,9 +147,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationApplication(_ options: DownloadInstallerOptions) throws {
-
         if options.outputType.contains(.application) {
-
             guard !options.applicationName.isEmpty else {
                 throw MistError.missingApplicationName
             }
@@ -169,9 +163,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationImage(_ options: DownloadInstallerOptions) throws {
-
         if options.outputType.contains(.image) {
-
             guard !options.imageName.isEmpty else {
                 throw MistError.missingImageName
             }
@@ -179,7 +171,6 @@ struct DownloadInstallerCommand: ParsableCommand {
             !options.quiet ? PrettyPrint.print("Disk Image name will be '\(options.imageName)'...", noAnsi: options.noAnsi) : Mist.noop()
 
             if let identity: String = options.imageSigningIdentity {
-
                 guard !identity.isEmpty else {
                     throw MistError.missingImageSigningIdentity
                 }
@@ -196,9 +187,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationISO(_ options: DownloadInstallerOptions) throws {
-
         if options.outputType.contains(.iso) {
-
             guard !options.isoName.isEmpty else {
                 throw MistError.missingIsoName
             }
@@ -214,9 +203,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationPackage(_ options: DownloadInstallerOptions) throws {
-
         if options.outputType.contains(.package) {
-
             guard !options.packageName.isEmpty else {
                 throw MistError.missingPackageName
             }
@@ -230,7 +217,6 @@ struct DownloadInstallerCommand: ParsableCommand {
             !options.quiet ? PrettyPrint.print("Package identifier will be '\(options.packageIdentifier)'...", noAnsi: options.noAnsi) : Mist.noop()
 
             if let identity: String = options.packageSigningIdentity {
-
                 guard !identity.isEmpty else {
                     throw MistError.missingPackageSigningIdentity
                 }
@@ -247,7 +233,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationBootableInstaller(_ options: DownloadInstallerOptions) throws {
-
         guard options.outputType.contains(.bootableInstaller) else {
             return
         }
@@ -290,7 +275,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if an existing file is found.
     private static func verifyExistingFiles(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         guard !options.force else {
             return
         }
@@ -336,7 +320,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
         var processing: Bool = false
@@ -374,7 +357,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
 
@@ -435,7 +417,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
         let imageURL: URL = temporaryImage(for: installer, options: options)
         var processing: Bool = false
@@ -472,7 +453,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func export(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         guard let path: String = exportPath(for: installer, options: options) else {
             return
         }
@@ -534,7 +514,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     }
 
     private static func exportPath(for installer: Installer, options: DownloadInstallerOptions) -> String? {
-
         guard let path: String = options.exportPath else {
             return nil
         }
@@ -575,7 +554,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     }
 
     static func cachingServerURL(for source: URL, options: DownloadInstallerOptions) -> URL? {
-
         guard let cachingServerHost: String = options.cachingServer,
             let sourceHost: String = source.host else {
             return nil
@@ -599,7 +577,6 @@ struct DownloadInstallerCommand: ParsableCommand {
     }
 
     mutating func run() {
-
         do {
             try DownloadInstallerCommand.run(options: options)
         } catch {

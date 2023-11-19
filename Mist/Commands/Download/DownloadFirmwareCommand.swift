@@ -10,7 +10,6 @@ import Foundation
 
 /// Struct used to perform **Download Firmware** operations.
 struct DownloadFirmwareCommand: ParsableCommand {
-
     static var configuration: CommandConfiguration = CommandConfiguration(
         commandName: "firmware",
         abstract: """
@@ -57,7 +56,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: DownloadFirmwareOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", noAnsi: options.noAnsi) : Mist.noop()
 
         guard !options.searchString.isEmpty else {
@@ -77,7 +75,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print("Temporary directory will be '\(options.temporaryDirectory)'...", noAnsi: options.noAnsi) : Mist.noop()
 
         if let cachingServer: String = options.cachingServer {
-
             guard let url: URL = URL(string: cachingServer) else {
                 throw MistError.invalidURL(cachingServer)
             }
@@ -94,7 +91,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print(string, noAnsi: options.noAnsi) : Mist.noop()
 
         if let path: String = options.exportPath {
-
             guard !path.isEmpty else {
                 throw MistError.missingExportPath
             }
@@ -126,7 +122,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidationFirmware(_ options: DownloadFirmwareOptions) throws {
-
         guard !options.firmwareName.isEmpty else {
             throw MistError.missingFirmwareName
         }
@@ -142,7 +137,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if an existing file is found.
     private static func verifyExistingFiles(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
         guard !options.force else {
             return
         }
@@ -162,7 +156,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
         var processing: Bool = false
@@ -200,7 +193,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
         let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
         let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
         let required: Int64 = firmware.size
@@ -251,7 +243,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func export(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
         guard let path: String = exportPath(for: firmware, options: options) else {
             return
         }
@@ -297,7 +288,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     }
 
     private static func exportPath(for firmware: Firmware, options: DownloadFirmwareOptions) -> String? {
-
         guard let path: String = options.exportPath else {
             return nil
         }
@@ -318,7 +308,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     }
 
     static func cachingServerURL(for source: URL, options: DownloadFirmwareOptions) -> URL? {
-
         guard let cachingServerHost: String = options.cachingServer,
             let sourceHost: String = source.host else {
             return nil
@@ -342,7 +331,6 @@ struct DownloadFirmwareCommand: ParsableCommand {
     }
 
     mutating func run() {
-
         do {
             try DownloadFirmwareCommand.run(options: options)
         } catch {

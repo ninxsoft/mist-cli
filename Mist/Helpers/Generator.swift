@@ -11,7 +11,6 @@ import Foundation
 
 /// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 struct Generator {
-
     /// Generates a macOS Firmware.
     ///
     /// - Parameters:
@@ -31,7 +30,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadFirmwareOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("FIRMWARE", noAnsi: options.noAnsi) : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
@@ -46,7 +44,6 @@ struct Generator {
         try Validator.validate(firmware, at: temporaryFirmwareURL)
 
         if !options.force {
-
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                 throw MistError.existingFile(path: destinationURL.path)
             }
@@ -73,7 +70,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the macOS Installer options fail to generate.
     static func generate(_ installer: Installer, options: DownloadInstallerOptions) throws {
-
         if options.outputType.contains(.application) {
             try generateApplication(installer: installer, options: options)
         }
@@ -103,12 +99,10 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(installer: Installer, options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("APPLICATION", noAnsi: options.noAnsi) : Mist.noop()
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.applicationPath(for: installer, options: options))
 
         if !options.force {
-
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                 throw MistError.existingFile(path: destinationURL.path)
             }
@@ -131,7 +125,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(installer: Installer, options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("DISK IMAGE", noAnsi: options.noAnsi) : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("image")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(installer.name).app")
@@ -149,7 +142,6 @@ struct Generator {
         try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: temporaryApplicationURL)
 
         if !options.force {
-
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                 throw MistError.existingFile(path: destinationURL.path)
             }
@@ -166,7 +158,6 @@ struct Generator {
 
         if let identity: String = options.imageSigningIdentity,
             !identity.isEmpty {
-
             var arguments: [String] = ["codesign", "--sign", identity]
 
             if let keychain: String = options.keychain,
@@ -194,7 +185,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
     private static func generateISO(installer: Installer, options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE", noAnsi: options.noAnsi) : Mist.noop()
         let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).dmg")
@@ -203,7 +193,6 @@ struct Generator {
         var arguments: [String] = []
 
         if !options.force {
-
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                 throw MistError.existingFile(path: destinationURL.path)
             }
@@ -291,7 +280,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the macOS Installer Package fails to generate.
     private static func generatePackage(installer: Installer, options: DownloadInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("PACKAGE", noAnsi: options.noAnsi) : Mist.noop()
 
         let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: installer, options: options))
@@ -301,7 +289,6 @@ struct Generator {
             let packageURL: URL = temporaryURL.appendingPathComponent("InstallAssistant.pkg")
 
             if !options.force {
-
                 guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                     throw MistError.existingFile(path: destinationURL.path)
                 }
@@ -321,7 +308,6 @@ struct Generator {
 
             if let identity: String = options.packageSigningIdentity,
                 !identity.isEmpty {
-
                 arguments += ["--sign", identity]
 
                 if let keychain: String = options.keychain,
@@ -333,7 +319,6 @@ struct Generator {
             arguments += [destinationURL.path]
 
             if !options.force {
-
                 guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
                     throw MistError.existingFile(path: destinationURL.path)
                 }
@@ -358,7 +343,6 @@ struct Generator {
     ///
     /// - Throws: A `MistError` if the Bootable macOS Installer volume fails to generate.
     private static func generateBootableInstaller(installer: Installer, options: DownloadInstallerOptions) throws {
-
         guard let volume: String = options.bootableInstallerVolume else {
             return
         }
@@ -392,7 +376,6 @@ struct Generator {
     ///
     /// - Throws: An `Error` if the command failed to execute.
     private static func updatePropertyList(_ url: URL, key: String, value: AnyHashable) throws {
-
         let input: String = try String(contentsOf: url, encoding: .utf8)
 
         guard var data: Data = input.data(using: .utf8) else {

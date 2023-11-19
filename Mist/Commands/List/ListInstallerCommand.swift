@@ -10,7 +10,6 @@ import Foundation
 
 /// Struct used to perform **List Installer** operations.
 struct ListInstallerCommand: ParsableCommand {
-
     static var configuration: CommandConfiguration = CommandConfiguration(
         commandName: "installer",
         abstract: """
@@ -65,11 +64,9 @@ struct ListInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if any of the input validations fail.
     private static func inputValidation(_ options: ListInstallerOptions) throws {
-
         !options.quiet ? PrettyPrint.printHeader("INPUT VALIDATION", noAnsi: options.noAnsi) : Mist.noop()
 
         if let string: String = options.searchString {
-
             guard !string.isEmpty else {
                 throw MistError.missingListSearchString
             }
@@ -84,7 +81,6 @@ struct ListInstallerCommand: ParsableCommand {
         !options.quiet ? PrettyPrint.print("Only include compatible installers will be '\(options.compatible)'...", noAnsi: options.noAnsi) : Mist.noop()
 
         if let path: String = options.exportPath {
-
             guard !path.isEmpty else {
                 throw MistError.missingExportPath
             }
@@ -111,7 +107,6 @@ struct ListInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if the dictionaries are unable to be written to disk.
     private static func export(_ dictionaries: [[String: Any]], options: ListInstallerOptions) throws {
-
         guard let path: String = options.exportPath else {
             return
         }
@@ -150,7 +145,6 @@ struct ListInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if the list is unable to be printed to standard output.
     private static func list(_ dictionaries: [[String: Any]], options: ListInstallerOptions) throws {
-
         switch options.outputType {
         case .ascii:
             print(dictionaries.installersASCIIString(noAnsi: options.noAnsi))
@@ -166,7 +160,6 @@ struct ListInstallerCommand: ParsableCommand {
     }
 
     mutating func run() {
-
         do {
             try ListInstallerCommand.run(options: options)
         } catch {
