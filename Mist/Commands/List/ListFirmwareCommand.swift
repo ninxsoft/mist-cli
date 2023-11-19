@@ -10,7 +10,7 @@ import Foundation
 
 /// Struct used to perform **List Firmware** operations.
 struct ListFirmwareCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = CommandConfiguration(
+    static var configuration: CommandConfiguration = .init(
         commandName: "firmware",
         abstract: """
         List all macOS Firmwares available to download.
@@ -86,7 +86,7 @@ struct ListFirmwareCommand: ParsableCommand {
 
             !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-            let url: URL = URL(fileURLWithPath: path)
+            let url: URL = .init(fileURLWithPath: path)
 
             guard ["csv", "json", "plist", "yaml"].contains(url.pathExtension) else {
                 throw MistError.invalidExportFileExtension
@@ -116,7 +116,7 @@ struct ListFirmwareCommand: ParsableCommand {
             return
         }
 
-        let url: URL = URL(fileURLWithPath: path)
+        let url: URL = .init(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {

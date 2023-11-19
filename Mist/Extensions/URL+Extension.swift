@@ -19,7 +19,7 @@ extension URL {
                 fileHandle.closeFile()
             }
 
-            var shasum: Insecure.SHA1 = Insecure.SHA1()
+            var shasum: Insecure.SHA1 = .init()
 
             while try autoreleasepool(invoking: {
                 try Task.checkCancellation()
@@ -32,7 +32,7 @@ extension URL {
                 return !data.isEmpty
             }) {}
 
-            let data: Data = Data(shasum.finalize())
+            let data: Data = .init(shasum.finalize())
             return data.map { String(format: "%02hhx", $0) }.joined()
         } catch {
             return nil

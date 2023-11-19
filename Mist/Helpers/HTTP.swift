@@ -28,7 +28,7 @@ enum HTTP {
 
         do {
             var devices: [String: Any] = [:]
-            let metadataURL: URL = URL(fileURLWithPath: metadataCachePath)
+            let metadataURL: URL = .init(fileURLWithPath: metadataCachePath)
 
             if let url: URL = URL(string: Firmware.firmwaresURL),
                 let (string, dictionary): (String, [String: Any]) = try retrieveMetadata(url, noAnsi: noAnsi, quiet: quiet) {
@@ -215,7 +215,7 @@ enum HTTP {
     /// - Returns: The filtered list of macOS Installers.
     private static func getInstallers(from dictionary: [String: Any], noAnsi: Bool, quiet: Bool) -> [Installer] {
         var installers: [Installer] = []
-        let dateFormatter: DateFormatter = DateFormatter()
+        let dateFormatter: DateFormatter = .init()
         dateFormatter.dateFormat = "yyyy-MM-dd"
 
         for (key, value) in dictionary {

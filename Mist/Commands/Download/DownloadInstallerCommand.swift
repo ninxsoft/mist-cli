@@ -13,7 +13,7 @@ import Foundation
 
 /// Struct used to perform **Download Installer** operations.
 struct DownloadInstallerCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = CommandConfiguration(
+    static var configuration: CommandConfiguration = .init(
         commandName: "installer",
         abstract: """
         Download a macOS Installer.
@@ -124,7 +124,7 @@ struct DownloadInstallerCommand: ParsableCommand {
 
             !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-            let url: URL = URL(fileURLWithPath: path)
+            let url: URL = .init(fileURLWithPath: path)
 
             guard ["json", "plist", "yaml"].contains(url.pathExtension) else {
                 throw MistError.invalidExportFileExtension
@@ -320,8 +320,8 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ installer: Installer, options: DownloadInstallerOptions) throws {
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
+        let outputURL: URL = .init(fileURLWithPath: outputDirectory(for: installer, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: temporaryDirectory(for: installer, options: options))
         var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("SETUP", noAnsi: options.noAnsi) : Mist.noop()
@@ -357,8 +357,8 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ installer: Installer, options: DownloadInstallerOptions) throws {
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: installer, options: options))
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
+        let outputURL: URL = .init(fileURLWithPath: outputDirectory(for: installer, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: options.temporaryDirectory)
 
         guard let bootVolumePath: String = FileManager.default.componentsToDisplay(forPath: "/")?.first,
             let temporaryVolumePath: String = FileManager.default.componentsToDisplay(forPath: temporaryURL.path)?.first,
@@ -390,7 +390,7 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         for volume in volumes {
             let required: Int64 = installer.size * volume.count
-            let url: URL = URL(fileURLWithPath: volume.path)
+            let url: URL = .init(fileURLWithPath: volume.path)
             let values: URLResourceValues = try url.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey])
             let free: Int64
 
@@ -417,7 +417,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ installer: Installer, options: DownloadInstallerOptions) throws {
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: installer, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: temporaryDirectory(for: installer, options: options))
         let imageURL: URL = temporaryImage(for: installer, options: options)
         var processing: Bool = false
 
@@ -459,7 +459,7 @@ struct DownloadInstallerCommand: ParsableCommand {
 
         !options.quiet ? PrettyPrint.printHeader("EXPORT RESULTS", noAnsi: options.noAnsi) : Mist.noop()
 
-        let url: URL = URL(fileURLWithPath: path)
+        let url: URL = .init(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
@@ -572,7 +572,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     static func resumeDataURL(for package: Package, in installer: Installer, options: DownloadInstallerOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: installer, options: options)
         let string: String = "\(temporaryDirectory)/\(package.filename).resumeData"
-        let url: URL = URL(fileURLWithPath: string)
+        let url: URL = .init(fileURLWithPath: string)
         return url
     }
 

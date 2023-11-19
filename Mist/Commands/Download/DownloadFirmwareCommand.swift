@@ -10,7 +10,7 @@ import Foundation
 
 /// Struct used to perform **Download Firmware** operations.
 struct DownloadFirmwareCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = CommandConfiguration(
+    static var configuration: CommandConfiguration = .init(
         commandName: "firmware",
         abstract: """
         Download a macOS Firmware.
@@ -97,7 +97,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
 
             !options.quiet ? PrettyPrint.print("Export path will be '\(path)'...", noAnsi: options.noAnsi) : Mist.noop()
 
-            let url: URL = URL(fileURLWithPath: path)
+            let url: URL = .init(fileURLWithPath: path)
 
             guard ["json", "plist", "yaml"].contains(url.pathExtension) else {
                 throw MistError.invalidExportFileExtension
@@ -156,8 +156,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func setup(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
+        let outputURL: URL = .init(fileURLWithPath: outputDirectory(for: firmware, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
         var processing: Bool = false
 
         !options.quiet ? PrettyPrint.printHeader("SETUP", noAnsi: options.noAnsi) : Mist.noop()
@@ -193,8 +193,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if there is not enough free space.
     private static func verifyFreeSpace(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-        let outputURL: URL = URL(fileURLWithPath: outputDirectory(for: firmware, options: options))
-        let temporaryURL: URL = URL(fileURLWithPath: options.temporaryDirectory)
+        let outputURL: URL = .init(fileURLWithPath: outputDirectory(for: firmware, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: options.temporaryDirectory)
         let required: Int64 = firmware.size
 
         for url in [outputURL, temporaryURL] {
@@ -224,7 +224,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: An `Error` if any of the directory operations fail.
     private static func teardown(_ firmware: Firmware, options: DownloadFirmwareOptions) throws {
-        let temporaryURL: URL = URL(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: temporaryDirectory(for: firmware, options: options))
         !options.quiet ? PrettyPrint.printHeader("TEARDOWN", noAnsi: options.noAnsi) : Mist.noop()
 
         if FileManager.default.fileExists(atPath: temporaryURL.path), !options.cacheDownloads {
@@ -247,7 +247,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
             return
         }
 
-        let url: URL = URL(fileURLWithPath: path)
+        let url: URL = .init(fileURLWithPath: path)
         let directory: URL = url.deletingLastPathComponent()
 
         if !FileManager.default.fileExists(atPath: directory.path) {
@@ -326,7 +326,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
     static func resumeDataURL(for firmware: Firmware, options: DownloadFirmwareOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: firmware, options: options)
         let string: String = "\(temporaryDirectory)/\(firmware.filename).resumeData"
-        let url: URL = URL(fileURLWithPath: string)
+        let url: URL = .init(fileURLWithPath: string)
         return url
     }
 

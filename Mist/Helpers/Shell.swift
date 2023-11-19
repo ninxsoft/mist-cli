@@ -20,9 +20,9 @@ enum Shell {
     ///
     /// - Returns: The contents of standard output, if any, otherwise `nil`.
     static func execute(_ arguments: [String], environment variables: [String: String] = [:], currentDirectoryPath: String? = nil) throws -> String? {
-        let output: Pipe = Pipe()
-        let error: Pipe = Pipe()
-        let process: Process = Process()
+        let output: Pipe = .init()
+        let error: Pipe = .init()
+        let process: Process = .init()
         process.launchPath = "/usr/bin/env"
         process.arguments = arguments
         process.standardOutput = output
@@ -45,7 +45,7 @@ enum Shell {
 
         guard process.terminationStatus == 0 else {
             let data: Data = error.fileHandleForReading.readDataToEndOfFile()
-            let message: String = String(data: data, encoding: .utf8) ?? "[\(arguments.joined(separator: ", "))]"
+            let message: String = .init(data: data, encoding: .utf8) ?? "[\(arguments.joined(separator: ", "))]"
             throw MistError.invalidExitStatus(code: process.terminationStatus, message: message)
         }
 

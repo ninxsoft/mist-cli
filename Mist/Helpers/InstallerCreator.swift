@@ -20,7 +20,7 @@ enum InstallerCreator {
         !options.quiet ? PrettyPrint.printHeader("INSTALL", noAnsi: options.noAnsi) : Mist.noop()
 
         let imageURL: URL = DownloadInstallerCommand.temporaryImage(for: installer, options: options)
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
 
         if FileManager.default.fileExists(atPath: imageURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old image '\(imageURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
@@ -38,8 +38,8 @@ enum InstallerCreator {
         if installer.sierraOrOlder,
             let package: Package = installer.packages.first {
             let legacyDiskImageURL: URL = temporaryURL.appendingPathComponent(package.filename)
-            let legacyDiskImageMountPointURL: URL = URL(fileURLWithPath: "/Volumes/Install \(installer.name)")
-            let packageURL: URL = URL(fileURLWithPath: "/Volumes/Install \(installer.name)").appendingPathComponent(package.filename.replacingOccurrences(of: ".dmg", with: ".pkg"))
+            let legacyDiskImageMountPointURL: URL = .init(fileURLWithPath: "/Volumes/Install \(installer.name)")
+            let packageURL: URL = .init(fileURLWithPath: "/Volumes/Install \(installer.name)").appendingPathComponent(package.filename.replacingOccurrences(of: ".dmg", with: ".pkg"))
 
             !options.quiet ? PrettyPrint.print("Mounting Installer disk image at mount point '\(legacyDiskImageMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             arguments = ["hdiutil", "attach", legacyDiskImageURL.path, "-noverify", "-nobrowse", "-mountpoint", legacyDiskImageMountPointURL.path]

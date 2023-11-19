@@ -31,14 +31,14 @@ enum Generator {
     /// - Throws: A `MistError` if the macOS Firmware fails to generate.
     private static func generateFirmware(firmware: Firmware, options: DownloadFirmwareOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("FIRMWARE", noAnsi: options.noAnsi) : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
+        let temporaryURL: URL = .init(fileURLWithPath: DownloadFirmwareCommand.temporaryDirectory(for: firmware, options: options))
 
         guard let firmwareURL: URL = URL(string: firmware.url) else {
             throw MistError.invalidURL(firmware.url)
         }
 
         let temporaryFirmwareURL: URL = temporaryURL.appendingPathComponent(firmwareURL.lastPathComponent)
-        let destinationURL: URL = URL(fileURLWithPath: DownloadFirmwareCommand.firmwarePath(for: firmware, options: options))
+        let destinationURL: URL = .init(fileURLWithPath: DownloadFirmwareCommand.firmwarePath(for: firmware, options: options))
 
         !options.quiet ? PrettyPrint.print("Validating Shasum matches \(firmware.shasum)...", noAnsi: options.noAnsi) : Mist.noop()
         try Validator.validate(firmware, at: temporaryFirmwareURL)
@@ -100,7 +100,7 @@ enum Generator {
     /// - Throws: A `MistError` if the Application Bundle fails to generate.
     private static func generateApplication(installer: Installer, options: DownloadInstallerOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("APPLICATION", noAnsi: options.noAnsi) : Mist.noop()
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.applicationPath(for: installer, options: options))
+        let destinationURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.applicationPath(for: installer, options: options))
 
         if !options.force {
             guard !FileManager.default.fileExists(atPath: destinationURL.path) else {
@@ -126,9 +126,9 @@ enum Generator {
     /// - Throws: A `MistError` if the macOS Installer Disk Image fails to generate.
     private static func generateImage(installer: Installer, options: DownloadInstallerOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("DISK IMAGE", noAnsi: options.noAnsi) : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("image")
+        let temporaryURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("image")
         let temporaryApplicationURL: URL = temporaryURL.appendingPathComponent("Install \(installer.name).app")
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.imagePath(for: installer, options: options))
+        let destinationURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.imagePath(for: installer, options: options))
 
         if FileManager.default.fileExists(atPath: temporaryURL.path) {
             !options.quiet ? PrettyPrint.print("Deleting old temporary directory '\(temporaryURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
@@ -186,10 +186,10 @@ enum Generator {
     /// - Throws: A `MistError` if the Bootable macOS Installer Disk Image fails to generate.
     private static func generateISO(installer: Installer, options: DownloadInstallerOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("BOOTABLE DISK IMAGE", noAnsi: options.noAnsi) : Mist.noop()
-        let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("iso")
+        let temporaryURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options)).appendingPathComponent("iso")
         let dmgURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).dmg")
         let cdrURL: URL = temporaryURL.appendingPathComponent("\(installer.identifier).cdr")
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.isoPath(for: installer, options: options))
+        let destinationURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.isoPath(for: installer, options: options))
         var arguments: [String] = []
 
         if !options.force {
@@ -282,10 +282,10 @@ enum Generator {
     private static func generatePackage(installer: Installer, options: DownloadInstallerOptions) throws {
         !options.quiet ? PrettyPrint.printHeader("PACKAGE", noAnsi: options.noAnsi) : Mist.noop()
 
-        let destinationURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.packagePath(for: installer, options: options))
+        let destinationURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.packagePath(for: installer, options: options))
 
         if installer.bigSurOrNewer {
-            let temporaryURL: URL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
+            let temporaryURL: URL = .init(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
             let packageURL: URL = temporaryURL.appendingPathComponent("InstallAssistant.pkg")
 
             if !options.force {
@@ -356,7 +356,7 @@ enum Generator {
         }
 
         var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
-        let destinationURL: URL = URL(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
+        let destinationURL: URL = .init(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
 
         if installer.sierraOrOlder {
             arguments += ["--applicationpath", installer.temporaryInstallerURL.path]

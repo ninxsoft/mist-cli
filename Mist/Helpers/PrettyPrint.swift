@@ -23,7 +23,7 @@ enum PrettyPrint {
     ///   - header: The string to print.
     ///   - noAnsi: Set to `true` to print the string without any color or formatting.
     static func printHeader(_ header: String, noAnsi: Bool) {
-        let horizontal: String = String(repeating: "─", count: header.count + 2)
+        let horizontal: String = .init(repeating: "─", count: header.count + 2)
         let string: String = "┌\(horizontal)┐\n│ \(header) │\n└\(horizontal)┘"
         Swift.print(noAnsi ? string : string.color(.blue))
     }

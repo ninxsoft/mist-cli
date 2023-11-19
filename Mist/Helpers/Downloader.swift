@@ -17,7 +17,7 @@ class Downloader: NSObject {
     private var prefixString: String = ""
     private var urlError: URLError?
     private var mistError: MistError?
-    private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
+    private let semaphore: DispatchSemaphore = .init(value: 0)
     private var noAnsi: Bool = false
     private var quiet: Bool = false
     private var previousPercentage: Int = 0
@@ -44,7 +44,7 @@ class Downloader: NSObject {
         }
 
         sourceURL = source
-        let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        let session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: nil)
         let resumeDataURL: URL = DownloadFirmwareCommand.resumeDataURL(for: firmware, options: options)
         let task: URLSessionDownloadTask
 
@@ -104,7 +104,7 @@ class Downloader: NSObject {
         quiet = options.quiet
         !quiet ? PrettyPrint.printHeader("DOWNLOAD", noAnsi: noAnsi) : Mist.noop()
         temporaryURL = URL(fileURLWithPath: DownloadInstallerCommand.temporaryDirectory(for: installer, options: options))
-        let session: URLSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        let session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: nil)
 
         guard let temporaryURL: URL = temporaryURL else {
             throw MistError.generalError("There was an error retrieving the temporary URL")
@@ -198,7 +198,7 @@ class Downloader: NSObject {
 
     private func verify(_ package: Package, at destination: URL, current: String, total: Int) -> Bool {
         let paddingLength: Int = "[ \(current) / \(total) ]".count
-        let padding: String = String(repeating: " ", count: paddingLength)
+        let padding: String = .init(repeating: " ", count: paddingLength)
         !quiet ? PrettyPrint.print("\(padding) Verifying...", noAnsi: noAnsi, prefix: .continuing) : Mist.noop()
 
         do {
@@ -246,10 +246,10 @@ class Downloader: NSObject {
         let totalString: String = total.bytesString()
         let percentage: Double = total > 0 ? Double(current) / Double(total) * 100 : 0
         let format: String = percentage == 100 ? "%05.1f%%" : "%05.2f%%"
-        let percentageString: String = String(format: format, percentage)
+        let percentageString: String = .init(format: format, percentage)
         let suffixString: String = "[ \(currentString) / \(totalString) (\(percentageString)) ]"
         let paddingSize: Int = Downloader.maximumWidth - PrettyPrint.Prefix.default.rawValue.count - prefixString.count - suffixString.count
-        let paddingString: String = String(repeating: ".", count: paddingSize - 1) + " "
+        let paddingString: String = .init(repeating: ".", count: paddingSize - 1) + " "
         !quiet ? PrettyPrint.print("\(prefixString)\(paddingString)\(suffixString)", noAnsi: noAnsi, replacing: replacing) : Mist.noop()
     }
 }
@@ -260,7 +260,7 @@ extension Downloader: URLSessionDownloadDelegate {
         total = totalBytesExpectedToWrite
 
         if noAnsi {
-            let percentage: Int = Int(total > 0 ? Double(current) / Double(total) * 100 : 0)
+            let percentage: Int = .init(total > 0 ? Double(current) / Double(total) * 100 : 0)
 
             if percentage > previousPercentage {
                 updateProgress()

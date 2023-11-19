@@ -9,7 +9,7 @@ import ArgumentParser
 import Foundation
 
 struct Mist: ParsableCommand {
-    static let configuration: CommandConfiguration = CommandConfiguration(abstract: .abstract, discussion: .discussion, version: version(), subcommands: [ListCommand.self, DownloadCommand.self])
+    static let configuration: CommandConfiguration = .init(abstract: .abstract, discussion: .discussion, version: version(), subcommands: [ListCommand.self, DownloadCommand.self])
 
     /// Current version.
     private static let currentVersion: String = "2.0"
