@@ -46,14 +46,14 @@ extension String {
     }
 
     func stringWithSubstitutions(using firmware: Firmware) -> String {
-        self.replacingOccurrences(of: "%NAME%", with: firmware.name)
+        replacingOccurrences(of: "%NAME%", with: firmware.name)
             .replacingOccurrences(of: "%VERSION%", with: firmware.version)
             .replacingOccurrences(of: "%BUILD%", with: firmware.build)
             .replacingOccurrences(of: "//", with: "/")
     }
 
     func stringWithSubstitutions(using installer: Installer) -> String {
-        self.replacingOccurrences(of: "%NAME%", with: installer.name)
+        replacingOccurrences(of: "%NAME%", with: installer.name)
             .replacingOccurrences(of: "%VERSION%", with: installer.version)
             .replacingOccurrences(of: "%BUILD%", with: installer.build)
             .replacingOccurrences(of: "//", with: "/")

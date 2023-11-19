@@ -19,13 +19,13 @@ extension Sequence where Iterator.Element == [String: Any] {
         let dateHeading: String = "DATE"
         let compatibleHeading: String = "COMPATIBLE"
 
-        let maximumSignedLength: Int = self.compactMap { $0["signed"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: signedHeading)
-        let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
-        let maximumVersionLength: Int = self.compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
-        let maximumBuildLength: Int = self.compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
-        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
-        let maximumDateLength: Int = self.compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
-        let maximumCompatibleLength: Int = self.compactMap { $0["compatible"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: compatibleHeading)
+        let maximumSignedLength: Int = compactMap { $0["signed"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: signedHeading)
+        let maximumNameLength: Int = compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
+        let maximumVersionLength: Int = compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
+        let maximumBuildLength: Int = compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
+        let maximumSizeLength: Int = compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
+        let maximumDateLength: Int = compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
+        let maximumCompatibleLength: Int = compactMap { $0["compatible"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: compatibleHeading)
 
         let signedPadding: Int = Swift.max(maximumSignedLength - signedHeading.count, 0)
         let namePadding: Int = Swift.max(maximumNameLength - nameHeading.count, 0)
@@ -91,13 +91,13 @@ extension Sequence where Iterator.Element == [String: Any] {
         let dateHeading: String = "DATE"
         let compatibleHeading: String = "COMPATIBLE"
 
-        let maximumIdentifierLength: Int = self.compactMap { $0["identifier"] as? String }.maximumStringLength(comparing: identifierHeading)
-        let maximumNameLength: Int = self.compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
-        let maximumVersionLength: Int = self.compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
-        let maximumBuildLength: Int = self.compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
-        let maximumSizeLength: Int = self.compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
-        let maximumDateLength: Int = self.compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
-        let maximumCompatibleLength: Int = self.compactMap { $0["compatible"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: compatibleHeading)
+        let maximumIdentifierLength: Int = compactMap { $0["identifier"] as? String }.maximumStringLength(comparing: identifierHeading)
+        let maximumNameLength: Int = compactMap { $0["name"] as? String }.maximumStringLength(comparing: nameHeading)
+        let maximumVersionLength: Int = compactMap { $0["version"] as? String }.maximumStringLength(comparing: versionHeading)
+        let maximumBuildLength: Int = compactMap { $0["build"] as? String }.maximumStringLength(comparing: buildHeading)
+        let maximumSizeLength: Int = compactMap { $0["size"] as? Int64 }.map { $0.bytesString() }.maximumStringLength(comparing: sizeHeading)
+        let maximumDateLength: Int = compactMap { $0["date"] as? String }.maximumStringLength(comparing: dateHeading)
+        let maximumCompatibleLength: Int = compactMap { $0["compatible"] as? Bool }.map { $0 ? "True" : "False" }.maximumStringLength(comparing: compatibleHeading)
 
         let identifierPadding: Int = Swift.max(maximumIdentifierLength - identifierHeading.count, 0)
         let namePadding: Int = Swift.max(maximumNameLength - nameHeading.count, 0)
@@ -228,11 +228,11 @@ extension Sequence where Iterator.Element == [String: Any] {
     }
 
     func firmwaresCSVString() -> String {
-        "Signed,Name,Version,Build,Size,Date,Compatible\n" + self.map { $0.firmwareCSVString() }.joined()
+        "Signed,Name,Version,Build,Size,Date,Compatible\n" + map { $0.firmwareCSVString() }.joined()
     }
 
     func installersCSVString() -> String {
-        "Identifier,Name,Version,Build,Size,Date,Compatible\n" + self.map { $0.installerCSVString() }.joined()
+        "Identifier,Name,Version,Build,Size,Date,Compatible\n" + map { $0.installerCSVString() }.joined()
     }
 
     func jsonString() throws -> String {

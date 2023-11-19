@@ -15,6 +15,6 @@ enum InstallerOutputType: String, ExpressibleByArgument {
     case bootableInstaller = "bootableinstaller"
 
     var description: String {
-        self.rawValue
+        rawValue
     }
 }
