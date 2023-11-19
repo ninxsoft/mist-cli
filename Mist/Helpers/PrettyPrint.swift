@@ -10,7 +10,7 @@ enum PrettyPrint {
     enum Prefix: String {
         case `default` = "  ├─ "
         case continuing = "  │  "
-        case ending    = "  └─ "
+        case ending = "  └─ "
 
         var description: String {
             rawValue
