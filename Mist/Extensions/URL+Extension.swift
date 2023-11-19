@@ -30,7 +30,7 @@ extension URL {
                 }
 
                 return !data.isEmpty
-            }) { }
+            }) {}
 
             let data: Data = Data(shasum.finalize())
             return data.map { String(format: "%02hhx", $0) }.joined()

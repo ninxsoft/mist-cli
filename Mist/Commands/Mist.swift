@@ -17,7 +17,7 @@ struct Mist: ParsableCommand {
     /// Visit URL string.
     private static let visitURLString: String = "Visit \(String.repositoryURL) to grab the latest release of \(String.appName)"
 
-    static func noop() { }
+    static func noop() {}
 
     private static func getLatestVersion() -> String? {
         guard let url: URL = URL(string: .latestReleaseURL) else {
