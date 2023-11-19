@@ -179,6 +179,8 @@ enum Generator {
         !options.quiet ? PrettyPrint.print("Created image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 
+    // swiftlint:disable function_body_length
+
     /// Generates a Bootable macOS Installer Disk Image.
     ///
     /// - Parameters:
@@ -273,6 +275,8 @@ enum Generator {
             !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
         }
     }
+
+    // swiftlint:enable function_body_length
 
     /// Generates a macOS Installer Package, optionally codesigning.
     ///

@@ -11,7 +11,7 @@ import Foundation
 
 /// Helper Struct used to perform HTTP queries.
 enum HTTP {
-    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable cyclomatic_complexity function_body_length
 
     /// Searches and retrieves a list of all macOS Firmwares that can be downloaded.
     ///
@@ -91,7 +91,7 @@ enum HTTP {
         return firmwares
     }
 
-    // swiftlint:enable cyclomatic_complexity
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     /// Retrieves a dictionary containing macOS Firmwares metadata.
     ///
