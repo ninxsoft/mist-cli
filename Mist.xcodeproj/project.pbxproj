@@ -12,7 +12,7 @@
 		390B719D281BA61E00875374 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B719C281BA61E00875374 /* Chunk.swift */; };
 		390B71A1281BAD7F00875374 /* UInt32+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A0281BAD7F00875374 /* UInt32+Extension.swift */; };
 		390B71A3281BAF0100875374 /* UInt8+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A2281BAF0000875374 /* UInt8+Extension.swift */; };
-		390B71A5281BB38500875374 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A4281BB38500875374 /* Array+Extension.swift */; };
+		390B71A5281BB38500875374 /* [UInt8]+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A4281BB38500875374 /* [UInt8]+Extension.swift */; };
 		390B71A7281BC69E00875374 /* UInt64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390B71A6281BC69E00875374 /* UInt64+Extension.swift */; };
 		391E6A4928A9D748007BB33E /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391E6A4828A9D748007BB33E /* URL+Extension.swift */; };
 		393C236826DDA494004755BF /* Dictionary+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393C236726DDA494004755BF /* Dictionary+Extension.swift */; };
@@ -69,7 +69,7 @@
 		390B719C281BA61E00875374 /* Chunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
 		390B71A0281BAD7F00875374 /* UInt32+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt32+Extension.swift"; sourceTree = "<group>"; };
 		390B71A2281BAF0000875374 /* UInt8+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt8+Extension.swift"; sourceTree = "<group>"; };
-		390B71A4281BB38500875374 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
+		390B71A4281BB38500875374 /* [UInt8]+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "[UInt8]+Extension.swift"; sourceTree = "<group>"; };
 		390B71A6281BC69E00875374 /* UInt64+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+Extension.swift"; sourceTree = "<group>"; };
 		391E6A4828A9D748007BB33E /* URL+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
 		393C236726DDA494004755BF /* Dictionary+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Extension.swift"; sourceTree = "<group>"; };
@@ -203,7 +203,7 @@
 		5744141425F8607B00DE5540 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				390B71A4281BB38500875374 /* Array+Extension.swift */,
+				390B71A4281BB38500875374 /* [UInt8]+Extension.swift */,
 				393C236726DDA494004755BF /* Dictionary+Extension.swift */,
 				57F0F3CD2600907D00480DEE /* Int64+Extension.swift */,
 				393C237026DF84E0004755BF /* Sequence+Extension.swift */,
@@ -276,6 +276,7 @@
 				574413F925F85EF300DE5540 /* Frameworks */,
 				574413FA25F85EF300DE5540 /* CopyFiles */,
 				5744142525F868B300DE5540 /* Run SwiftLint */,
+				57C1C85C2B09EF84006DB77B /* Run SwiftFormat */,
 				393C236926DDC995004755BF /* Run DrString */,
 			);
 			buildRules = (
@@ -297,8 +298,9 @@
 		574413F425F85EF300DE5540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					39D1C2282944683700EAE5E4 = {
 						CreatedOnToolsVersion = 14.1;
@@ -380,6 +382,25 @@
 			shellPath = "/usr/bin/env bash";
 			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint > /dev/null ; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nexit 0\n";
 		};
+		57C1C85C2B09EF84006DB77B /* Run SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftFormat";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftformat > /dev/null ; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n\nexit 0\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -398,7 +419,7 @@
 				57D135AB25FED139003467B2 /* MistError.swift in Sources */,
 				57D1358C25FA3CE5003467B2 /* InstallerCreator.swift in Sources */,
 				57D1358F25FA4027003467B2 /* Generator.swift in Sources */,
-				390B71A5281BB38500875374 /* Array+Extension.swift in Sources */,
+				390B71A5281BB38500875374 /* [UInt8]+Extension.swift in Sources */,
 				5744140025F85EF300DE5540 /* main.swift in Sources */,
 				390B7199281B92AA00875374 /* Validator.swift in Sources */,
 				5744141725F8659D00DE5540 /* ListInstallerCommand.swift in Sources */,
@@ -486,6 +507,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -548,6 +570,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
