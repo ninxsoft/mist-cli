@@ -81,7 +81,7 @@ struct HTTP {
         }
 
         if compatible {
-            firmwares = firmwares.filter { $0.compatible }
+            firmwares = firmwares.filter(\.compatible)
         }
 
         firmwares.sort { $0.version == $1.version ? $0.date > $1.date : $0.version > $1.version }
@@ -185,7 +185,7 @@ struct HTTP {
                     continue
                 }
 
-                installers.append(contentsOf: getInstallers(from: installersDictionary, noAnsi: noAnsi, quiet: quiet).filter { !installers.map { $0.identifier }.contains($0.identifier) })
+                installers.append(contentsOf: getInstallers(from: installersDictionary, noAnsi: noAnsi, quiet: quiet).filter { !installers.map(\.identifier).contains($0.identifier) })
             } catch {
                 !quiet ? PrettyPrint.print(error.localizedDescription, noAnsi: noAnsi, prefixColor: .red) : Mist.noop()
             }
@@ -198,7 +198,7 @@ struct HTTP {
         }
 
         if compatible {
-            installers = installers.filter { $0.compatible }
+            installers = installers.filter(\.compatible)
         }
 
         installers.sort { $0.version == $1.version ? $0.date > $1.date : $0.version.compare($1.version, options: .numeric) == .orderedDescending }

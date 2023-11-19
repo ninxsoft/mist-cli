@@ -48,11 +48,11 @@ struct ListFirmwareCommand: ParsableCommand {
             }
         }
 
-        try export(firmwares.map { $0.dictionary }, options: options)
+        try export(firmwares.map(\.dictionary), options: options)
         !options.quiet ? PrettyPrint.print("Found \(firmwares.count) macOS Firmware(s) available for download\n", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
 
         if !firmwares.isEmpty {
-            try list(firmwares.map { $0.dictionary }, options: options)
+            try list(firmwares.map(\.dictionary), options: options)
         }
     }
 

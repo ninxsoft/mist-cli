@@ -585,7 +585,7 @@ struct Installer: Decodable {
             "date": date,
             "compatible": compatible,
             "distribution": distribution,
-            "packages": packages.map { $0.dictionary },
+            "packages": packages.map(\.dictionary),
             "beta": beta
         ]
     }
@@ -605,7 +605,7 @@ struct Installer: Decodable {
         build.range(of: "[a-z]$", options: .regularExpression) != nil
     }
     var size: Int64 {
-        Int64(packages.map { $0.size }.reduce(0, +))
+        Int64(packages.map(\.size).reduce(0, +))
     }
     var diskImageSize: Double {
         ceil(Double(size) / Double(Int64.gigabyte)) + 1.5

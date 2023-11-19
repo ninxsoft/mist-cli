@@ -489,7 +489,7 @@ struct DownloadInstallerCommand: ParsableCommand {
 
     private static func exportDictionary(for installer: Installer, options: DownloadInstallerOptions) -> [String: Any] {
         [
-            "outputTypes": options.outputType.map { $0.description },
+            "outputTypes": options.outputType.map(\.description),
             "includeBetas": options.includeBetas,
             "catalogURL": options.catalogURL ?? "",
             "force": options.force,

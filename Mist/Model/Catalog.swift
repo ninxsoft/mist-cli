@@ -12,7 +12,7 @@ enum Catalog: String, CaseIterable {
     case `public` = "public"
 
     static var urls: [String] {
-        self.allCases.map { $0.url }
+        self.allCases.map(\.url)
     }
 
     var url: String {

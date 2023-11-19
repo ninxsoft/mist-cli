@@ -49,11 +49,11 @@ struct ListInstallerCommand: ParsableCommand {
             }
         }
 
-        try export(installers.map { $0.dictionary }, options: options)
+        try export(installers.map(\.dictionary), options: options)
         !options.quiet ? PrettyPrint.print("Found \(installers.count) macOS Installer(s) available for download\n", noAnsi: options.noAnsi, prefix: .ending) : Mist.noop()
 
         if !installers.isEmpty {
-            try list(installers.map { $0.dictionary }, options: options)
+            try list(installers.map(\.dictionary), options: options)
         }
     }
 
