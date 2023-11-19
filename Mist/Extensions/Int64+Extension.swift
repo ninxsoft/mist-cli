@@ -17,13 +17,13 @@ extension Int64 {
 
     func bytesString() -> String {
         if self < .kilobyte {
-            return String(format: " %04d  B", self)
+            String(format: " %04d  B", self)
         } else if self < .megabyte {
-            return String(format: "%05.2f KB", Double(self) / Double(Int64.kilobyte))
+            String(format: "%05.2f KB", Double(self) / Double(Int64.kilobyte))
         } else if self < .gigabyte {
-            return String(format: "%05.2f MB", Double(self) / Double(Int64.megabyte))
+            String(format: "%05.2f MB", Double(self) / Double(Int64.megabyte))
         } else {
-            return String(format: "%05.2f GB", Double(self) / Double(Int64.gigabyte))
+            String(format: "%05.2f GB", Double(self) / Double(Int64.gigabyte))
         }
     }
 }

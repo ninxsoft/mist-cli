@@ -44,69 +44,69 @@ enum MistError: Error {
     var description: String {
         switch self {
         case .generalError(let string):
-            return "Error: \(string)"
+            "Error: \(string)"
         case .missingListSearchString:
-            return "List <search-string> is missing or empty."
+            "List <search-string> is missing or empty."
         case .missingExportPath:
-            return "[-e, --export] Export path is missing or empty."
+            "[-e, --export] Export path is missing or empty."
         case .invalidExportFileExtension:
-            return "Export file extension is invalid."
+            "Export file extension is invalid."
         case .invalidUser:
-            return "This command requires to be run as 'root'."
+            "This command requires to be run as 'root'."
         case .missingDownloadSearchString:
-            return "Download <search-string> is missing or empty."
+            "Download <search-string> is missing or empty."
         case .missingFirmwareName:
-            return "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
+            "[--firmware-name] macOS Restore Firmware output filename is missing or empty."
         case .missingFirmwareMetadataCachePath:
-            return "[--metadata-cache] macOS Firmware metadata cache path is missing or empty."
+            "[--metadata-cache] macOS Firmware metadata cache path is missing or empty."
         case .missingApplicationName:
-            return "[--application-name] macOS Installer output filename is missing or empty."
+            "[--application-name] macOS Installer output filename is missing or empty."
         case .missingImageName:
-            return "[--image-name] macOS Disk Image output filename is missing or empty."
+            "[--image-name] macOS Disk Image output filename is missing or empty."
         case .missingImageSigningIdentity:
-            return "[--image-signing-identity] macOS Disk Image signing identity is missing or empty."
+            "[--image-signing-identity] macOS Disk Image signing identity is missing or empty."
         case .missingIsoName:
-            return "[--iso-name] Bootable macOS Disk Image output filename is missing or empty."
+            "[--iso-name] Bootable macOS Disk Image output filename is missing or empty."
         case .missingPackageName:
-            return "[--package-name] macOS Installer Package output filename is missing or empty."
+            "[--package-name] macOS Installer Package output filename is missing or empty."
         case .missingPackageIdentifier:
-            return "[--package-identifier] macOS Installer Package identifier is missing or empty."
+            "[--package-identifier] macOS Installer Package identifier is missing or empty."
         case .missingPackageSigningIdentity:
-            return "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
+            "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
         case .missingBootableInstallerVolume:
-            return "[--bootable-installer-volume] Bootable macOS Installer volume is missing or empty."
+            "[--bootable-installer-volume] Bootable macOS Installer volume is missing or empty."
         case .bootableInstallerVolumeNotFound(let volume):
-            return "Unable to find Bootable macOS Installer volume '\(volume)'."
+            "Unable to find Bootable macOS Installer volume '\(volume)'."
         case .bootableInstallerVolumeUnknownFormat(let volume):
-            return "Unable to determine format of Bootable macOS Installer volume '\(volume)'."
+            "Unable to determine format of Bootable macOS Installer volume '\(volume)'."
         case .bootableInstallerVolumeInvalidFormat(let volume, let format):
-            return "Bootable macOS Installer volume '\(volume)' has invalid format '\(format)'. Format to 'Mac OS Extended (Journaled)' using Disk Utility."
+            "Bootable macOS Installer volume '\(volume)' has invalid format '\(format)'. Format to 'Mac OS Extended (Journaled)' using Disk Utility."
         case .bootableInstallerVolumeIsReadOnly(let volume):
-            return "Bootable macOS Installer volume '\(volume)' is read-only. Format using Disk Utility."
+            "Bootable macOS Installer volume '\(volume)' is read-only. Format using Disk Utility."
         case .missingOutputDirectory:
-            return "[-o, --output-directory] Output directory is missing or empty."
+            "[-o, --output-directory] Output directory is missing or empty."
         case .maximumRetriesReached:
-            return "Maximum number of retries reached."
+            "Maximum number of retries reached."
         case .notEnoughFreeSpace(let volume, let free, let required):
-            return "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
+            "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
         case .existingFile(let path):
-            return "Existing file: '\(path)'. Use [--force] to overwrite."
+            "Existing file: '\(path)'. Use [--force] to overwrite."
         case .chunklistValidationFailed(let string):
-            return "Chunklist validation failed: \(string)"
+            "Chunklist validation failed: \(string)"
         case .invalidChunklist(let url):
-            return "Unable to validate data integrity due to invalid chunklist: \(url.path)"
+            "Unable to validate data integrity due to invalid chunklist: \(url.path)"
         case .invalidData:
-            return "Invalid data."
+            "Invalid data."
         case .invalidExitStatus(let code, let message):
-            return "Invalid Exit Status Code: '\(code)', Message: \(message)"
+            "Invalid Exit Status Code: '\(code)', Message: \(message)"
         case .invalidFileSize(let invalid, let valid):
-            return "Invalid File Size: '\(invalid)', should be: '\(valid)'"
+            "Invalid File Size: '\(invalid)', should be: '\(valid)'"
         case .invalidShasum(let invalid, let valid):
-            return "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
+            "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
         case .invalidURL(let url):
-            return "Invalid URL: '\(url)'"
+            "Invalid URL: '\(url)'"
         case .invalidCachingServerProtocol(let url):
-            return "Invalid Content Caching Server protocol in URL: '\(url.absoluteString)', should be HTTP."
+            "Invalid Content Caching Server protocol in URL: '\(url.absoluteString)', should be HTTP."
         }
     }
 }
