@@ -43,7 +43,7 @@ enum MistError: Error {
 
     var description: String {
         switch self {
-        case .generalError(let string):
+        case let .generalError(string):
             "Error: \(string)"
         case .missingListSearchString:
             "List <search-string> is missing or empty."
@@ -75,37 +75,37 @@ enum MistError: Error {
             "[--package-signing-identity] macOS Installer Package signing identity is missing or empty."
         case .missingBootableInstallerVolume:
             "[--bootable-installer-volume] Bootable macOS Installer volume is missing or empty."
-        case .bootableInstallerVolumeNotFound(let volume):
+        case let .bootableInstallerVolumeNotFound(volume):
             "Unable to find Bootable macOS Installer volume '\(volume)'."
-        case .bootableInstallerVolumeUnknownFormat(let volume):
+        case let .bootableInstallerVolumeUnknownFormat(volume):
             "Unable to determine format of Bootable macOS Installer volume '\(volume)'."
-        case .bootableInstallerVolumeInvalidFormat(let volume, let format):
+        case let .bootableInstallerVolumeInvalidFormat(volume, format):
             "Bootable macOS Installer volume '\(volume)' has invalid format '\(format)'. Format to 'Mac OS Extended (Journaled)' using Disk Utility."
-        case .bootableInstallerVolumeIsReadOnly(let volume):
+        case let .bootableInstallerVolumeIsReadOnly(volume):
             "Bootable macOS Installer volume '\(volume)' is read-only. Format using Disk Utility."
         case .missingOutputDirectory:
             "[-o, --output-directory] Output directory is missing or empty."
         case .maximumRetriesReached:
             "Maximum number of retries reached."
-        case .notEnoughFreeSpace(let volume, let free, let required):
+        case let .notEnoughFreeSpace(volume, free, required):
             "Not enough free space on volume '\(volume)': \(free.bytesString()) free, \(required.bytesString()) required"
-        case .existingFile(let path):
+        case let .existingFile(path):
             "Existing file: '\(path)'. Use [--force] to overwrite."
-        case .chunklistValidationFailed(let string):
+        case let .chunklistValidationFailed(string):
             "Chunklist validation failed: \(string)"
-        case .invalidChunklist(let url):
+        case let .invalidChunklist(url):
             "Unable to validate data integrity due to invalid chunklist: \(url.path)"
         case .invalidData:
             "Invalid data."
-        case .invalidExitStatus(let code, let message):
+        case let .invalidExitStatus(code, message):
             "Invalid Exit Status Code: '\(code)', Message: \(message)"
-        case .invalidFileSize(let invalid, let valid):
+        case let .invalidFileSize(invalid, valid):
             "Invalid File Size: '\(invalid)', should be: '\(valid)'"
-        case .invalidShasum(let invalid, let valid):
+        case let .invalidShasum(invalid, valid):
             "Invalid Shasum: '\(invalid)', should be: '\(valid)'"
-        case .invalidURL(let url):
+        case let .invalidURL(url):
             "Invalid URL: '\(url)'"
-        case .invalidCachingServerProtocol(let url):
+        case let .invalidCachingServerProtocol(url):
             "Invalid Content Caching Server protocol in URL: '\(url.absoluteString)', should be HTTP."
         }
     }
