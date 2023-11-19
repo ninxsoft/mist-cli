@@ -8,10 +8,10 @@
 import ArgumentParser
 
 enum InstallerOutputType: String, ExpressibleByArgument {
-    case application = "application"
-    case image = "image"
-    case iso = "iso"
-    case package = "package"
+    case application
+    case image
+    case iso
+    case package
     case bootableInstaller = "bootableinstaller"
 
     var description: String {

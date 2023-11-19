@@ -6,10 +6,10 @@
 //
 
 enum Catalog: String, CaseIterable {
-    case standard = "standard"
-    case customer = "customer"
-    case developer = "developer"
-    case `public` = "public"
+    case standard
+    case customer
+    case developer
+    case `public`
 
     static var urls: [String] {
         allCases.map(\.url)

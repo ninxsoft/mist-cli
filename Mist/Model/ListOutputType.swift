@@ -9,10 +9,10 @@ import ArgumentParser
 
 enum ListOutputType: String, ExpressibleByArgument {
     // swiftlint:disable redundant_string_enum_value
-    case ascii = "ascii"
-    case csv = "csv"
-    case json = "json"
-    case plist = "plist"
-    case yaml = "yaml"
+    case ascii
+    case csv
+    case json
+    case plist
+    case yaml
     // swiftlint:enable redundant_string_enum_value
 }
