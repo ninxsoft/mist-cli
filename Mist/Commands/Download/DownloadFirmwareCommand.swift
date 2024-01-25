@@ -334,7 +334,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
         return url
     }
 
-    mutating func run() {
+    mutating func run() throws {
         do {
             try DownloadFirmwareCommand.run(options: options)
         } catch {
@@ -343,6 +343,8 @@ struct DownloadFirmwareCommand: ParsableCommand {
             } else {
                 PrettyPrint.print(error.localizedDescription, noAnsi: options.noAnsi, prefix: .ending, prefixColor: .red)
             }
+
+            throw ExitCode(1)
         }
     }
 }
