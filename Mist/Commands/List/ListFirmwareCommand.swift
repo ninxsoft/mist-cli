@@ -164,7 +164,7 @@ struct ListFirmwareCommand: ParsableCommand {
         }
     }
 
-    mutating func run() {
+    mutating func run() throws {
         do {
             try ListFirmwareCommand.run(options: options)
         } catch {
@@ -173,6 +173,8 @@ struct ListFirmwareCommand: ParsableCommand {
             } else {
                 PrettyPrint.print(error.localizedDescription, noAnsi: options.noAnsi, prefix: .ending, prefixColor: .red)
             }
+
+            throw ExitCode(1)
         }
     }
 }

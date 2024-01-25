@@ -159,7 +159,7 @@ struct ListInstallerCommand: ParsableCommand {
         }
     }
 
-    mutating func run() {
+    mutating func run() throws {
         do {
             try ListInstallerCommand.run(options: options)
         } catch {
@@ -168,6 +168,8 @@ struct ListInstallerCommand: ParsableCommand {
             } else {
                 PrettyPrint.print(error.localizedDescription, noAnsi: options.noAnsi, prefix: .ending, prefixColor: .red)
             }
+
+            throw ExitCode(1)
         }
     }
 }
