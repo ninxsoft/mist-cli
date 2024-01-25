@@ -228,7 +228,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     }
 
     func firmwaresCSVString() -> String {
-        "Signed,Name,Version,Build,Size,Date,Compatible\n" + map { $0.firmwareCSVString() }.joined()
+        "Name,Version,Build,Size,URL,Date,Compatible,Signed,Beta\n" + map { $0.firmwareCSVString() }.joined()
     }
 
     func installersCSVString() -> String {
