@@ -15,7 +15,8 @@ struct ListFirmwareCommand: ParsableCommand {
         abstract: """
         List all macOS Firmwares available to download.
         * macOS Firmwares are for Apple Silicon Macs only.
-        """
+        """,
+        aliases: ["ipsw"]
     )
     @OptionGroup var options: ListFirmwareOptions
 
