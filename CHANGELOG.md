@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0) - 2024-06-11
+
+- Added _beta_ support for **macOS Sequoia 15** :tada:
+- Added support for creating legacy Bootable Disk Images (ISO) on Apple Silicon - thanks [PicoMitchell](https://github.com/PicoMitchell)!
+- Added an `ipsw` alias for `firmware`
+  - `mist list ipsw` behaves the same as `mist list firmware`
+  - `mist download ipsw` behaves the same as `mist download firmware`
+- `mist` now returns an exit code of `1` for all errors - thanks [BigMacAdmin](https://github.com/BigMacAdmin)!
+- URLs are now formatted correctly when exporting CSVs - thanks [BigMacAdmin](https://github.com/BigMacAdmin)!
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.4.0**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **5.1.2**
+
 ## [2.0](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0) - 2023-09-27
 
 - Added support for **macOS Sonoma 14** :tada:
