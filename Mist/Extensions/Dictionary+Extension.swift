@@ -64,21 +64,13 @@ extension Dictionary where Key == String {
 
     func jsonString() throws -> String {
         let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
-
-        guard let string: String = String(data: data, encoding: .utf8) else {
-            throw MistError.invalidData
-        }
-
+        let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 
     func propertyListString() throws -> String {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
-
-        guard let string: String = String(data: data, encoding: .utf8) else {
-            throw MistError.invalidData
-        }
-
+        let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 

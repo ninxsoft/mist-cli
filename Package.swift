@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -13,8 +13,8 @@ let package: Package = .init(
         .executable(name: "mist", targets: ["Mist"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.2.3"),
-        .package(url: "https://github.com/jpsim/Yams", from: "5.0.6")
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.4.0"),
+        .package(url: "https://github.com/jpsim/Yams", from: "5.1.2")
     ],
     targets: [
         .executableTarget(
