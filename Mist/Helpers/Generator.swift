@@ -221,7 +221,7 @@ enum Generator {
 
             // Workaround to make macOS Sierra 10.12 createinstallmedia work
             if installer.version.hasPrefix("10.12") {
-                let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
+                let url: URL = installer.temporaryInstallerURL.appendingPathComponent("Contents/Info.plist")
                 try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
             }
 
@@ -255,7 +255,7 @@ enum Generator {
 
             !options.quiet ? PrettyPrint.print("Created bootable disk image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
         } else {
-            let installESDURL: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/SharedSupport/InstallESD.dmg")
+            let installESDURL: URL = installer.temporaryInstallerURL.appendingPathComponent("Contents/SharedSupport/InstallESD.dmg")
 
             !options.quiet ? PrettyPrint.print("Converting disk image '\(installESDURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             arguments = ["hdiutil", "convert", installESDURL.path, "-format", "UDTO", "-o", cdrURL.path]
@@ -359,7 +359,7 @@ enum Generator {
 
         // Workaround to make macOS Sierra 10.12 createinstallmedia work
         if installer.version.hasPrefix("10.12") {
-            let url: URL = installer.temporaryInstallerURL.appendingPathComponent("/Contents/Info.plist")
+            let url: URL = installer.temporaryInstallerURL.appendingPathComponent("Contents/Info.plist")
             try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
         }
 
