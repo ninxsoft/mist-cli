@@ -9,7 +9,7 @@ import Foundation
 
 /// Helper Class used to download macOS Firmwares and Installers.
 class Downloader: NSObject {
-    private static let maximumWidth: Int = 80
+    private static let maximumWidth: Int = 95
     private var temporaryURL: URL?
     private var sourceURL: URL?
     private var current: Int64 = 0
