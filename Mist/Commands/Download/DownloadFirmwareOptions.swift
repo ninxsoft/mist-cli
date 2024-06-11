@@ -11,12 +11,13 @@ struct DownloadFirmwareOptions: ParsableArguments {
     @Argument(help: """
     Specify a macOS name, version or build to download:
 
-    Name               │ Version │ Build
-    ───────────────────┼─────────┼──────
-    macOS Sonoma       │ 14.x    │ 23xyz
-    macOS Ventura      │ 13.x    │ 22xyz
-    macOS Monterey     │ 12.x    │ 21xyz
-    macOS Big Sur      │ 11.x    │ 20xyz
+    Name           │ Version │ Build
+    ───────────────┼─────────┼──────
+    macOS Sequoia  | 15.x    │ 24xyz
+    macOS Sonoma   │ 14.x    │ 23xyz
+    macOS Ventura  │ 13.x    │ 22xyz
+    macOS Monterey │ 12.x    │ 21xyz
+    macOS Big Sur  │ 11.x    │ 20xyz
 
     Note: Specifying a macOS name will assume the latest version and build of that particular macOS.
     Note: Specifying a macOS version will look for an exact match, otherwise assume the latest build of that particular macOS.
