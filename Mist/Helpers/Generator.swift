@@ -251,6 +251,11 @@ enum Generator {
                     try FileManager.default.removeItem(at: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
                 }
 
+                if FileManager.default.fileExists(atPath: installer.temporaryISOInstallerWithAdHocCodeSignaturesURL.path) {
+                    !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryISOInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                    try FileManager.default.removeItem(at: installer.temporaryISOInstallerWithAdHocCodeSignaturesURL)
+                }
+
                 if FileManager.default.fileExists(atPath: installer.temporaryISOInstallerURL.path) {
                     !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryISOInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
                     try FileManager.default.removeItem(at: installer.temporaryISOInstallerURL)
@@ -416,6 +421,14 @@ enum Generator {
             if FileManager.default.fileExists(atPath: installer.temporaryInstallerWithAdHocCodeSignaturesURL.path) {
                 !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
                 try FileManager.default.removeItem(at: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            }
+
+            // swiftlint:disable:next identifier_name
+            let temporaryBootableInstallerWithAdHocCodeSignaturesURL: URL = destinationURL.appendingPathComponent("Install \(installer.name).ad-hoc-code-signatures.app")
+
+            if FileManager.default.fileExists(atPath: temporaryBootableInstallerWithAdHocCodeSignaturesURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting '\(temporaryBootableInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: temporaryBootableInstallerWithAdHocCodeSignaturesURL)
             }
 
             let temporaryBootableInstallerURL: URL = destinationURL.appendingPathComponent("Install \(installer.name).app")
