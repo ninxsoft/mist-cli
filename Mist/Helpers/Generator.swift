@@ -225,14 +225,40 @@ enum Generator {
                 try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
             }
 
-            !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-            arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
+            arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia"]
+
+            if !installer.bigSurOrNewer {
+                // swiftlint:disable:next line_length
+                !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+                !options.quiet ? PrettyPrint.print("Ad-hoc code signing '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try adHocCodesign(installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+                arguments = ["\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)/Contents/Resources/createinstallmedia"]
+            }
+
+            arguments += ["--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
 
             if installer.sierraOrOlder {
                 arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
             }
 
+            !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             _ = try Shell.execute(arguments)
+
+            if !installer.bigSurOrNewer {
+                if FileManager.default.fileExists(atPath: installer.temporaryInstallerWithAdHocCodeSignaturesURL.path) {
+                    !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                    try FileManager.default.removeItem(at: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+                }
+
+                if FileManager.default.fileExists(atPath: installer.temporaryISOInstallerURL.path) {
+                    !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryISOInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                    try FileManager.default.removeItem(at: installer.temporaryISOInstallerURL)
+                }
+
+                !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryISOInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryISOInstallerURL)
+            }
 
             !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             arguments = ["hdiutil", "detach", installer.temporaryISOMountPointURL.path, "-force"]
