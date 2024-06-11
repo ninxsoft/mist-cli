@@ -389,16 +389,45 @@ enum Generator {
             try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
         }
 
-        var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
-        let destinationURL: URL = .init(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
+        var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia"]
+
+        if !installer.bigSurOrNewer {
+            // swiftlint:disable:next line_length
+            !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            !options.quiet ? PrettyPrint.print("Ad-hoc code signing '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try adHocCodesign(installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            arguments = ["\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)/Contents/Resources/createinstallmedia"]
+        }
+
+        arguments += ["--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
 
         if installer.sierraOrOlder {
             arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
         }
 
+        let destinationURL: URL = .init(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
+
         !options.quiet ? PrettyPrint.print("Creating bootable macOS Installer at mount point '\(volume)'...", noAnsi: options.noAnsi) : Mist.noop()
         _ = try Shell.execute(arguments)
         !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
+
+        if !installer.bigSurOrNewer {
+            if FileManager.default.fileExists(atPath: installer.temporaryInstallerWithAdHocCodeSignaturesURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            }
+
+            let temporaryBootableInstallerURL: URL = destinationURL.appendingPathComponent("Install \(installer.name).app")
+
+            if FileManager.default.fileExists(atPath: temporaryBootableInstallerURL.path) {
+                !options.quiet ? PrettyPrint.print("Deleting '\(temporaryBootableInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: temporaryBootableInstallerURL)
+            }
+
+            !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(temporaryBootableInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: temporaryBootableInstallerURL)
+        }
     }
 
     /// Update a key-pair value in a Property List.
