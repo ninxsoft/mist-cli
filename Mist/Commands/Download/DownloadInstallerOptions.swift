@@ -13,6 +13,7 @@ struct DownloadInstallerOptions: ParsableArguments {
 
     Name               │ Version │ Build
     ───────────────────┼─────────┼──────
+    macOS Sequoia      │ 15.x    │ 24xyz
     macOS Sonoma       │ 14.x    │ 23xyz
     macOS Ventura      │ 13.x    │ 22xyz
     macOS Monterey     │ 12.x    │ 21xyz
