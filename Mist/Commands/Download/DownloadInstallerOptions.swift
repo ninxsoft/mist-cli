@@ -37,10 +37,10 @@ struct DownloadInstallerOptions: ParsableArguments {
     * application to generate a macOS Installer Application Bundle (.app).
     * image to generate a macOS Disk Image (.dmg).
     * iso to generate a Bootable macOS Disk Image (.iso), for use with virtualization software (ie. Parallels Desktop, VMware Fusion, VirtualBox).
-    Note: This option will fail when targeting macOS Catalina 10.15 and older on Apple Silicon Macs.
+    Note: This option will fail when targeting OS X Mountain Lion 10.8 and older on Apple Silicon Macs.
     * package to generate a macOS Installer Package (.pkg).
     * bootableinstaller to create a Bootable macOS Installer on a mounted volume
-    Note: This option will fail when targeting macOS Catalina 10.15 and older on Apple Silicon Macs.
+    Note: This option will fail when targeting OS X Mountain Lion 10.8 and older on Apple Silicon Macs.
     """)
     var outputType: [InstallerOutputType]
 
