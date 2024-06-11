@@ -7,7 +7,7 @@
 
 import Foundation
 
-// swiftlint:disable file_length
+// swiftlint:disable file_length type_body_length
 
 /// Helper Struct used to generate macOS Firmwares, Installers, Disk Images and Installer Packages.
 enum Generator {
@@ -179,7 +179,7 @@ enum Generator {
         !options.quiet ? PrettyPrint.print("Created image '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable cyclomatic_complexity function_body_length
 
     /// Generates a Bootable macOS Installer Disk Image.
     ///
@@ -225,14 +225,39 @@ enum Generator {
                 try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
             }
 
-            !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-            arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
+            arguments = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia"]
+
+            if !installer.bigSurOrNewer {
+                // swiftlint:disable:next line_length
+                !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+                !options.quiet ? PrettyPrint.print("Ad-hoc code signing '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try adHocCodesign(installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+                arguments = ["\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)/Contents/Resources/createinstallmedia"]
+            }
+
+            arguments += ["--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
 
             if installer.sierraOrOlder {
                 arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
             }
 
+            !options.quiet ? PrettyPrint.print("Creating install media at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             _ = try Shell.execute(arguments)
+
+            if !installer.bigSurOrNewer {
+                for url in [
+                    installer.temporaryInstallerWithAdHocCodeSignaturesURL,
+                    installer.temporaryISOInstallerWithAdHocCodeSignaturesURL,
+                    installer.temporaryISOInstallerURL
+                ] where FileManager.default.fileExists(atPath: url.path) {
+                    !options.quiet ? PrettyPrint.print("Deleting '\(url.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                    try FileManager.default.removeItem(at: url)
+                }
+
+                !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryISOInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryISOInstallerURL)
+            }
 
             !options.quiet ? PrettyPrint.print("Unmounting disk image at mount point '\(installer.temporaryISOMountPointURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             arguments = ["hdiutil", "detach", installer.temporaryISOMountPointURL.path, "-force"]
@@ -276,7 +301,7 @@ enum Generator {
         }
     }
 
-    // swiftlint:enable function_body_length
+    // swiftlint:enable cyclomatic_complexity function_body_length
 
     /// Generates a macOS Installer Package, optionally codesigning.
     ///
@@ -363,16 +388,46 @@ enum Generator {
             try updatePropertyList(url, key: "CFBundleShortVersionString", value: "12.6.03")
         }
 
-        var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia", "--volume", volume, "--nointeraction"]
-        let destinationURL: URL = .init(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
+        var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia"]
+
+        if !installer.bigSurOrNewer {
+            // swiftlint:disable:next line_length
+            !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            !options.quiet ? PrettyPrint.print("Ad-hoc code signing '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try adHocCodesign(installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            arguments = ["\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)/Contents/Resources/createinstallmedia"]
+        }
+
+        arguments += ["--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
 
         if installer.sierraOrOlder {
             arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
         }
 
+        let destinationURL: URL = .init(fileURLWithPath: volume).deletingLastPathComponent().appendingPathComponent("Install \(installer.name)")
+
         !options.quiet ? PrettyPrint.print("Creating bootable macOS Installer at mount point '\(volume)'...", noAnsi: options.noAnsi) : Mist.noop()
         _ = try Shell.execute(arguments)
         !options.quiet ? PrettyPrint.print("Created bootable macOS installer at mount point '\(destinationURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
+
+        if !installer.bigSurOrNewer {
+            // swiftlint:disable:next identifier_name
+            let temporaryBootableInstallerWithAdHocCodeSignaturesURL: URL = destinationURL.appendingPathComponent("Install \(installer.name).ad-hoc-code-signatures.app")
+            let temporaryBootableInstallerURL: URL = destinationURL.appendingPathComponent("Install \(installer.name).app")
+
+            for url in [
+                installer.temporaryInstallerWithAdHocCodeSignaturesURL,
+                temporaryBootableInstallerWithAdHocCodeSignaturesURL,
+                temporaryBootableInstallerURL
+            ] where FileManager.default.fileExists(atPath: url.path) {
+                !options.quiet ? PrettyPrint.print("Deleting '\(url.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+                try FileManager.default.removeItem(at: url)
+            }
+
+            !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(temporaryBootableInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+            try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: temporaryBootableInstallerURL)
+        }
     }
 
     /// Update a key-pair value in a Property List.
@@ -401,4 +456,47 @@ enum Generator {
         let output: String = .init(decoding: data, as: UTF8.self)
         try output.write(to: url, atomically: true, encoding: .utf8)
     }
+
+    /// Sign the provided URL with an ad-hoc code signature.
+    ///
+    /// - Parameters:
+    ///   - url: The URL of the file or directory to sign with an ad-hoc code signature.
+    ///
+    /// - Throws: An `Error` if the command failed to execute.
+    private static func adHocCodesign(_ url: URL) throws {
+        guard
+            let enumerator: FileManager.DirectoryEnumerator = FileManager.default.enumerator(
+                at: url,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+            ) else {
+            throw MistError.invalidURL(url.path)
+        }
+
+        for case let url as URL in enumerator {
+            let fileAttributes: URLResourceValues = try url.resourceValues(forKeys: [.isRegularFileKey])
+
+            guard
+                let isRegularFile: Bool = fileAttributes.isRegularFile,
+                isRegularFile else {
+                continue
+            }
+
+            do {
+                let arguments: [String] = ["codesign", "--remove-signature", "--force", url.path]
+                _ = try Shell.execute(arguments)
+            } catch {
+                // do nothing
+            }
+
+            do {
+                let arguments: [String] = ["codesign", "--sign", "-", "--force", url.path]
+                _ = try Shell.execute(arguments)
+            } catch {
+                // do nothing
+            }
+        }
+    }
 }
+
+// swiftlint:enable type_body_length
