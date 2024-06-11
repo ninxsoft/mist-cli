@@ -401,4 +401,47 @@ enum Generator {
         let output: String = .init(decoding: data, as: UTF8.self)
         try output.write(to: url, atomically: true, encoding: .utf8)
     }
+
+    /// Sign the provided URL with an ad-hoc code signature.
+    ///
+    /// - Parameters:
+    ///   - url: The URL of the file or directory to sign with an ad-hoc code signature.
+    ///
+    /// - Throws: An `Error` if the command failed to execute.
+    private static func adHocCodesign(_ url: URL) throws {
+        guard
+            let enumerator: FileManager.DirectoryEnumerator = FileManager.default.enumerator(
+                at: url,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]
+            ) else {
+            throw MistError.invalidURL(url.path)
+        }
+
+        for case let url as URL in enumerator {
+            let fileAttributes: URLResourceValues = try url.resourceValues(forKeys: [.isRegularFileKey])
+
+            guard
+                let isRegularFile: Bool = fileAttributes.isRegularFile,
+                isRegularFile else {
+                continue
+            }
+
+            do {
+                let arguments: [String] = ["codesign", "--remove-signature", "--force", url.path]
+                _ = try Shell.execute(arguments)
+            } catch {
+                // do nothing
+            }
+
+            do {
+                let arguments: [String] = ["codesign", "--sign", "-", "--force", url.path]
+                _ = try Shell.execute(arguments)
+            } catch {
+                // do nothing
+            }
+        }
+    }
 }
+
+// swiftlint:enable type_body_length
