@@ -12,7 +12,7 @@ enum Catalog: String, CaseIterable {
     case `public`
 
     static var urls: [String] {
-        allCases.map(\.url) + allCases.map(\.sequioaURL)
+        allCases.map(\.url) + allCases.map(\.sequoiaURL)
     }
 
     var url: String {
@@ -28,7 +28,7 @@ enum Catalog: String, CaseIterable {
         }
     }
 
-    private var sequioaURL: String {
+    private var sequoiaURL: String {
         switch self {
         case .standard:
             "https://swscan.apple.com/content/catalogs/others/index-15-14-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
