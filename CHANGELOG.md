@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.0) - 2024-06-11
+## [2.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1) - 2024-06-11
 
 - Added _beta_ support for **macOS Sequoia 15** :tada:
 - Added support for creating legacy Bootable Disk Images (ISO) on Apple Silicon - thanks [PicoMitchell](https://github.com/PicoMitchell)!
