@@ -475,7 +475,7 @@ struct DownloadInstallerCommand: ParsableCommand {
         }
 
         let dictionary: [String: Any] = [
-            "installer": installer.exportDictionary,
+            "installer": installer.dictionary,
             "options": exportDictionary(for: installer, options: options)
         ]
 

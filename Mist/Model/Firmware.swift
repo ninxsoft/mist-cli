@@ -69,18 +69,6 @@ struct Firmware: Decodable {
 
     var dictionary: [String: Any] {
         [
-            "signed": signed,
-            "name": name,
-            "version": version,
-            "build": build,
-            "size": size,
-            "date": dateDescription,
-            "compatible": compatible
-        ]
-    }
-
-    var exportDictionary: [String: Any] {
-        [
             "name": name,
             "version": version,
             "build": build,

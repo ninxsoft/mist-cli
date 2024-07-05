@@ -259,7 +259,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
         }
 
         let dictionary: [String: Any] = [
-            "firmware": firmware.exportDictionary,
+            "firmware": firmware.dictionary,
             "options": exportDictionary(for: firmware, options: options)
         ]
 

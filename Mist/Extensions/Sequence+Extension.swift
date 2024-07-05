@@ -232,7 +232,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     }
 
     func installersCSVString() -> String {
-        "Identifier,Name,Version,Build,Size,Date,Compatible\n" + map { $0.installerCSVString() }.joined()
+        "Identifier,Name,Version,Build,Size,Date,Compatible,Beta\n" + map { $0.installerCSVString() }.joined()
     }
 
     func jsonString() throws -> String {

@@ -54,11 +54,31 @@ extension Dictionary where Key == String {
             let version: String = self["version"] as? String,
             let build: String = self["build"] as? String,
             let size: Int64 = self["size"] as? Int64,
-            let date: String = self["date"] as? String else {
+            let date: String = self["date"] as? String,
+            let compatible: Bool = self["compatible"] as? Bool,
+            let beta: Bool = self["beta"] as? Bool else {
             return ""
         }
 
-        let string: String = "\"\(identifier)\",\"\(name)\",\"=\"\"\(version)\"\"\",\"=\"\"\(build)\"\"\",\(size),\(date)\n"
+        let identifierString: String = "\"\(identifier)\""
+        let nameString: String = "\"\(name)\""
+        let versionString: String = "\"=\"\"\(version)\"\"\""
+        let buildString: String = "\"=\"\"\(build)\"\"\""
+        let sizeString: String = "\(size)"
+        let dateString: String = "\(date)"
+        let compatibleString: String = "\(compatible ? "YES" : "NO")"
+        let betaString: String = "\(beta ? "YES" : "NO")"
+
+        let string: String = [
+            identifierString,
+            nameString,
+            versionString,
+            buildString,
+            sizeString,
+            dateString,
+            compatibleString,
+            betaString
+        ].joined(separator: ",") + "\n"
         return string
     }
 
