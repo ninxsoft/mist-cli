@@ -595,18 +595,6 @@ struct Installer: Decodable {
             "build": build,
             "size": size,
             "date": date,
-            "compatible": compatible
-        ]
-    }
-
-    var exportDictionary: [String: Any] {
-        [
-            "identifier": identifier,
-            "name": name,
-            "version": version,
-            "build": build,
-            "size": size,
-            "date": date,
             "compatible": compatible,
             "distribution": distribution,
             "packages": packages.map(\.dictionary),
