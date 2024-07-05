@@ -27,7 +27,7 @@ struct ListFirmwareCommand: ParsableCommand {
     ///
     /// - Throws: A `MistError` if macOS versions fail to be retrieved or exported.
     static func run(options: ListFirmwareOptions) throws {
-        Mist.checkForNewVersion(noAnsi: options.noAnsi)
+        !options.quiet ? Mist.checkForNewVersion(noAnsi: options.noAnsi) : Mist.noop()
         try inputValidation(options)
         !options.quiet ? PrettyPrint.printHeader("SEARCH", noAnsi: options.noAnsi) : Mist.noop()
         !options.quiet ? PrettyPrint.print("Searching for macOS Firmware versions...", noAnsi: options.noAnsi) : Mist.noop()
