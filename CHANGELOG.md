@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1) - 2024-07-09
+
+- `mist` now correctly exports firmware URL and installer package metadata - thanks [chilcote](https://github.com/chilcote)!
+- `mist` now suppresses update notifications when the `-q` / `--quiet` flag is used - thanks [mattlqx](https://github.com/mattlqx)!
+- Fixed a bug that prevented CSV output being displayed / exported correctly - thanks [NorseGaud](https://github.com/NorseGaud)!
+
 ## [2.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1) - 2024-06-11
 
 - Added _beta_ support for **macOS Sequoia 15** :tada:
