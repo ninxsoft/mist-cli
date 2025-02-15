@@ -404,7 +404,7 @@ enum Generator {
             arguments = ["\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)/Contents/Resources/createinstallmedia"]
         }
 
-        arguments += ["--volume", installer.temporaryISOMountPointURL.path, "--nointeraction"]
+        arguments += ["--volume", volume, "--nointeraction"]
 
         if installer.sierraOrOlder {
             arguments += ["--applicationpath", installer.temporaryInstallerURL.path]
