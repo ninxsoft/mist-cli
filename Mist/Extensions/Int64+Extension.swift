@@ -8,11 +8,11 @@
 import Foundation
 
 extension Int64 {
-    /// kilobytes constant
+    /// KiloBytes constant.
     static let kilobyte: Int64 = 1_000
-    /// megabytes constant
+    /// MegaBytes constant.
     static let megabyte: Int64 = .kilobyte * 1_000
-    /// gigabytes constant
+    /// GigaBytes constant.
     static let gigabyte: Int64 = .megabyte * 1_000
 
     /// Returns a bytes-formatted string for the provided `Int64`.
