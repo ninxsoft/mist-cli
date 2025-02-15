@@ -15,6 +15,9 @@ extension Int64 {
     /// gigabytes constant
     static let gigabyte: Int64 = .megabyte * 1_000
 
+    /// Returns a bytes-formatted string for the provided `Int64`.
+    ///
+    /// - Returns: A bytes-formatted string for the provided `Int64`.
     func bytesString() -> String {
         if self < .kilobyte {
             String(format: " %04d  B", self)
