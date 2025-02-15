@@ -391,6 +391,11 @@ enum Generator {
         var arguments: [String] = ["\(installer.temporaryInstallerURL.path)/Contents/Resources/createinstallmedia"]
 
         if !installer.bigSurOrNewer {
+
+            if FileManager.default.fileExists(atPath: installer.temporaryInstallerWithAdHocCodeSignaturesURL.path) {
+                try FileManager.default.removeItem(at: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
+            }
+
             // swiftlint:disable:next line_length
             !options.quiet ? PrettyPrint.print("Copying '\(installer.temporaryInstallerURL.path)' to '\(installer.temporaryInstallerWithAdHocCodeSignaturesURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
             try FileManager.default.copyItem(at: installer.temporaryInstallerURL, to: installer.temporaryInstallerWithAdHocCodeSignaturesURL)
