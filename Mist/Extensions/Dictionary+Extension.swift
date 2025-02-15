@@ -9,6 +9,9 @@ import Foundation
 import Yams
 
 extension Dictionary where Key == String {
+    /// Returns a CSV-formatted string for the provided `Firmware` dictionary.
+    ///
+    /// - Returns: A CSV-formatted string for the provided `Firmware` dictionary.
     func firmwareCSVString() -> String {
         guard
             let name: String = self["name"] as? String,
@@ -47,6 +50,9 @@ extension Dictionary where Key == String {
         return string
     }
 
+    /// Returns a CSV-formatted string for the provided `Installer` dictionary.
+    ///
+    /// - Returns: A CSV-formatted string for the provided `Installer` dictionary.
     func installerCSVString() -> String {
         guard
             let identifier: String = self["identifier"] as? String,
@@ -82,18 +88,33 @@ extension Dictionary where Key == String {
         return string
     }
 
+    /// Returns a JSON string for the provided dictionary.
+    ///
+    /// - Throws: An error if the JSON string cannot be created.
+    ///
+    /// - Returns: A JSON string for the provided dictionary.
     func jsonString() throws -> String {
         let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
         let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 
+    /// Returns a Property List string for the provided dictionary.
+    ///
+    /// - Throws: An error if the Property List string cannot be created.
+    ///
+    /// - Returns: A Propery List string for the provided dictionary.
     func propertyListString() throws -> String {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
         let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 
+    /// Returns a YAML string for the provided dictionary.
+    ///
+    /// - Throws: An error if the YAML string cannot be created.
+    ///
+    /// - Returns: A YAML string for the provided dictionary.
     func yamlString() throws -> String {
         try Yams.dump(object: self)
     }

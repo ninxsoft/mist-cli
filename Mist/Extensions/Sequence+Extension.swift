@@ -9,7 +9,13 @@ import Foundation
 import Yams
 
 extension Sequence where Iterator.Element == [String: Any] {
-    // swiftlint:disable:next function_body_length
+    // swiftlint:disable function_body_length
+    /// Returns an ASCII-formatted table string for the provided array of `Firmware` dictionaries.
+    ///
+    /// - Parameters:
+    ///   - noAnsi: Set to `true` to return the string without any color or formatting.
+    ///
+    /// - Returns: An ASCII-formatted table string for the provided array of `Firmware` dictionaries.
     func firmwaresASCIIString(noAnsi: Bool) -> String {
         let signedHeading: String = "SIGNED"
         let nameHeading: String = "NAME"
@@ -81,7 +87,15 @@ extension Sequence where Iterator.Element == [String: Any] {
         return string
     }
 
-    // swiftlint:disable:next function_body_length
+    // swiftlint:enable function_body_length
+
+    // swiftlint:disable function_body_length
+    /// Returns an ASCII-formatted table string for the provided array of `Installer` dictionaries.
+    ///
+    /// - Parameters:
+    ///   - noAnsi: Set to `true` to return the string without any color or formatting.
+    ///
+    /// - Returns: An ASCII-formatted table string for the provided array of `Installer` dictionaries.
     func installersASCIIString(noAnsi: Bool) -> String {
         let identifierHeading: String = "IDENTIFIER"
         let nameHeading: String = "NAME"
@@ -152,6 +166,8 @@ extension Sequence where Iterator.Element == [String: Any] {
         string += footerASCIIString(columns: columns, noAnsi: noAnsi)
         return string
     }
+
+    // swiftlint:enable function_body_length
 
     /// Generates a Header ASCII string based on the provided columns.
     ///
@@ -227,32 +243,59 @@ extension Sequence where Iterator.Element == [String: Any] {
         return string.color(noAnsi ? .reset : .blue)
     }
 
+    /// Returns a CSV-formatted string for the provided array of `Firmware` objects.
+    ///
+    /// - Returns: A CSV-formatted string for the provided array of `Firmware` objects.
     func firmwaresCSVString() -> String {
         "Name,Version,Build,Size,URL,Date,Compatible,Signed,Beta\n" + map { $0.firmwareCSVString() }.joined()
     }
 
+    /// Returns a CSV-formatted string for the provided array of `Installer` objects.
+    ///
+    /// - Returns: A CSV-formatted string for the provided array of `Installer` objects.
     func installersCSVString() -> String {
         "Identifier,Name,Version,Build,Size,Date,Compatible,Beta\n" + map { $0.installerCSVString() }.joined()
     }
 
+    /// Returns a JSON string for the provided array.
+    ///
+    /// - Throws: An error if the JSON string cannot be created.
+    ///
+    /// - Returns: A JSON string for the provided array.
     func jsonString() throws -> String {
         let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
         let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 
+    /// Returns a Property List string for the provided array.
+    ///
+    /// - Throws: An error if the Property List string cannot be created.
+    ///
+    /// - Returns: A Property List string for the provided array.
     func propertyListString() throws -> String {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
         let string: String = .init(decoding: data, as: UTF8.self)
         return string
     }
 
+    /// Returns a YAML string for the provided array.
+    ///
+    /// - Throws: An error if the YAML string cannot be created.
+    ///
+    /// - Returns: A YAML string for the provided array.
     func yamlString() throws -> String {
         try Yams.dump(object: self)
     }
 }
 
 extension Sequence where Iterator.Element == String {
+    /// Returns the maximum string length, comparing an array of strings against the passed in string.
+    ///
+    /// - Parameters:
+    ///   - string: The string to compare against the array of strings.
+    ///
+    /// - Returns: The maximum string length.
     func maximumStringLength(comparing string: String) -> Int {
         Swift.max(self.max { $0.count < $1.count }?.count ?? 0, string.count)
     }

@@ -9,6 +9,9 @@ import CryptoKit
 import Foundation
 
 extension URL {
+    /// Returns a SHA1 checksum for the file at the provided URL.
+    ///
+    /// - Returns: A SHA1 checksum string if the hash was successfully calculated, otherwise `nil`.
     func shasum() -> String? {
         let length: Int = 1_024 * 1_024 * 50 // 50 MB
 
