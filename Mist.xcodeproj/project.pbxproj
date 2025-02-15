@@ -275,13 +275,13 @@
 				574413F825F85EF300DE5540 /* Sources */,
 				574413F925F85EF300DE5540 /* Frameworks */,
 				574413FA25F85EF300DE5540 /* CopyFiles */,
-				5744142525F868B300DE5540 /* Run SwiftLint */,
 				57C1C85C2B09EF84006DB77B /* Run SwiftFormat */,
 				393C236926DDC995004755BF /* Run DrString */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				390762062D605EF7000B9634 /* PBXTargetDependency */,
 			);
 			name = mist;
 			packageProductDependencies = (
@@ -300,7 +300,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					39D1C2282944683700EAE5E4 = {
 						CreatedOnToolsVersion = 14.1;
@@ -322,6 +322,7 @@
 			packageReferences = (
 				5744140D25F8606500DE5540 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 				57D135B625FEEE48003467B2 /* XCRemoteSwiftPackageReference "Yams" */,
+				390762042D605EEE000B9634 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 574413FD25F85EF300DE5540 /* Products */;
 			projectDirPath = "";
@@ -362,25 +363,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
 			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which drstring > /dev/null ; then\n  drstring check --config-file \"$SRCROOT/.drstring.toml\"\nelse\n  echo \"warning: DrString not installed, download from https://github.com/dduan/DrString\"\nfi\n\nexit 0\n";
-		};
-		5744142525F868B300DE5540 /* Run SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run SwiftLint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env bash";
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint > /dev/null ; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nexit 0\n";
 		};
 		57C1C85C2B09EF84006DB77B /* Run SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -459,6 +441,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		390762062D605EF7000B9634 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 390762052D605EF7000B9634 /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		39D1C22D2944683700EAE5E4 /* Debug */ = {
@@ -689,6 +678,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		390762042D605EEE000B9634 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.58.2;
+			};
+		};
 		5744140D25F8606500DE5540 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-argument-parser";
@@ -708,6 +705,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		390762052D605EF7000B9634 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 390762042D605EEE000B9634 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
 		5744140E25F8606500DE5540 /* ArgumentParser */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5744140D25F8606500DE5540 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
