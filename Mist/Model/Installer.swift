@@ -610,6 +610,10 @@ struct Installer: Decodable {
         version.range(of: "^10\\.([7-9]|1[0-2])\\.", options: .regularExpression) != nil
     }
 
+    var highSierraOrNewer: Bool {
+        bigSurOrNewer || version.range(of: "^10\\.1[3-5]\\.", options: .regularExpression) != nil
+    }
+
     var catalinaOrNewer: Bool {
         bigSurOrNewer || version.range(of: "^10\\.15\\.", options: .regularExpression) != nil
     }

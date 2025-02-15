@@ -67,6 +67,13 @@ enum InstallerCreator {
             _ = try Shell.execute(arguments, environment: variables)
         }
 
+        if installer.highSierraOrNewer, !installer.bigSurOrNewer {
+            arguments = ["ditto", "/Applications/Install \(installer.name).app", "\(installer.temporaryDiskImageMountPointURL.path)/Applications/Install \(installer.name).app"]
+            _ = try Shell.execute(arguments)
+            arguments = ["rm", "-r", "/Applications/Install \(installer.name).app"]
+            _ = try Shell.execute(arguments)
+        }
+
         if installer.catalinaOrNewer {
             arguments = ["ditto", "\(installer.temporaryDiskImageMountPointURL.path)Applications", "\(installer.temporaryDiskImageMountPointURL.path)/Applications"]
             _ = try Shell.execute(arguments)
