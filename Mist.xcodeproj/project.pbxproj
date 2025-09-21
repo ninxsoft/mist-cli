@@ -51,18 +51,6 @@
 		57F0F3CE2600907D00480DEE /* Int64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F0F3CD2600907D00480DEE /* Int64+Extension.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		574413FA25F85EF300DE5540 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		390B7198281B92AA00875374 /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		390B719A281BA31100875374 /* Chunklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunklist.swift; sourceTree = "<group>"; };
@@ -274,7 +262,6 @@
 			buildPhases = (
 				574413F825F85EF300DE5540 /* Sources */,
 				574413F925F85EF300DE5540 /* Frameworks */,
-				574413FA25F85EF300DE5540 /* CopyFiles */,
 				57C1C85C2B09EF84006DB77B /* Run SwiftFormat */,
 				393C236926DDC995004755BF /* Run DrString */,
 			);
@@ -300,7 +287,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					39D1C2282944683700EAE5E4 = {
 						CreatedOnToolsVersion = 14.1;
@@ -683,7 +670,7 @@
 			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.58.2;
+				minimumVersion = 0.61.0;
 			};
 		};
 		5744140D25F8606500DE5540 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
@@ -691,7 +678,7 @@
 			repositoryURL = "https://github.com/apple/swift-argument-parser";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.5.0;
+				minimumVersion = 1.6.1;
 			};
 		};
 		57D135B625FEEE48003467B2 /* XCRemoteSwiftPackageReference "Yams" */ = {
@@ -699,7 +686,7 @@
 			repositoryURL = "https://github.com/jpsim/Yams";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.0;
+				minimumVersion = 6.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

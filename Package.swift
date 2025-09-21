@@ -13,8 +13,10 @@ let package: Package = .init(
         .executable(name: "mist", targets: ["Mist"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.4.0"),
-        .package(url: "https://github.com/jpsim/Yams", from: "5.1.2")
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.1"),
+        // .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.57.2"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
+        .package(url: "https://github.com/jpsim/Yams", from: "6.1.0")
     ],
     targets: [
         .executableTarget(
