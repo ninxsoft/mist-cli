@@ -10,6 +10,7 @@ import Yams
 
 extension Sequence where Iterator.Element == [String: Any] {
     // swiftlint:disable function_body_length
+
     /// Returns an ASCII-formatted table string for the provided array of `Firmware` dictionaries.
     ///
     /// - Parameters:
@@ -90,6 +91,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     // swiftlint:enable function_body_length
 
     // swiftlint:disable function_body_length
+
     /// Returns an ASCII-formatted table string for the provided array of `Installer` dictionaries.
     ///
     /// - Parameters:
