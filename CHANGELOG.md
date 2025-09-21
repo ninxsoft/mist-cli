@@ -4,6 +4,8 @@
 
 - Added support for **macOS Tahoe 26** :tada:
 - Fixed a bug that prevented macOS Installers from being created on devices running **macOS Sonoma 15** or later - thanks [gregneagle](https://github.com/gregneagle)!
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.6.1**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **6.1.0**
 
 ## [2.1.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1.1) - 2024-07-09
 
