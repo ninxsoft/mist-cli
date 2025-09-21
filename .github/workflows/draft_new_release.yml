@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   build:
     name: Draft New Release
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE }}
       APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD }}
@@ -18,7 +18,7 @@ jobs:
       APPLE_DEVELOPER_TEAM_ID: "7K3HVCLV7Z"
       KEYCHAIN_FILE: "apple-developer.keychain-db"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: swift-actions/setup-swift@v2
       - name: Install Apple Developer ID Certificates
         run: |
