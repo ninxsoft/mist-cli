@@ -10,9 +10,9 @@ on:
 jobs:
   unit_tests:
     name: Unit Tests
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: swift-actions/setup-swift@v2
       - name: Run Unit Tests
         run: swift test

@@ -561,6 +561,10 @@ struct Installer: Decodable {
         (sierraOrOlder ? [] : [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)]) + packages.sorted { $0.filename < $1.filename }
     }
 
+    var containsInstallAssistantPackage: Bool {
+        packages.contains { $0.filename == "InstallAssistant.pkg" }
+    }
+
     var temporaryDiskImageMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/\(identifier)")
     }
@@ -615,7 +619,7 @@ struct Installer: Decodable {
     }
 
     var bigSurOrNewer: Bool {
-        version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
+        version.range(of: "^(1[1-5]|26)\\.", options: .regularExpression) != nil
     }
 
     var beta: Bool {
