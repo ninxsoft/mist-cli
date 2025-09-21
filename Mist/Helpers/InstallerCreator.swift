@@ -9,6 +9,8 @@ import Foundation
 
 /// Helper Struct used to install macOS Installers.
 enum InstallerCreator {
+    // swiftlint:disable function_body_length
+
     /// Creates a recently downloaded macOS Installer.
     ///
     /// - Parameters:
@@ -55,14 +57,20 @@ enum InstallerCreator {
             let arguments: [String] = ["hdiutil", "detach", legacyDiskImageMountPointURL.path, "-force"]
             _ = try Shell.execute(arguments)
         } else {
-            guard let url: URL = URL(string: installer.distribution) else {
-                throw MistError.invalidURL(installer.distribution)
+            !options.quiet ? PrettyPrint.print("Creating new installer '\(installer.temporaryInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
+
+            if installer.containsInstallAssistantPackage {
+                let installAssistantPackageURL: URL = temporaryURL.appendingPathComponent("InstallAssistant.pkg")
+                arguments = ["installer", "-pkg", installAssistantPackageURL.path, "-target", installer.temporaryDiskImageMountPointURL.path]
+            } else {
+                guard let url: URL = URL(string: installer.distribution) else {
+                    throw MistError.invalidURL(installer.distribution)
+                }
+
+                let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
+                arguments = ["installer", "-pkg", distributionURL.path, "-target", installer.temporaryDiskImageMountPointURL.path]
             }
 
-            let distributionURL: URL = temporaryURL.appendingPathComponent(url.lastPathComponent)
-
-            !options.quiet ? PrettyPrint.print("Creating new installer '\(installer.temporaryInstallerURL.path)'...", noAnsi: options.noAnsi) : Mist.noop()
-            arguments = ["installer", "-pkg", distributionURL.path, "-target", installer.temporaryDiskImageMountPointURL.path]
             let variables: [String: String] = ["CM_BUILD": "CM_BUILD"]
             _ = try Shell.execute(arguments, environment: variables)
         }
@@ -80,4 +88,6 @@ enum InstallerCreator {
 
         !options.quiet ? PrettyPrint.print("Created new installer '\(installer.temporaryInstallerURL.path)'", noAnsi: options.noAnsi) : Mist.noop()
     }
+
+    // swiftlint:enable function_body_length
 }

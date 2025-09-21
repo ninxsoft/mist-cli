@@ -561,6 +561,10 @@ struct Installer: Decodable {
         (sierraOrOlder ? [] : [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)]) + packages.sorted { $0.filename < $1.filename }
     }
 
+    var containsInstallAssistantPackage: Bool {
+        packages.contains { $0.filename == "InstallAssistant.pkg" }
+    }
+
     var temporaryDiskImageMountPointURL: URL {
         URL(fileURLWithPath: "/Volumes/\(identifier)")
     }
