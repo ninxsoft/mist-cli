@@ -39,9 +39,38 @@ jobs:
           security list-keychain -d user -s "$RUNNER_TEMP/$KEYCHAIN_FILE"
       - name: Build mist
         run: swift build --configuration release --arch arm64 --arch x86_64
+
       - name: Codesign mist
         run: |
-          codesign --keychain "$RUNNER_TEMP/$KEYCHAIN_FILE" --sign "$APPLE_DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY" --options runtime ".build/apple/Products/release/mist"
+          codesign \
+            --keychain "$RUNNER_TEMP/$KEYCHAIN_FILE" \
+            --sign "$APPLE_DEVELOPER_ID_APPLICATION_SIGNING_IDENTITY" \
+            --options runtime \
+            ".build/apple/Products/release/mist" \
+            ".build/apple/Intermediates.noindex/Mist.build/Release/mist.build/Objects-normal/arm64/Binary/mist" \
+            ".build/apple/Intermediates.noindex/Mist.build/Release/mist.build/Objects-normal/x86_64/Binary/mist"
+
+      - name: Create tarballs
+        id: tarballs
+        run: |
+          # Create arm64 tarball
+          TARBALL_ARM64="mist-cli.macos.arm64.tar.gz"
+          tar --create --gzip --file "$TARBALL_ARM64" \
+            --directory .build/apple/Intermediates.noindex/Mist.build/Release/mist.build/Objects-normal/arm64/Binary mist
+          echo "tarball_arm64=$TARBALL_ARM64" >> "$GITHUB_OUTPUT"
+
+          # Create x86_64 tarball
+          TARBALL_X86_64="mist-cli.macos.x86_64.tar.gz"
+          tar --create --gzip --file "$TARBALL_X86_64" \
+            --directory .build/apple/Intermediates.noindex/Mist.build/Release/mist.build/Objects-normal/x86_64/Binary mist
+          echo "tarball_x86_64=$TARBALL_X86_64" >> "$GITHUB_OUTPUT"
+
+          # Create universal tarball
+          TARBALL_UNIVERSAL="mist-cli.macos.universal.tar.gz"
+          tar --create --gzip --file "$TARBALL_UNIVERSAL" \
+            --directory .build/apple/Products/release mist
+          echo "tarball_universal=$TARBALL_UNIVERSAL" >> "$GITHUB_OUTPUT"
+
       - name: Package mist
         run: |
           PACKAGE_IDENTIFIER="com.ninxsoft.pkg.mist-cli"
@@ -68,7 +97,11 @@ jobs:
           name: ${{ env.PACKAGE_VERSION }}
           tag_name: v${{ env.PACKAGE_VERSION }}
           draft: true
-          files: ${{ env.PACKAGE_FILENAME }}
+          files: |
+            ${{ env.PACKAGE_FILENAME }}
+            ${{ steps.tarballs.outputs.tarball_arm64 }}
+            ${{ steps.tarballs.outputs.tarball_x86_64 }}
+            ${{ steps.tarballs.outputs.tarball_universal }}
       - name: Remove Apple Developer Keychain
         if: ${{ always() }}
         run: security delete-keychain $RUNNER_TEMP/apple-developer.keychain-db
