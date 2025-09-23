@@ -3,7 +3,7 @@
 ## [2.2](https://github.com/ninxsoft/mist-cli/releases/tag/v2.2) - 2025-09-21
 
 - Added support for **macOS Tahoe 26** :tada:
-- Fixed a bug that prevented macOS Installers from being created on devices running **macOS Sonoma 15** or later - thanks [gregneagle](https://github.com/gregneagle)!
+- Fixed a bug that prevented macOS Installers from being created on devices running **macOS Sequoia 15** or later - thanks [gregneagle](https://github.com/gregneagle)!
 - Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.6.1**
 - Bumped [Yams](https://github.com/jpsim/Yams) version to **6.1.0**
 
