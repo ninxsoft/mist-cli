@@ -5,7 +5,7 @@
 //  Created by Nindi Gill on 15/8/2022.
 //
 
-import CryptoKit
+import Crypto
 import Foundation
 
 extension URL {

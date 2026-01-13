@@ -5,7 +5,7 @@
 //  Created by Nindi Gill on 29/4/2022.
 //
 
-import CryptoKit
+import Crypto
 import Foundation
 
 /// Helper Struct used to validate macOS Firmware and Installer downloads.

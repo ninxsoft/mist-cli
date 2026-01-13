@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 /// Helper Class used to download macOS Firmwares and Installers.
 class Downloader: NSObject {
     private static let maximumWidth: Int = 95
@@ -70,12 +74,14 @@ class Downloader: NSObject {
 
         while urlError != nil {
             if retries >= options.retries {
+#if !os(Linux)
                 if
                     let error: URLError = urlError,
                     let data: Data = error.downloadTaskResumeData {
                     !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                     try data.write(to: resumeDataURL)
                 }
+#endif
 
                 throw MistError.maximumRetriesReached
             }
@@ -168,12 +174,14 @@ class Downloader: NSObject {
 
                 while urlError != nil {
                     if retries >= options.retries {
+#if !os(Linux)
                         if
                             let error: URLError = urlError,
                             let data: Data = error.downloadTaskResumeData {
                             !quiet ? PrettyPrint.print("Saving resume data to '\(resumeDataURL.path)'...", noAnsi: noAnsi) : Mist.noop()
                             try data.write(to: resumeDataURL)
                         }
+#endif
 
                         throw MistError.maximumRetriesReached
                     }
@@ -225,6 +233,9 @@ class Downloader: NSObject {
     }
 
     private func retry(attempt retry: Int, of maximumRetries: Int, with delay: Int, using session: URLSession) {
+#if os(Linux)
+        mistError = MistError.generalError("Cannot retry downloads on Linux")
+#else
         guard
             let urlError: URLError = urlError,
             let data: Data = urlError.downloadTaskResumeData else {
@@ -242,6 +253,7 @@ class Downloader: NSObject {
         updateProgress(replacing: false)
         task.resume()
         semaphore.wait()
+#endif
     }
 
     private func updateProgress(replacing: Bool = true) {
