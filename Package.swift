@@ -14,6 +14,7 @@ let package: Package = .init(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.1"),
+        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "5.0.0"),
         // .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.57.2"),
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
         .package(url: "https://github.com/jpsim/Yams", from: "6.1.0")
@@ -23,6 +24,7 @@ let package: Package = .init(
             name: "Mist",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "Yams", package: "Yams")
             ],
             path: "Mist"

@@ -49,6 +49,10 @@ enum Hardware {
     ///
     /// - Returns: The entity property for the provided key.
     private static func registryProperty(for key: String) -> String? {
+#if os(Linux)
+        // Cannot use Darwin/XNU kernel APIs on Linux
+        return nil;
+#else
         let entry: io_service_t = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
 
         defer {
@@ -74,5 +78,6 @@ enum Hardware {
 
         let string: String = .init(decoding: data, as: UTF8.self)
         return string.trimmingCharacters(in: CharacterSet(["\0"]))
+#endif
     }
 }
