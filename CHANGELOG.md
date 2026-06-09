@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3](https://github.com/ninxsoft/mist-cli/releases/tag/v2.3) - 2026-06-10
+
+- Added support for **macOS Golden Gate 27** :tada:
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.8.2**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **6.2.2**
+
 ## [2.2](https://github.com/ninxsoft/mist-cli/releases/tag/v2.2) - 2025-09-21
 
 - Added support for **macOS Tahoe 26** :tada:

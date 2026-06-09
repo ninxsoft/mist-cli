@@ -530,7 +530,7 @@ struct Product: Decodable {
         // Device ID (Apple Silicon or Intel T2)
         // macOS Big Sur 11 or newer
         if
-            version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil,
+            version.range(of: "^(1[1-5]|2[6-7])\\.", options: .regularExpression) != nil,
             let deviceID: String = Hardware.deviceID,
             !deviceIDs.isEmpty,
             !deviceIDs.contains(deviceID) {
@@ -613,7 +613,7 @@ struct Product: Decodable {
     }
 
     var bigSurOrNewer: Bool {
-        version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
+        version.range(of: "^(1[1-5]|2[6-7])\\.", options: .regularExpression) != nil
     }
 
     var beta: Bool {

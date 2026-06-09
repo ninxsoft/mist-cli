@@ -13,6 +13,7 @@ struct DownloadInstallerOptions: ParsableArguments {
 
     Name               │ Version │ Build
     ───────────────────┼─────────┼──────
+    macOS Golden Gate  │ 27.x    │ 26xyz
     macOS Tahoe        │ 26.x    │ 25xyz
     macOS Sequoia      │ 15.x    │ 24xyz
     macOS Sonoma       │ 14.x    │ 23xyz

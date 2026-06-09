@@ -49,7 +49,7 @@ enum Hardware {
     ///
     /// - Returns: The entity property for the provided key.
     private static func registryProperty(for key: String) -> String? {
-        let entry: io_service_t = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        let entry: io_service_t = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
 
         defer {
             IOObjectRelease(entry)
