@@ -15,7 +15,7 @@ let package: Package = .init(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.8.2"),
         .package(url: "https://github.com/nicklockwood/SwiftFormat", from: "0.61.1"),
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.1"),
+        // .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.1"),
         .package(url: "https://github.com/jpsim/Yams", from: "6.2.2")
     ],
     targets: [
