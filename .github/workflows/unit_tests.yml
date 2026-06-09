@@ -15,6 +15,6 @@ jobs:
       - uses: actions/checkout@v6
       - uses: swift-actions/setup-swift@v3
         with:
-          swift-version: 5.10.1
+          swift-version: "5.10.1"
       - name: Run Unit Tests
         run: swift test
