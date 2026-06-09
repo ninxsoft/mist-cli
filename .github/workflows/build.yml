@@ -38,7 +38,7 @@ jobs:
           security list-keychain -d user -s "$KEYCHAIN_PATH"
       - name: Build mist
         run: |
-          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+          sudo xcode-select --switch /Applications/Xcode.app
           swift build --configuration release --arch arm64 --arch x86_64
       - name: Codesign mist
         run: |
