@@ -266,8 +266,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     /// - Returns: A JSON string for the provided array.
     func jsonString() throws -> String {
         let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
-        let string: String = .init(decoding: data, as: UTF8.self)
-        return string
+        return .init(decoding: data, as: UTF8.self)
     }
 
     /// Returns a Property List string for the provided array.
@@ -277,8 +276,7 @@ extension Sequence where Iterator.Element == [String: Any] {
     /// - Returns: A Property List string for the provided array.
     func propertyListString() throws -> String {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
-        let string: String = .init(decoding: data, as: UTF8.self)
-        return string
+        return .init(decoding: data, as: UTF8.self)
     }
 
     /// Returns a YAML string for the provided array.

@@ -330,8 +330,7 @@ struct DownloadFirmwareCommand: ParsableCommand {
     static func resumeDataURL(for firmware: Firmware, options: DownloadFirmwareOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: firmware, options: options)
         let string: String = "\(temporaryDirectory)/\(firmware.filename).resumeData"
-        let url: URL = .init(fileURLWithPath: string)
-        return url
+        return .init(fileURLWithPath: string)
     }
 
     mutating func run() throws {

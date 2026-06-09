@@ -580,8 +580,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     static func resumeDataURL(for package: Package, in installer: Installer, options: DownloadInstallerOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: installer, options: options)
         let string: String = "\(temporaryDirectory)/\(package.filename).resumeData"
-        let url: URL = .init(fileURLWithPath: string)
-        return url
+        return .init(fileURLWithPath: string)
     }
 
     mutating func run() throws {

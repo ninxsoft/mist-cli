@@ -36,7 +36,7 @@ extension Dictionary where Key == String {
         let signedString: String = "\(signed ? "YES" : "NO")"
         let betaString: String = "\(beta ? "YES" : "NO")"
 
-        let string: String = [
+        return [
             nameString,
             versionString,
             buildString,
@@ -47,7 +47,6 @@ extension Dictionary where Key == String {
             signedString,
             betaString
         ].joined(separator: ",") + "\n"
-        return string
     }
 
     /// Returns a CSV-formatted string for the provided `Installer` dictionary.
@@ -75,7 +74,7 @@ extension Dictionary where Key == String {
         let compatibleString: String = "\(compatible ? "YES" : "NO")"
         let betaString: String = "\(beta ? "YES" : "NO")"
 
-        let string: String = [
+        return [
             identifierString,
             nameString,
             versionString,
@@ -85,7 +84,6 @@ extension Dictionary where Key == String {
             compatibleString,
             betaString
         ].joined(separator: ",") + "\n"
-        return string
     }
 
     /// Returns a JSON string for the provided dictionary.
@@ -95,8 +93,7 @@ extension Dictionary where Key == String {
     /// - Returns: A JSON string for the provided dictionary.
     func jsonString() throws -> String {
         let data: Data = try JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted, .sortedKeys])
-        let string: String = .init(decoding: data, as: UTF8.self)
-        return string
+        return .init(decoding: data, as: UTF8.self)
     }
 
     /// Returns a Property List string for the provided dictionary.
@@ -106,8 +103,7 @@ extension Dictionary where Key == String {
     /// - Returns: A Propery List string for the provided dictionary.
     func propertyListString() throws -> String {
         let data: Data = try PropertyListSerialization.data(fromPropertyList: self, format: .xml, options: .bitWidth)
-        let string: String = .init(decoding: data, as: UTF8.self)
-        return string
+        return .init(decoding: data, as: UTF8.self)
     }
 
     /// Returns a YAML string for the provided dictionary.
