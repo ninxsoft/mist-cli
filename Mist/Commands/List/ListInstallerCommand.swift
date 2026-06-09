@@ -10,7 +10,7 @@ import Foundation
 
 /// Struct used to perform **List Installer** operations.
 struct ListInstallerCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "installer",
         abstract: """
         List all macOS Installers available to download.

@@ -10,7 +10,7 @@ import Foundation
 
 /// Struct used to perform **List Firmware** operations.
 struct ListFirmwareCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "firmware",
         abstract: """
         List all macOS Firmwares available to download.

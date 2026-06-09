@@ -13,7 +13,7 @@ import Foundation
 
 /// Struct used to perform **Download Installer** operations.
 struct DownloadInstallerCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "installer",
         abstract: """
         Download a macOS Installer.

@@ -10,7 +10,7 @@ import Foundation
 
 /// Struct used to perform **Download Firmware** operations.
 struct DownloadFirmwareCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "firmware",
         abstract: """
         Download a macOS Firmware.

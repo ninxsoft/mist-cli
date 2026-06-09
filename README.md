@@ -157,7 +157,7 @@ mist download installer "macOS Tahoe" application image iso package \
 
 ## Build Requirements
 
-- Swift **5.10.1**.
+- Swift **6.0**.
 - Runs on **macOS Big Sur 11** and later.
 
 ## Download
