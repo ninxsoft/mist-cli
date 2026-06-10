@@ -49,12 +49,10 @@ enum Hardware {
     ///
     /// - Returns: The entity property for the provided key.
     private static func registryProperty(for key: String) -> String? {
-        let entry: io_service_t
-
-        if #available(macOS 12.0, *) {
-            entry = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        let entry: io_service_t = if #available(macOS 12.0, *) {
+            IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
         } else {
-            entry = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+            IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
         }
 
         defer {
