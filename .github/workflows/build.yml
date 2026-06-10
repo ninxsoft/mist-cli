@@ -37,7 +37,9 @@ jobs:
           fi
           security list-keychain -d user -s "$KEYCHAIN_PATH"
       - name: Build mist
-        run: swift build --configuration release --arch arm64 --arch x86_64
+        run: |
+          rm -rf .build
+          swift build --configuration release --arch arm64 --arch x86_64
       - name: Codesign mist
         run: |
           KEYCHAIN_PATH="$RUNNER_TEMP/apple-developer.keychain-db"
