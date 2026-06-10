@@ -65,7 +65,7 @@ jobs:
           xcrun notarytool submit "${{ env.PACKAGE_FILENAME }}" --apple-id "$APPLE_DEVELOPER_APPLE_ID" --password "$APPLE_DEVELOPER_APPLE_ID_PASSWORD" --team-id "$APPLE_DEVELOPER_TEAM_ID" --wait
           xcrun stapler staple "${{ env.PACKAGE_FILENAME }}"
       - name: Draft New Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: ${{ env.PACKAGE_VERSION }}
           tag_name: v${{ env.PACKAGE_VERSION }}
