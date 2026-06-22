@@ -5,6 +5,8 @@
 //  Created by Nindi Gill on 12/3/21.
 //
 
+import Foundation
+
 /// Helper Struct used to format printed messages.
 enum PrettyPrint {
     enum Prefix: String {
@@ -25,7 +27,8 @@ enum PrettyPrint {
     static func printHeader(_ header: String, noAnsi: Bool) {
         let horizontal: String = .init(repeating: "─", count: header.count + 2)
         let string: String = "┌\(horizontal)┐\n│ \(header) │\n└\(horizontal)┘"
-        Swift.print(noAnsi ? string : string.color(.blue))
+        let line: String = noAnsi ? string : string.color(.blue)
+        FileHandle.standardError.write(Data((line + "\n").utf8))
     }
 
     /// Prints a string with an optional custom prefix.
@@ -39,6 +42,7 @@ enum PrettyPrint {
     static func print(_ string: String, noAnsi: Bool, prefix: Prefix = .default, prefixColor: String.Color = .green, replacing: Bool = false) {
         let replacingString: String = replacing && !noAnsi ? "\u{1B}[1A\u{1B}[K" : ""
         let prefixString: String = "\(noAnsi ? prefix.description : prefix.description.color(prefixColor))"
-        Swift.print("\(replacingString)\(prefixString)\(string)")
+        let line: String = "\(replacingString)\(prefixString)\(string)"
+        FileHandle.standardError.write(Data((line + "\n").utf8))
     }
 }
