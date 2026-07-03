@@ -13,7 +13,7 @@ import Foundation
 
 /// Struct used to perform **Download Installer** operations.
 struct DownloadInstallerCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "installer",
         abstract: """
         Download a macOS Installer.
@@ -580,8 +580,7 @@ struct DownloadInstallerCommand: ParsableCommand {
     static func resumeDataURL(for package: Package, in installer: Installer, options: DownloadInstallerOptions) -> URL {
         let temporaryDirectory: String = temporaryDirectory(for: installer, options: options)
         let string: String = "\(temporaryDirectory)/\(package.filename).resumeData"
-        let url: URL = .init(fileURLWithPath: string)
-        return url
+        return .init(fileURLWithPath: string)
     }
 
     mutating func run() throws {

@@ -8,7 +8,7 @@
 import ArgumentParser
 
 struct DownloadCommand: ParsableCommand {
-    static var configuration: CommandConfiguration = .init(
+    static let configuration: CommandConfiguration = .init(
         commandName: "download",
         abstract: "Download a macOS Firmware / Installer.",
         subcommands: [DownloadFirmwareCommand.self, DownloadInstallerCommand.self]

@@ -530,7 +530,7 @@ struct Installer: Decodable {
         // Device ID (Apple Silicon or Intel T2)
         // macOS Big Sur 11 or newer
         if
-            version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil,
+            version.range(of: "^(1[1-5]|2[6-7])\\.", options: .regularExpression) != nil,
             let deviceID: String = Hardware.deviceID,
             !deviceIDs.isEmpty,
             !deviceIDs.contains(deviceID) {
@@ -559,6 +559,10 @@ struct Installer: Decodable {
 
     var allDownloads: [Package] {
         (sierraOrOlder ? [] : [Package(url: distribution, size: 0, integrityDataURL: nil, integrityDataSize: nil)]) + packages.sorted { $0.filename < $1.filename }
+    }
+
+    var containsInstallAssistantPackage: Bool {
+        packages.contains { $0.filename == "InstallAssistant.pkg" }
     }
 
     var temporaryDiskImageMountPointURL: URL {
@@ -619,7 +623,7 @@ struct Installer: Decodable {
     }
 
     var bigSurOrNewer: Bool {
-        version.range(of: "^1[1-9]\\.", options: .regularExpression) != nil
+        version.range(of: "^(1[1-5]|2[6-7])\\.", options: .regularExpression) != nil
     }
 
     var beta: Bool {

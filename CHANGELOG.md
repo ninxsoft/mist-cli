@@ -1,6 +1,19 @@
 # Changelog
 
-## [2.1.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1) - 2024-07-09
+## [2.3](https://github.com/ninxsoft/mist-cli/releases/tag/v2.3) - 2026-06-10
+
+- Added support for **macOS Golden Gate 27** :tada:
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.8.2**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **6.2.2**
+
+## [2.2](https://github.com/ninxsoft/mist-cli/releases/tag/v2.2) - 2025-09-21
+
+- Added support for **macOS Tahoe 26** :tada:
+- Fixed a bug that prevented macOS Installers from being created on devices running **macOS Sequoia 15** or later - thanks [gregneagle](https://github.com/gregneagle)!
+- Bumped [Swift Argument Parser](https://github.com/apple/swift-argument-parser) version to **1.6.1**
+- Bumped [Yams](https://github.com/jpsim/Yams) version to **6.1.0**
+
+## [2.1.1](https://github.com/ninxsoft/mist-cli/releases/tag/v2.1.1) - 2024-07-09
 
 - `mist` now correctly exports firmware URL and installer package metadata - thanks [chilcote](https://github.com/chilcote)!
 - `mist` now suppresses update notifications when the `-q` / `--quiet` flag is used - thanks [mattlqx](https://github.com/mattlqx)!

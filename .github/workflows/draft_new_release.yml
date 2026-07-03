@@ -3,7 +3,7 @@ on: workflow_dispatch
 jobs:
   build:
     name: Draft New Release
-    runs-on: macos-14
+    runs-on: macos-26
     env:
       APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE }}
       APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD }}
@@ -18,8 +18,10 @@ jobs:
       APPLE_DEVELOPER_TEAM_ID: "7K3HVCLV7Z"
       KEYCHAIN_FILE: "apple-developer.keychain-db"
     steps:
-      - uses: actions/checkout@v4
-      - uses: swift-actions/setup-swift@v2
+      - uses: actions/checkout@v6
+      - uses: swift-actions/setup-swift@v3
+        with:
+          swift-version: "6.3.1"
       - name: Install Apple Developer ID Certificates
         run: |
           APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH="$RUNNER_TEMP/apple-developer-id-application-certificate.p12"
@@ -33,7 +35,9 @@ jobs:
           security unlock-keychain -p "$APPLE_DEVELOPER_KEYCHAIN_PASSWORD" "$RUNNER_TEMP/$KEYCHAIN_FILE"
           security import "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_ID_APPLICATION_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
           security import "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PATH" -P "$APPLE_DEVELOPER_ID_INSTALLER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
-          security import "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs7 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          if ! security find-certificate -c "Developer ID Certification Authority" "$RUNNER_TEMP/$KEYCHAIN_FILE" ; then
+            security import "$APPLE_DEVELOPER_CERTIFICATE_AUTHORITY_PATH" -P "$APPLE_DEVELOPER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs7 -k "$RUNNER_TEMP/$KEYCHAIN_FILE"
+          fi
           security list-keychain -d user -s "$RUNNER_TEMP/$KEYCHAIN_FILE"
       - name: Build mist
         run: swift build --configuration release --arch arm64 --arch x86_64
@@ -61,7 +65,7 @@ jobs:
           xcrun notarytool submit "${{ env.PACKAGE_FILENAME }}" --apple-id "$APPLE_DEVELOPER_APPLE_ID" --password "$APPLE_DEVELOPER_APPLE_ID_PASSWORD" --team-id "$APPLE_DEVELOPER_TEAM_ID" --wait
           xcrun stapler staple "${{ env.PACKAGE_FILENAME }}"
       - name: Draft New Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: ${{ env.PACKAGE_VERSION }}
           tag_name: v${{ env.PACKAGE_VERSION }}
