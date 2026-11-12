@@ -12,17 +12,14 @@ jobs:
     name: Linting
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: swift-actions/setup-swift@v3
         with:
-          swift-version: "6.3.1"
-      - uses: m-takuma/setup-swiftlint@1.0.0
-        with:
-          swiftlint-version: "0.63.1"
-      - name: Print SwiftLint version
-        run: swiftlint --version
+          swift-version: "6.4.2"
       - name: Run SwiftLint
-        run: swiftlint --strict
+        uses: sinoru/actions-swiftlint@v6
+        with:
+           swiftlint-args: --strict
       - name: Print SwiftFormat version
         run: swiftformat --version
       - name: Run SwiftFormat
