@@ -43,10 +43,8 @@ struct ListFirmwareCommand: ParsableCommand {
             firmwares = HTTP.firmwares(from: firmwares, searchString: searchString)
         }
 
-        if options.latest {
-            if let firmware: Firmware = firmwares.first {
-                firmwares = [firmware]
-            }
+        if options.latest, let firmware: Firmware = firmwares.first {
+            firmwares = [firmware]
         }
 
         try export(firmwares.map(\.dictionary), options: options)

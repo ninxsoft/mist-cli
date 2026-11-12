@@ -43,10 +43,8 @@ struct ListInstallerCommand: ParsableCommand {
             installers = HTTP.installers(from: installers, searchString: searchString)
         }
 
-        if options.latest {
-            if let installer: Installer = installers.first {
-                installers = [installer]
-            }
+        if options.latest, let installer: Installer = installers.first {
+            installers = [installer]
         }
 
         try export(installers.map(\.dictionary), options: options)

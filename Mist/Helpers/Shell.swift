@@ -50,7 +50,11 @@ enum Shell {
         }
 
         let data: Data = output.fileHandleForReading.readDataToEndOfFile()
-        let string: String = .init(decoding: data, as: UTF8.self)
+
+        guard let string: String = .init(bytes: data, encoding: .utf8) else {
+            throw MistError.invalidData
+        }
+
         return string
     }
 }
